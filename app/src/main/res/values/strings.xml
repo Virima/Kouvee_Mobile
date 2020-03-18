@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Kouvee Mobile</string>
+    <string name="title_activity__customer">Activity_Customer</string>
+    <string name="title_activity__cust">Activity_Cust</string>
+</resources>

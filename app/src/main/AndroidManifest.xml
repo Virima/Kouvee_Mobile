@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.kouvee_mobile">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+
+        <!-- MENU -->
+        <activity android:name=".View.Activity_HomeAdmin" />
+        <activity android:name=".View.Splash_Atma">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- CUSTOMER -->
+        <activity
+            android:name=".View.Activity_LihatCustomer"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".View.Detail_LihatCustomer"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+
+        <!-- SUPPLIER -->
+        <activity
+            android:name=".View.Activity_Supplier"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+        <activity
+            android:name=".View.Detail_Supplier"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+        
+        <!-- LAYANAN -->
+        <activity
+            android:name=".View.Activity_LihatLayanan"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+        <activity
+            android:name=".View.Detail_LihatLayanan"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+
+        <!-- JENIS -->
+        <activity
+            android:name=".View.Activity_JenisHewan"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+        <activity
+            android:name=".View.Detail_JenisHewan"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+
+        <!-- UKURAN -->
+        <activity
+            android:name=".View.Activity_UkuranHewan"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+        <activity
+            android:name=".View.Detail_UkuranHewan"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+
+        <!-- HEWAN -->
+        <activity
+            android:name=".View.Activity_DataHewan"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+        <activity
+            android:name=".View.Detail_DataHewan"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+    </application>
+
+
+</manifest>
