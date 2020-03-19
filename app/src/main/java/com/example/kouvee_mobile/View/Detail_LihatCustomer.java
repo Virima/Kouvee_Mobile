@@ -411,5 +411,20 @@ public class Detail_LihatCustomer extends AppCompatActivity {
         pTglLahirCustomer.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+
+        alertDisable(pNamaCustomer);
+        alertDisable(pAlamatCustomer);
+        alertDisable(pTeleponCostumer);
+        alertDisable(pTglLahirCustomer);
+    }
+
+    private void alertDisable(EditText editText) {
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(Detail_LihatCustomer.this, "Klik icon Edit terlebih dahulu untuk mengubah data!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

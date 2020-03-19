@@ -325,5 +325,17 @@ public class Detail_LihatLayanan extends AppCompatActivity {
         pNamaLayanan.setFocusableInTouchMode(false);  //disable
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+
+        alertDisable(pNamaLayanan);
+    }
+
+    private void alertDisable(EditText editText) {
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(Detail_LihatLayanan.this, "Klik icon Edit terlebih dahulu untuk mengubah data!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

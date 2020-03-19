@@ -323,5 +323,17 @@ public class Detail_UkuranHewan extends AppCompatActivity {
         pNamaUkuran.setFocusableInTouchMode(false);  //disable
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+
+        alertDisable(pNamaUkuran);
+    }
+
+    private void alertDisable(EditText editText) {
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(Detail_UkuranHewan.this, "Klik icon Edit terlebih dahulu untuk mengubah data!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

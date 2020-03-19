@@ -41,6 +41,8 @@ public class Activity_LihatCustomer extends AppCompatActivity {
     Customer_Interface apiInterface;
     ProgressBar progressBar;
 
+    String id_delete;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +79,7 @@ public class Activity_LihatCustomer extends AppCompatActivity {
                 startActivity(new Intent(Activity_LihatCustomer.this, Detail_LihatCustomer.class));
             }
         });
+
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -93,7 +96,7 @@ public class Activity_LihatCustomer extends AppCompatActivity {
 
         searchView.setQueryHint("Cari Customer");
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() { ////////////
             @Override
             public boolean onQueryTextSubmit(final String query) {
                 customeradapter.getFilter().filter(query);
@@ -120,13 +123,14 @@ public class Activity_LihatCustomer extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getCustomer(){
+    public void getCustomer(){ //////////
         Call<List<Customer_Model>> call = apiInterface.getCustomer();
         call.enqueue(new Callback<List<Customer_Model>>() {
             @Override
             public void onResponse(Call<List<Customer_Model>> call, Response<List<Customer_Model>> response) {
                 progressBar.setVisibility(View.GONE);
                 customersList = response.body();
+
                 Log.i(Activity_LihatCustomer.class.getSimpleName(), response.body().toString());
                 customeradapter = new Adapter_Customer(customersList,  listener);
                 recyclerView.setAdapter(customeradapter);

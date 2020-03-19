@@ -322,5 +322,17 @@ public class Detail_JenisHewan extends AppCompatActivity {
         pNamaJenis.setFocusableInTouchMode(false);  //disable
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+
+        alertDisable(pNamaJenis);
+    }
+
+    private void alertDisable(EditText editText) {
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(Detail_JenisHewan.this, "Klik icon Edit terlebih dahulu untuk mengubah data!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

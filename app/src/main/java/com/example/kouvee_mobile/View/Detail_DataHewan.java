@@ -49,6 +49,7 @@ public class Detail_DataHewan extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
     private DataHewan_Interface apiInterface;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +97,8 @@ public class Detail_DataHewan extends AppCompatActivity {
         id_customer = intent.getStringExtra("id_customer");
         tanggal_dibuat = intent.getStringExtra("tanggal_tambah_hewan_log");
         tanggal_diubah = intent.getStringExtra("tanggal_ubah_hewan_log");
-
         setDataFromIntentExtra();
+
     }
 
     private void setDataFromIntentExtra() {
@@ -119,7 +120,7 @@ public class Detail_DataHewan extends AppCompatActivity {
             requestOptions.placeholder(R.drawable.add);
             requestOptions.error(R.drawable.add);
 
-        }else {
+        } else {
             getSupportActionBar().setTitle("Tambah Hewan");
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
@@ -132,7 +133,7 @@ public class Detail_DataHewan extends AppCompatActivity {
         action = menu;
         action.findItem(R.id.menu_save).setVisible(false);
 
-        if (id == 0){
+        if (id == 0) {
             editMode();
 
             pTglLahirHewan = (EditText) findViewById(R.id.TglLahirHewan); //date
@@ -153,10 +154,10 @@ public class Detail_DataHewan extends AppCompatActivity {
                 }
             });
 
-            mDateSetListener= new DatePickerDialog.OnDateSetListener() {
+            mDateSetListener = new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                    month = month+1;
+                    month = month + 1;
                     String date = year + "/" + month + "/" + day;
                     pTglLahirHewan.setText(date);
                 }
@@ -180,7 +181,6 @@ public class Detail_DataHewan extends AppCompatActivity {
 
             case R.id.menu_edit:
                 //Edit
-
                 editMode();
 
                 pTglLahirHewan = (EditText) findViewById(R.id.TglLahirHewan); //date
@@ -201,10 +201,10 @@ public class Detail_DataHewan extends AppCompatActivity {
                     }
                 });
 
-                mDateSetListener= new DatePickerDialog.OnDateSetListener() {
+                mDateSetListener = new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                        month = month+1;
+                        month = month + 1;
                         String date = year + "/" + month + "/" + day;
                         pTglLahirHewan.setText(date);
                     }
@@ -225,7 +225,7 @@ public class Detail_DataHewan extends AppCompatActivity {
                             TextUtils.isEmpty(pTglLahirHewan.getText().toString()) ||
                             TextUtils.isEmpty(pIdJenis.getText().toString()) ||
                             TextUtils.isEmpty(pIdUkuran.getText().toString()) ||
-                            TextUtils.isEmpty(pId_Customer.getText().toString()))   {
+                            TextUtils.isEmpty(pId_Customer.getText().toString())) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
                         alertDialog.setMessage("Isilah semua field yang tersedia!");
                         alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -235,8 +235,7 @@ public class Detail_DataHewan extends AppCompatActivity {
                             }
                         });
                         alertDialog.show();
-                    }
-                    else {
+                    } else {
                         postData("insert");
                         action.findItem(R.id.menu_edit).setVisible(true);
                         action.findItem(R.id.menu_save).setVisible(false);
@@ -244,8 +243,7 @@ public class Detail_DataHewan extends AppCompatActivity {
 
                         readMode();
                     }
-                }
-                else {
+                } else {
                     updateData("update", id);
                     action.findItem(R.id.menu_edit).setVisible(true);
                     action.findItem(R.id.menu_save).setVisible(false);
@@ -263,7 +261,7 @@ public class Detail_DataHewan extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        deleteData ("delete", id);
+                        deleteData("delete", id);
                     }
                 });
                 dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -280,7 +278,7 @@ public class Detail_DataHewan extends AppCompatActivity {
         }
     }
 
-    private void postData(final String key){
+    private void postData(final String key) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Menyimpan...");
         progressDialog.show();
@@ -299,7 +297,7 @@ public class Detail_DataHewan extends AppCompatActivity {
                 apiInterface.createHewan(key, nama_hewan, tgl_lahir_hewan, id_jenis, id_ukuran, id_customer);
 
         call.enqueue(new Callback<Hewan_Model>() {
-            public void onResponse(Call<Hewan_Model> call, Response<Hewan_Model> response){
+            public void onResponse(Call<Hewan_Model> call, Response<Hewan_Model> response) {
                 progressDialog.dismiss();
 
                 Log.i(Detail_DataHewan.class.getSimpleName(), response.toString());
@@ -307,15 +305,14 @@ public class Detail_DataHewan extends AppCompatActivity {
                 String value = response.body().getValue();
                 String message = response.body().getMessage();
 
-                if (value.equals("1")){
+                if (value.equals("1")) {
                     finish();
                 } else {
                     Toast.makeText(Detail_DataHewan.this, message, Toast.LENGTH_SHORT).show();
                 }
             }
 
-            public void onFailure (Call<Hewan_Model> call, Throwable t)
-            {
+            public void onFailure(Call<Hewan_Model> call, Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(Detail_DataHewan.this, t.getMessage().toString(), Toast.LENGTH_SHORT).show();
             }
@@ -346,7 +343,7 @@ public class Detail_DataHewan extends AppCompatActivity {
 
 
         call.enqueue(new Callback<Hewan_Model>() {
-            public void onResponse(Call<Hewan_Model> call, Response<Hewan_Model> response){
+            public void onResponse(Call<Hewan_Model> call, Response<Hewan_Model> response) {
                 progressDialog.dismiss();
 
                 Log.i(Detail_DataHewan.class.getSimpleName(), response.toString());
@@ -388,11 +385,10 @@ public class Detail_DataHewan extends AppCompatActivity {
                 progressDialog.dismiss();
 
                 Log.i(Detail_DataHewan.class.getSimpleName(), response.toString());
-
                 String value = response.body().getValue();
                 String message = response.body().getMessage();
 
-                if (value.equals("1")){
+                if (value.equals("1")) {
                     Toast.makeText(Detail_DataHewan.this, message, Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
@@ -403,7 +399,7 @@ public class Detail_DataHewan extends AppCompatActivity {
             @Override
             public void onFailure(Call<Hewan_Model> call, Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(Detail_DataHewan.this, "Cek "+t.getMessage().toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(Detail_DataHewan.this, "Cek " + t.getMessage().toString(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -426,5 +422,22 @@ public class Detail_DataHewan extends AppCompatActivity {
         pId_Customer.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+
+        alertDisable(pNamaHewan);
+        alertDisable(pTglLahirHewan);
+        alertDisable(pIdJenis);
+        alertDisable(pIdUkuran);
+        alertDisable(pId_Customer);
+    }
+
+    private void alertDisable(EditText editText) {
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(Detail_DataHewan.this, "Klik icon Edit terlebih dahulu untuk mengubah data!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
+
