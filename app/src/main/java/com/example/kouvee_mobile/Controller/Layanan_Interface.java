@@ -26,7 +26,8 @@ public interface Layanan_Interface {
     Call<Layanan_Model> editLayanan(
             @Field("key") String key,
             @Field("id_layanan") String id_layanan,
-            @Field("nama_layanan") String nama_layanan
+            @Field("nama_layanan") String nama_layanan,
+            @Field("tgl_ubah_layanan_log") String tgl_ubah_layanan_log
     );
 
     @FormUrlEncoded

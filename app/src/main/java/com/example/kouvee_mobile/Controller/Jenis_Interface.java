@@ -19,7 +19,8 @@ public interface Jenis_Interface {
     Call<Jenis_Model> editJenis(
             @Field("key") String key,
             @Field("id_jenis") String id_jenis,
-            @Field("nama_jenis") String nama_jenis
+            @Field("nama_jenis") String nama_jenis,
+            @Field("tgl_ubah_jenis_log") String tgl_ubah_jenis_log
     );
 
     @FormUrlEncoded

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,14 +28,17 @@ import com.example.kouvee_mobile.Controller.Jenis_Interface;
 import com.example.kouvee_mobile.Model.Jenis_Model;
 import com.example.kouvee_mobile.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Detail_JenisHewan extends AppCompatActivity {
-    private EditText pNamaJenis;
+    private EditText pNamaJenis, pTglDibuat, pTglDiubah;
     private TextView pIdJenis;
-    private String id_jenis, nama_jenis;
+    private String id_jenis, nama_jenis, tanggal_dibuat, tanggal_diubah;
     private int id;
 
     private Menu action;
@@ -55,11 +59,15 @@ public class Detail_JenisHewan extends AppCompatActivity {
 
         //pIdJenis = findViewById(R.id.IdJenisTxt);
         pNamaJenis = findViewById(R.id.NamaJenis);
+        pTglDibuat = findViewById(R.id.tanggal_tambah_jenis_log);
+        pTglDiubah = findViewById(R.id.tanggal_ubah_jenis_log);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id_jenis", 0);
         id_jenis = intent.getStringExtra("id_jenis");
         nama_jenis = intent.getStringExtra("nama_jenis");
+        tanggal_dibuat = intent.getStringExtra("tanggal_tambah_jenis_log");
+        tanggal_diubah = intent.getStringExtra("tanggal_ubah_jenis_log");
 
         setDataFromIntentExtra();
     }
@@ -71,6 +79,8 @@ public class Detail_JenisHewan extends AppCompatActivity {
 
             //pIdJenis.setText(id_jenis);
             pNamaJenis.setText(nama_jenis);
+            pTglDibuat.setText(tanggal_dibuat);
+            pTglDiubah.setText(tanggal_diubah);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -80,6 +90,8 @@ public class Detail_JenisHewan extends AppCompatActivity {
 
         }else {
             getSupportActionBar().setTitle("Tambah Jenis");
+            pTglDibuat.setVisibility(View.GONE);
+            pTglDiubah.setVisibility(View.GONE);
         }
     }
 
@@ -226,11 +238,13 @@ public class Detail_JenisHewan extends AppCompatActivity {
         readMode();
 
         String nama_jenis= pNamaJenis.getText().toString().trim();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String tgl_ubah_jenis_log = simpleDateFormat.format(new Date());
 
         apiInterface = API_client.getApiClient().create(Jenis_Interface.class);
 
         Call<Jenis_Model> call =
-                apiInterface.editJenis(key, String.valueOf(id), nama_jenis);
+                apiInterface.editJenis(key, String.valueOf(id), nama_jenis, tgl_ubah_jenis_log);
 
 
         call.enqueue(new Callback<Jenis_Model>() {
@@ -300,9 +314,13 @@ public class Detail_JenisHewan extends AppCompatActivity {
 
     private void editMode() {
         pNamaJenis.setFocusableInTouchMode(true);
+        pTglDibuat.setFocusableInTouchMode(false);
+        pTglDiubah.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
         pNamaJenis.setFocusableInTouchMode(false);  //disable
+        pTglDibuat.setFocusableInTouchMode(false);
+        pTglDiubah.setFocusableInTouchMode(false);
     }
 }

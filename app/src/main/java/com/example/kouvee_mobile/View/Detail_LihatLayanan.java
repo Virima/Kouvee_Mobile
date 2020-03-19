@@ -30,16 +30,18 @@ import com.example.kouvee_mobile.Controller.Layanan_Interface;
 import com.example.kouvee_mobile.Model.Layanan_Model;
 import com.example.kouvee_mobile.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Detail_LihatLayanan extends AppCompatActivity {
-    private EditText pNamaLayanan;
+    private EditText pNamaLayanan, pTglDibuat, pTglDiubah;
     private TextView pIdLayanan;
-    private String id_layanan, nama_layanan;
+    private String id_layanan, nama_layanan, tanggal_dibuat, tanggal_diubah;
     private int id;
 
     private Menu action;
@@ -60,11 +62,15 @@ public class Detail_LihatLayanan extends AppCompatActivity {
 
         //pIdLayanan = findViewById(R.id.IdLayananTxt);
         pNamaLayanan = findViewById(R.id.NamaLayanan);
+        pTglDibuat = findViewById(R.id.tanggal_tambah_layanan_log);
+        pTglDiubah = findViewById(R.id.tanggal_ubah_layanan_log);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id_layanan", 0);
         id_layanan = intent.getStringExtra("id_layanan");
         nama_layanan = intent.getStringExtra("nama_layanan");
+        tanggal_dibuat = intent.getStringExtra("tanggal_tambah_layanan_log");
+        tanggal_diubah = intent.getStringExtra("tanggal_ubah_layanan_log");
 
         setDataFromIntentExtra();
     }
@@ -76,6 +82,8 @@ public class Detail_LihatLayanan extends AppCompatActivity {
 
             //pIdLayanan.setText(id_layanan);
             pNamaLayanan.setText(nama_layanan);
+            pTglDibuat.setText(tanggal_dibuat);
+            pTglDiubah.setText(tanggal_diubah);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -85,6 +93,8 @@ public class Detail_LihatLayanan extends AppCompatActivity {
 
         }else {
             getSupportActionBar().setTitle("Tambah Layanan");
+            pTglDibuat.setVisibility(View.GONE);
+            pTglDiubah.setVisibility(View.GONE);
         }
     }
 
@@ -231,11 +241,13 @@ public class Detail_LihatLayanan extends AppCompatActivity {
         readMode();
 
         String nama_layanan = pNamaLayanan.getText().toString().trim();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String tgl_ubah_layanan_log = simpleDateFormat.format(new Date());
 
         apiInterface = API_client.getApiClient().create(Layanan_Interface.class);
 
         Call<Layanan_Model> call =
-                apiInterface.editLayanan(key, String.valueOf(id), nama_layanan);
+                apiInterface.editLayanan(key, String.valueOf(id), nama_layanan, tgl_ubah_layanan_log);
 
 
         call.enqueue(new Callback<Layanan_Model>() {
@@ -305,9 +317,13 @@ public class Detail_LihatLayanan extends AppCompatActivity {
 
     private void editMode() {
         pNamaLayanan.setFocusableInTouchMode(true);
+        pTglDibuat.setFocusableInTouchMode(false);
+        pTglDiubah.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
         pNamaLayanan.setFocusableInTouchMode(false);  //disable
+        pTglDibuat.setFocusableInTouchMode(false);
+        pTglDiubah.setFocusableInTouchMode(false);
     }
 }

@@ -60,6 +60,8 @@ public class Activity_LihatLayanan extends AppCompatActivity {
                 Intent intent = new Intent(Activity_LihatLayanan.this, Detail_LihatLayanan.class);
                 intent.putExtra("id_layanan", layananList.get(position).getId_layanan());
                 intent.putExtra("nama_layanan", layananList.get(position).getNama_layanan());
+                intent.putExtra("tanggal_tambah_layanan_log", layananList.get(position).getTanggalTambah());
+                intent.putExtra("tanggal_ubah_layanan_log", layananList.get(position).getTanggalUbah());
 
                 startActivity(intent);
             }
