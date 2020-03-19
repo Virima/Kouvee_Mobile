@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content">
 
                     <EditText
-                        android:id="@+id/tanggal_edit_customer_log"
+                        android:id="@+id/tanggal_ubah_customer_log"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"

@@ -68,7 +68,7 @@ public class Detail_LihatCustomer extends AppCompatActivity {
         pTeleponCostumer = findViewById(R.id.TeleponCustomer);
         pTglLahirCustomer = findViewById(R.id.TglLahirCustomer);
         pTglDibuat = findViewById(R.id.tanggal_tambah_customer_log);
-        pTglDiubah = findViewById(R.id.tanggal_edit_customer_log);
+        pTglDiubah = findViewById(R.id.tanggal_ubah_customer_log);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id_customer", 0);

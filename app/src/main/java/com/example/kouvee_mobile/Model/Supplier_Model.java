@@ -15,6 +15,10 @@ public class Supplier_Model {
     private String value;
     @SerializedName("message")
     private String message;
+    @SerializedName("tanggal_tambah_supplier_log")
+    private String tanggal_tambah_supplier_log;
+    @SerializedName("tanggal_ubah_supplier_log")
+    private String tanggal_ubah_supplier_log;
 
     public int getId_supplier() {
         return id;
@@ -62,5 +66,22 @@ public class Supplier_Model {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    // LOG //
+    public String getTanggalTambah() {
+        return tanggal_tambah_supplier_log;
+    }
+
+    public void setTanggalTambah(String tanggal_tambah_supplier_log) {
+        this.tanggal_tambah_supplier_log = tanggal_tambah_supplier_log;
+    }
+
+    public String getTanggalUbah() {
+        return tanggal_ubah_supplier_log;
+    }
+
+    public void setTanggalUbah(String tanggal_ubah_supplier_log) {
+        this.tanggal_ubah_supplier_log = tanggal_ubah_supplier_log;
     }
 }

@@ -30,7 +30,8 @@ public interface Supplier_Interface {
             @Field("id_supplier") String id_supplier,
             @Field("nama_supplier") String nama_supplier,
             @Field("alamat_supplier") String alamat_supplier,
-            @Field("telepon_supplier") String telp
+            @Field("telepon_supplier") String telp,
+            @Field("tgl_ubah_supplier_log") String tgl_ubah_supplier_log
     );
 
     @FormUrlEncoded

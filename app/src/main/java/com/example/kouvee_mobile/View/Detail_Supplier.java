@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -25,13 +26,16 @@ import com.example.kouvee_mobile.Controller.Supplier_Interface;
 import com.example.kouvee_mobile.Model.Supplier_Model;
 import com.example.kouvee_mobile.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Detail_Supplier extends AppCompatActivity {
-    private EditText pNamaSupplier, pAlamatSupplier, pTeleponSupplier;
-    private String nama_supplier, alamat_supplier, telepon_supplier;
+    private EditText pNamaSupplier, pAlamatSupplier, pTeleponSupplier, pTglDibuat, pTglDiubah;;
+    private String nama_supplier, alamat_supplier, telepon_supplier, tanggal_dibuat, tanggal_diubah;
     private int id;
 
     private Menu action;
@@ -50,12 +54,16 @@ public class Detail_Supplier extends AppCompatActivity {
         pNamaSupplier = findViewById(R.id.NamaSupplier);
         pAlamatSupplier = findViewById(R.id.AlamatSupplier);
         pTeleponSupplier = findViewById(R.id.TeleponSupplier);
+        pTglDibuat = findViewById(R.id.tanggal_tambah_supplier_log);
+        pTglDiubah = findViewById(R.id.tanggal_ubah_supplier_log);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id", 0);
         nama_supplier = intent.getStringExtra("nama_supplier");
         alamat_supplier = intent.getStringExtra("alamat_supplier");
         telepon_supplier = intent.getStringExtra("telepon_supplier");
+        tanggal_dibuat = intent.getStringExtra("tanggal_tambah_supplier_log");
+        tanggal_diubah = intent.getStringExtra("tanggal_ubah_supplier_log");
 
         setDataFromIntentExtra();
     }
@@ -68,6 +76,8 @@ public class Detail_Supplier extends AppCompatActivity {
             pNamaSupplier.setText(nama_supplier);
             pAlamatSupplier.setText(alamat_supplier);
             pTeleponSupplier.setText(telepon_supplier);
+            pTglDibuat.setText(tanggal_dibuat);
+            pTglDiubah.setText(tanggal_diubah);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -77,6 +87,8 @@ public class Detail_Supplier extends AppCompatActivity {
 
         }else {
             getSupportActionBar().setTitle("Tambah Supplier");
+            pTglDibuat.setVisibility(View.GONE);
+            pTglDiubah.setVisibility(View.GONE);
         }
     }
 
@@ -229,9 +241,13 @@ public class Detail_Supplier extends AppCompatActivity {
         String alamat_supplier = pAlamatSupplier.getText().toString().trim();
         String telepon_supplier = pTeleponSupplier.getText().toString().trim();
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String tgl_ubah_supplier_log = simpleDateFormat.format(new Date());
+
         apiInterface = API_client.getApiClient().create(Supplier_Interface.class);
 
-        Call<Supplier_Model> call = apiInterface.editSupplier(key, String.valueOf(id), nama_supplier, alamat_supplier, telepon_supplier); //String.valueOf(id_supplier)
+        Call<Supplier_Model> call = apiInterface.editSupplier(key, String.valueOf(id), nama_supplier, alamat_supplier,
+                telepon_supplier, tgl_ubah_supplier_log);
 
 
         call.enqueue(new Callback<Supplier_Model>() {
@@ -304,11 +320,15 @@ public class Detail_Supplier extends AppCompatActivity {
         pNamaSupplier.setFocusableInTouchMode(true);
         pAlamatSupplier.setFocusableInTouchMode(true);
         pTeleponSupplier.setFocusableInTouchMode(true);
+        pTglDibuat.setFocusableInTouchMode(false);
+        pTglDiubah.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
         pNamaSupplier.setFocusableInTouchMode(false);
         pAlamatSupplier.setFocusableInTouchMode(false);
         pTeleponSupplier.setFocusableInTouchMode(false);
+        pTglDibuat.setFocusableInTouchMode(false);
+        pTglDiubah.setFocusableInTouchMode(false);
     }
 }
