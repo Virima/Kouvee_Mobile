@@ -30,15 +30,17 @@ import com.example.kouvee_mobile.Controller.DataHewan_Interface;
 import com.example.kouvee_mobile.Model.Hewan_Model;
 import com.example.kouvee_mobile.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Detail_DataHewan extends AppCompatActivity {
-    private EditText pNamaHewan, pTglLahirHewan, pIdJenis, pIdUkuran, pId_Customer;
-    private String nama_hewan, tgl_lahir_hewan, id_jenis, id_ukuran, id_customer;
+    private EditText pNamaHewan, pTglLahirHewan, pIdJenis, pIdUkuran, pId_Customer, pTglDibuat, pTglDiubah;
+    private String nama_hewan, tgl_lahir_hewan, id_jenis, id_ukuran, id_customer, tanggal_dibuat, tanggal_diubah;
     private int id;
 
     private Menu action;
@@ -62,6 +64,8 @@ public class Detail_DataHewan extends AppCompatActivity {
         pIdJenis = findViewById(R.id.JenisHewanJoinHewan);
         pIdUkuran = findViewById(R.id.UkuranHewanJoinHewan);
         pId_Customer = findViewById(R.id.PemilikHewanJoinHewan);
+        pTglDibuat = findViewById(R.id.tanggal_tambah_hewan_log);
+        pTglDiubah = findViewById(R.id.tanggal_ubah_hewan_log);
 
         /*
         pTglLahirCustomer = (EditText) findViewById(R.id.TglLahirCustomer); //date
@@ -90,6 +94,8 @@ public class Detail_DataHewan extends AppCompatActivity {
         id_jenis = intent.getStringExtra("id_jenis");
         id_ukuran = intent.getStringExtra("id_ukuran");
         id_customer = intent.getStringExtra("id_customer");
+        tanggal_dibuat = intent.getStringExtra("tanggal_tambah_hewan_log");
+        tanggal_diubah = intent.getStringExtra("tanggal_ubah_hewan_log");
 
         setDataFromIntentExtra();
     }
@@ -104,6 +110,8 @@ public class Detail_DataHewan extends AppCompatActivity {
             pIdJenis.setText(id_jenis);
             pIdUkuran.setText(id_ukuran);
             pId_Customer.setText(id_customer);
+            pTglDibuat.setText(tanggal_dibuat);
+            pTglDiubah.setText(tanggal_diubah);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -113,6 +121,8 @@ public class Detail_DataHewan extends AppCompatActivity {
 
         }else {
             getSupportActionBar().setTitle("Tambah Hewan");
+            pTglDibuat.setVisibility(View.GONE);
+            pTglDiubah.setVisibility(View.GONE);
         }
     }
 
@@ -325,12 +335,14 @@ public class Detail_DataHewan extends AppCompatActivity {
         String id_jenis = pIdJenis.getText().toString().trim();
         String id_ukuran = pIdUkuran.getText().toString().trim();
         String id_customer = pId_Customer.getText().toString().trim();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String tgl_ubah_hewan_log = simpleDateFormat.format(new Date());
 
         apiInterface = API_client.getApiClient().create(DataHewan_Interface.class);
 
         Call<Hewan_Model> call =
                 apiInterface.editHewan(key, String.valueOf(id), nama_hewan, tgl_lahir_hewan, id_jenis,
-                        id_ukuran, id_customer);
+                        id_ukuran, id_customer, tgl_ubah_hewan_log);
 
 
         call.enqueue(new Callback<Hewan_Model>() {
@@ -394,8 +406,6 @@ public class Detail_DataHewan extends AppCompatActivity {
                 Toast.makeText(Detail_DataHewan.this, "Cek "+t.getMessage().toString(), Toast.LENGTH_LONG).show();
             }
         });
-
-
     }
 
     private void editMode() {
@@ -404,6 +414,8 @@ public class Detail_DataHewan extends AppCompatActivity {
         pIdJenis.setFocusableInTouchMode(true);
         pIdUkuran.setFocusableInTouchMode(true);     //enable
         pId_Customer.setFocusableInTouchMode(true);
+        pTglDibuat.setFocusableInTouchMode(false);
+        pTglDiubah.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
@@ -412,5 +424,7 @@ public class Detail_DataHewan extends AppCompatActivity {
         pIdJenis.setFocusableInTouchMode(false);
         pIdUkuran.setFocusableInTouchMode(false);
         pId_Customer.setFocusableInTouchMode(false);
+        pTglDibuat.setFocusableInTouchMode(false);
+        pTglDiubah.setFocusableInTouchMode(false);
     }
 }

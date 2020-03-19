@@ -11,6 +11,10 @@ public class Ukuran_Model {
     private String value;
     @SerializedName("message")
     private String message;
+    @SerializedName("tanggal_tambah_ukuran_log")
+    private String tanggal_tambah_ukuran_log;
+    @SerializedName("tanggal_ubah_ukuran_log")
+    private String tanggal_ubah_ukuran_log;
 
     public int getId_ukuran() {
         return id_ukuran;
@@ -42,5 +46,22 @@ public class Ukuran_Model {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    // LOG //
+    public String getTanggalTambah() {
+        return tanggal_tambah_ukuran_log;
+    }
+
+    public void setTanggalTambah(String tanggal_tambah_ukuran_log) {
+        this.tanggal_tambah_ukuran_log = tanggal_tambah_ukuran_log;
+    }
+
+    public String getTanggalUbah() {
+        return tanggal_ubah_ukuran_log;
+    }
+
+    public void setTanggalUbah(String tanggal_ubah_ukuran_log) {
+        this.tanggal_ubah_ukuran_log = tanggal_ubah_ukuran_log;
     }
 }

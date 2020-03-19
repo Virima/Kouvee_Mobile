@@ -60,6 +60,8 @@ public class Activity_UkuranHewan extends AppCompatActivity {
                 Intent intent = new Intent(Activity_UkuranHewan.this, Detail_UkuranHewan.class);
                 intent.putExtra("id_ukuran", ukuranList.get(position).getId_ukuran());
                 intent.putExtra("nama_ukuran", ukuranList.get(position).getNama_ukuran());
+                intent.putExtra("tanggal_tambah_ukuran_log", ukuranList.get(position).getTanggalTambah());
+                intent.putExtra("tanggal_ubah_ukuran_log", ukuranList.get(position).getTanggalUbah());
 
                 startActivity(intent);
             }

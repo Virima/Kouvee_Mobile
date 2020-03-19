@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,14 +29,17 @@ import com.example.kouvee_mobile.Controller.Ukuran_Interface;
 import com.example.kouvee_mobile.Model.Ukuran_Model;
 import com.example.kouvee_mobile.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Detail_UkuranHewan extends AppCompatActivity {
-    private EditText pNamaUkuran;
+    private EditText pNamaUkuran, pTglDibuat, pTglDiubah;;
     private TextView pIdUkuran;
-    private String id_ukuran, nama_ukuran;
+    private String id_ukuran, nama_ukuran, tanggal_dibuat, tanggal_diubah;
     private int id;
 
     private Menu action;
@@ -56,11 +60,15 @@ public class Detail_UkuranHewan extends AppCompatActivity {
 
         //pIdUkuran = findViewById(R.id.IdUkuranTxt);
         pNamaUkuran = findViewById(R.id.NamaUkuran);
+        pTglDibuat = findViewById(R.id.tanggal_tambah_ukuran_log);
+        pTglDiubah = findViewById(R.id.tanggal_ubah_ukuran_log);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id_ukuran", 0);
         id_ukuran = intent.getStringExtra("id_ukuran");
         nama_ukuran = intent.getStringExtra("nama_ukuran");
+        tanggal_dibuat = intent.getStringExtra("tanggal_tambah_ukuran_log");
+        tanggal_diubah = intent.getStringExtra("tanggal_ubah_ukuran_log");
 
         setDataFromIntentExtra();
     }
@@ -72,6 +80,8 @@ public class Detail_UkuranHewan extends AppCompatActivity {
 
             //pIdUkuran.setText(id_ukuran);
             pNamaUkuran.setText(nama_ukuran);
+            pTglDibuat.setText(tanggal_dibuat);
+            pTglDiubah.setText(tanggal_diubah);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -81,6 +91,8 @@ public class Detail_UkuranHewan extends AppCompatActivity {
 
         }else {
             getSupportActionBar().setTitle("Tambah Ukuran");
+            pTglDibuat.setVisibility(View.GONE);
+            pTglDiubah.setVisibility(View.GONE);
         }
     }
 
@@ -227,11 +239,13 @@ public class Detail_UkuranHewan extends AppCompatActivity {
         readMode();
 
         String nama_ukuran = pNamaUkuran.getText().toString().trim();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String tgl_ubah_ukuran_log = simpleDateFormat.format(new Date());
 
         apiInterface = API_client.getApiClient().create(Ukuran_Interface.class);
 
         Call<Ukuran_Model> call =
-                apiInterface.editUkuran(key, String.valueOf(id), nama_ukuran);
+                apiInterface.editUkuran(key, String.valueOf(id), nama_ukuran, tgl_ubah_ukuran_log);
 
 
         call.enqueue(new Callback<Ukuran_Model>() {
@@ -301,9 +315,13 @@ public class Detail_UkuranHewan extends AppCompatActivity {
 
     private void editMode() {
         pNamaUkuran.setFocusableInTouchMode(true);
+        pTglDibuat.setFocusableInTouchMode(false);
+        pTglDiubah.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
         pNamaUkuran.setFocusableInTouchMode(false);  //disable
+        pTglDibuat.setFocusableInTouchMode(false);
+        pTglDiubah.setFocusableInTouchMode(false);
     }
 }

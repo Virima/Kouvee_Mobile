@@ -36,7 +36,8 @@ public interface DataHewan_Interface {
             @Field("tgl_lahir_hewan") String tgl_lahir_hewan,
             @Field("id_jenis") String id_jenis,
             @Field("id_ukuran") String id_ukuran,
-            @Field("id_customer") String id_customer
+            @Field("id_customer") String id_customer,
+            @Field("tgl_ubah_hewan_log") String tgl_ubah_hewan_log
     );
 
     @FormUrlEncoded

@@ -19,7 +19,8 @@ public interface Ukuran_Interface {
     Call<Ukuran_Model> editUkuran(
             @Field("key") String key,
             @Field("id_ukuran") String id_ukuran,
-            @Field("nama_ukuran") String nama_ukuran
+            @Field("nama_ukuran") String nama_ukuran,
+            @Field("tgl_ubah_ukuran_log") String tgl_ubah_ukuran_log
     );
 
     @FormUrlEncoded

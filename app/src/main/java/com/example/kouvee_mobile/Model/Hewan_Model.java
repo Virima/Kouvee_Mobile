@@ -19,6 +19,10 @@ public class Hewan_Model {
     private String value;
     @SerializedName("message")
     private String message;
+    @SerializedName("tanggal_tambah_hewan_log")
+    private String tanggal_tambah_hewan_log;
+    @SerializedName("tanggal_ubah_hewan_log")
+    private String tanggal_ubah_hewan_log;
 
     public int getIdHewan() {
         return id_hewan;
@@ -83,5 +87,22 @@ public class Hewan_Model {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    // LOG //
+    public String getTanggalTambah() {
+        return tanggal_tambah_hewan_log;
+    }
+
+    public void setTanggalTambah(String tanggal_tambah_hewan_log) {
+        this.tanggal_tambah_hewan_log = tanggal_tambah_hewan_log;
+    }
+
+    public String getTanggalUbah() {
+        return tanggal_ubah_hewan_log;
+    }
+
+    public void setTanggalUbah(String tanggal_ubah_hewan_log) {
+        this.tanggal_ubah_hewan_log = tanggal_ubah_hewan_log;
     }
 }
