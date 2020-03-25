@@ -83,19 +83,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--
+
     <Button
-        android:id="@+id/btnRiwayat"
+        android:id="@+id/btnProduk"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginStart="53dp"
         android:layout_marginTop="409dp"
         android:layout_marginEnd="278dp"
-        android:background="@drawable/history"
+        android:text="PRODUK"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--
     <Button
         android:id="@+id/btnAboutUs"
         android:layout_width="80dp"
@@ -221,22 +222,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--
     <TextView
         android:id="@+id/textView20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="41dp"
-        android:layout_marginTop="500dp"
+        android:layout_marginTop="490dp"
         android:layout_marginEnd="264dp"
         android:fontFamily="sans-serif-condensed-medium"
-        android:text="Riwayat"
+        android:text="Produk"
         android:textColor="@android:color/background_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.451"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--
     <TextView
         android:id="@+id/textView11"
         android:layout_width="wrap_content"

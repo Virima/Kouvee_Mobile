@@ -3,6 +3,7 @@
     package="com.example.kouvee_mobile">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -69,6 +70,14 @@
             android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
         <activity
             android:name=".View.Detail_DataHewan"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+
+        <!-- HEWAN -->
+        <activity
+            android:name=".View.Activity_Produk"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+        <activity
+            android:name=".View.Detail_Produk"
             android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
     </application>
 
