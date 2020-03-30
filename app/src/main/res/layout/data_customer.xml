@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/row_container"
     android:layout_width="match_parent"
     android:layout_height="80dp">
@@ -56,13 +57,12 @@
         android:weightSum="2">
 
         <TextView
-            android:id="@+id/AlamatCustomer"
+            android:id="@+id/IdCustomer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Alamat Customer"
-            android:textSize="15sp" />
-
+            android:text="ID Customer"
+            android:textSize="19sp" />
 
         <TextView
             android:id="@+id/TeleponCustomer"

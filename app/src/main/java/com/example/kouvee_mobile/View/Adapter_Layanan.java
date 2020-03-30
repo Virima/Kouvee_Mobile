@@ -45,10 +45,8 @@ public class Adapter_Layanan extends RecyclerView.Adapter<Adapter_Layanan.Layana
 
         Layanan_Model sup = layanan.get(position);
 
-        //String id_string = sup.getId_layanan()
-
         holder.pNamaLayanan.setText(sup.getNama_layanan());
-        //holder.pIdLayanan.setText(sup.getId_layanan());
+        holder.pIdLayanan.setText("ID Layanan : "+ sup.getId_layanan());
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.skipMemoryCache(true);
@@ -79,7 +77,7 @@ public class Adapter_Layanan extends RecyclerView.Adapter<Adapter_Layanan.Layana
 
         public LayananViewHolder(View itemView, Adapter_Layanan.RecyclerViewLayananClickListener listener) {
             super(itemView);
-            //pIdLayanan = itemView.findViewById(R.id.IdLayanan);
+            pIdLayanan = itemView.findViewById(R.id.IdLayanan);
             pNamaLayanan = itemView.findViewById(R.id.NamaLayanan);
             mRowContainer = itemView.findViewById(R.id.row_container);
             mListener = listener;

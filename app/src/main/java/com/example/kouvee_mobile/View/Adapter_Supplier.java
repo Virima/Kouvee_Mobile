@@ -46,7 +46,7 @@ public class Adapter_Supplier extends RecyclerView.Adapter<Adapter_Supplier.Supp
         Supplier_Model sup = suppliers.get(position);
         holder.pNamaSupplier.setText(sup.getNama_supplier());
         holder.pAlamatSupplier.setText(sup.getAlamat_supplier());
-        holder.pTeleponSupplier.setText(sup.getTelepon_supplier());
+        holder.pTeleponSupplier.setText("Telp: "+sup.getTelepon_supplier());
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.skipMemoryCache(true);

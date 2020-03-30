@@ -45,10 +45,8 @@ public class Adapter_Ukuran extends RecyclerView.Adapter<Adapter_Ukuran.UkuranVi
 
         Ukuran_Model sup = ukuran.get(position);
 
-        //String id_string = sup.getId_layanan()
-
         holder.pNamaUkuran.setText(sup.getNama_ukuran());
-        //holder.pIdLayanan.setText(sup.getId_layanan());
+        holder.pIdUkuran.setText("ID Ukuran : "+sup.getId_ukuran());
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.skipMemoryCache(true);
@@ -79,7 +77,7 @@ public class Adapter_Ukuran extends RecyclerView.Adapter<Adapter_Ukuran.UkuranVi
 
         public UkuranViewHolder(View itemView, Adapter_Ukuran.RecyclerViewUkuranClickListener listener) {
             super(itemView);
-            //pIdLayanan = itemView.findViewById(R.id.IdLayanan);
+            pIdUkuran = itemView.findViewById(R.id.IdUkuran);
             pNamaUkuran = itemView.findViewById(R.id.NamaUkuran);
             mRowContainer = itemView.findViewById(R.id.row_container);
             mListener = listener;

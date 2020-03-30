@@ -7,15 +7,17 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_kouvee_round"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_kouvee_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
         <!-- MENU -->
         <activity android:name=".View.Activity_HomeAdmin" />
+        <activity android:name=".View.Activity_HomeCustomer" />
+
         <activity android:name=".View.Splash_Atma">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,61 +26,68 @@
             </intent-filter>
         </activity>
 
+        <!-- LOGIN DAN HOME CUSTOMER -->
+        <activity
+            android:name=".View.Activity_Login" />
+
+        <activity
+            android:name=".View.Activity_About_Us" />
+
         <!-- CUSTOMER -->
         <activity
             android:name=".View.Activity_LihatCustomer"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+            android:theme="@style/AppThemeKu" />
         <activity
             android:name=".View.Detail_LihatCustomer"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+            android:theme="@style/AppThemeKu" />
 
         <!-- SUPPLIER -->
         <activity
             android:name=".View.Activity_Supplier"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+            android:theme="@style/AppThemeKu" />
         <activity
             android:name=".View.Detail_Supplier"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+            android:theme="@style/AppThemeKu" />
         
         <!-- LAYANAN -->
         <activity
             android:name=".View.Activity_LihatLayanan"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+            android:theme="@style/AppThemeKu" />
         <activity
             android:name=".View.Detail_LihatLayanan"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+            android:theme="@style/AppThemeKu" />
 
         <!-- JENIS -->
         <activity
             android:name=".View.Activity_JenisHewan"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+            android:theme="@style/AppThemeKu" />
         <activity
             android:name=".View.Detail_JenisHewan"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+            android:theme="@style/AppThemeKu" />
 
         <!-- UKURAN -->
         <activity
             android:name=".View.Activity_UkuranHewan"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+            android:theme="@style/AppThemeKu" />
         <activity
             android:name=".View.Detail_UkuranHewan"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+            android:theme="@style/AppThemeKu" />
 
         <!-- HEWAN -->
         <activity
             android:name=".View.Activity_DataHewan"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+            android:theme="@style/AppThemeKu" />
         <activity
             android:name=".View.Detail_DataHewan"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+            android:theme="@style/AppThemeKu" />
 
         <!-- HEWAN -->
         <activity
             android:name=".View.Activity_Produk"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"/>
+            android:theme="@style/AppThemeKu" />
         <activity
             android:name=".View.Detail_Produk"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+            android:theme="@style/AppThemeKu" />
     </application>
 
 

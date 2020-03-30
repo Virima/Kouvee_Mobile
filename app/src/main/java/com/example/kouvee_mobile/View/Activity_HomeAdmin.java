@@ -2,8 +2,11 @@ package com.example.kouvee_mobile.View;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,6 +16,7 @@ import com.example.kouvee_mobile.R;
 public class Activity_HomeAdmin extends AppCompatActivity {
 
     Button btnDataHewan, btnCustomer, btnSupplier, btnLayanan, btnUkuran, btnProduk;
+    boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,5 +86,24 @@ public class Activity_HomeAdmin extends AppCompatActivity {
                 startActivity(produk);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Klik Back lagi untuk Keluar", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
     }
 }

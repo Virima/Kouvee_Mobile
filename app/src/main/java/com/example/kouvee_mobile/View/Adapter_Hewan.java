@@ -45,7 +45,7 @@ public class Adapter_Hewan extends RecyclerView.Adapter<Adapter_Hewan.HewanViewH
         Hewan_Model sup = hewans.get(position);
         holder.pNamaHewan.setText(sup.getNama_hewan());
         holder.pIdJenis.setText(sup.getId_jenis());
-        holder.pIdCustomer.setText(sup.getId_customer());
+        holder.pIdCustomer.setText("Pemilik: "+sup.getId_customer());
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.skipMemoryCache(true);
@@ -59,6 +59,7 @@ public class Adapter_Hewan extends RecyclerView.Adapter<Adapter_Hewan.HewanViewH
     public int getItemCount() {
         return hewans.size();
     }
+
 
     public Filter getFilter() {
         if (filter==null) {

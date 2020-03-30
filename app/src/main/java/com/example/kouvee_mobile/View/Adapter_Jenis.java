@@ -45,10 +45,8 @@ public class Adapter_Jenis extends RecyclerView.Adapter<Adapter_Jenis.JenisViewH
 
         Jenis_Model sup = jenis.get(position);
 
-        //String id_string = sup.getId_layanan()
-
-        holder.pNamaJenis.setText(sup.getNama_jenis());
-        //holder.pIdLayanan.setText(sup.getId_layanan());
+        holder.pNamaJenis.setText(sup.getNama_jenis().toString());
+        holder.pIdJenis.setText("ID Jenis : "+sup.getId_jenis()+"");
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.skipMemoryCache(true);
@@ -79,7 +77,7 @@ public class Adapter_Jenis extends RecyclerView.Adapter<Adapter_Jenis.JenisViewH
 
         public JenisViewHolder(View itemView, Adapter_Jenis.RecyclerViewJenisClickListener listener) {
             super(itemView);
-            //pIdLayanan = itemView.findViewById(R.id.IdLayanan);
+            pIdJenis = itemView.findViewById(R.id.IdJenis);
             pNamaJenis = itemView.findViewById(R.id.NamaJenis);
             mRowContainer = itemView.findViewById(R.id.row_container);
             mListener = listener;

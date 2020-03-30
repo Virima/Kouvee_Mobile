@@ -65,12 +65,13 @@ public class Activity_Login extends AppCompatActivity {
             dialog.show();
 
             Gson gson = new GsonBuilder().setLenient().create();
-            Retrofit.Builder builder = new Retrofit.Builder().baseUrl("http://192.168.19.140/api_android/");
+            Retrofit.Builder builder = new Retrofit.Builder().baseUrl("http://192.168.1.6:8181/api_android/");
             builder.addConverterFactory(GsonConverterFactory.create(gson));
             Retrofit retrofit = builder.build();
             Login_Interface interface_login = retrofit.create(Login_Interface.class);
 
-            Call<Login_Model> call = interface_login.loginRequest(inputusername.getText().toString(),inputpassword.getText().toString());
+            Call<Login_Model> call = interface_login.loginRequest(inputusername.getText().toString(),
+                    inputpassword.getText().toString());
             call.enqueue(new Callback<Login_Model>() {
                 @Override
                 public void onResponse(Call<Login_Model> call, Response<Login_Model> response) {
@@ -92,10 +93,19 @@ public class Activity_Login extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<Login_Model> call, Throwable t) {
                     Log.d("TAG", t.toString());
-                    Toast.makeText(Activity_Login.this, "Username dan Password Salah", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Activity_Login.this, "Username dan Password Salah",
+                            Toast.LENGTH_SHORT).show();
                     dialog.cancel();
                 }
             });
         }
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        inputusername.getText().clear();
+        inputpassword.getText().clear();
+    }
+
 }

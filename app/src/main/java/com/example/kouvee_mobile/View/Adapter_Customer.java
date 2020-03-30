@@ -44,8 +44,8 @@ public class Adapter_Customer extends RecyclerView.Adapter<Adapter_Customer.Cust
     public void onBindViewHolder(final Adapter_Customer.CustomerViewHolder holder, int position) {
         Customer_Model sup = customers.get(position);
         holder.pNamaCustomer.setText(sup.getNama_customer());
-        holder.pAlamatCustomer.setText(sup.getAlamat_customer());
-        holder.pTeleponCustomer.setText(sup.getTelepon_customer());
+        holder.pIdCustomer.setText("ID Customer : "+sup.getIdCustomer());
+        holder.pTeleponCustomer.setText("Telp: "+sup.getTelepon_customer());
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.skipMemoryCache(true);
@@ -71,14 +71,14 @@ public class Adapter_Customer extends RecyclerView.Adapter<Adapter_Customer.Cust
 
     public class CustomerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView pNamaCustomer,pAlamatCustomer, pTeleponCustomer;
+        private TextView pNamaCustomer, pTeleponCustomer, pIdCustomer;
         private Adapter_Customer.RecyclerViewCustomerClickListener mListener;
         private RelativeLayout mRowContainer;
 
         public CustomerViewHolder(View itemView, Adapter_Customer.RecyclerViewCustomerClickListener listener) {
             super(itemView);
             pNamaCustomer = itemView.findViewById(R.id.NamaCustomer);
-            pAlamatCustomer = itemView.findViewById(R.id.AlamatCustomer);
+            pIdCustomer = itemView.findViewById(R.id.IdCustomer);
             pTeleponCustomer = itemView.findViewById(R.id.TeleponCustomer);
             mRowContainer = itemView.findViewById(R.id.row_container);
             mListener = listener;
