@@ -14,6 +14,9 @@ public interface Produk_Interface {
     @GET("tampilproduk.php")
     Call<List<Produk_Model>> getProduk();
 
+    @GET("tampilprodukhampirhabis.php")
+    Call<List<Produk_Model>> getProdukHampirHabis();
+
     @FormUrlEncoded
     @POST("insertproduk.php")
     Call<Produk_Model> createProduk(

@@ -123,9 +123,63 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
                         android:hint="Tanggal Diubah"
-                        android:textColor="#999999"
-                        android:inputType="textPersonName|textCapWords" />
+                        android:inputType="textPersonName|textCapWords"
+                        android:textColor="#999999" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Spinner
+                        android:id="@+id/spinnerJenis"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="ID Type Sparepart"
+                        android:inputType="textPersonName|textCapWords">
+                    </Spinner>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!--
+                <LinearLayout
+                    android:id="@+id/LayoutType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tanggal_ubah_hewan_log"
+                    android:layout_alignStart="@+id/layoutName"
+                    android:layout_alignLeft="@+id/layoutName"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="top"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/spResetHewanBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/my_button_bg2"
+                        android:onClick="spButtonReset"
+                        android:text="Reset Teks"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/spSimpanHewanBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/my_button_bg2"
+                        android:onClick="spButtonSimpan"
+                        android:text="Simpan Sementara"
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+                </LinearLayout>
+                -->
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

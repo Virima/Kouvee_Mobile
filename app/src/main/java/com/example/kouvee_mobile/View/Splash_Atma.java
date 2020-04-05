@@ -1,13 +1,16 @@
 package com.example.kouvee_mobile.View;
 
+
 import android.content.Intent;
 import android.os.Handler;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kouvee_mobile.R;
+
 
 public class Splash_Atma extends AppCompatActivity {
 
@@ -24,6 +27,7 @@ public class Splash_Atma extends AppCompatActivity {
                 startActivity(login);
             }
         }, 1000);
+
     }
 }
 

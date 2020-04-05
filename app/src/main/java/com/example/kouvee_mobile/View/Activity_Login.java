@@ -1,5 +1,6 @@
 package com.example.kouvee_mobile.View;
 
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,12 +11,19 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import com.example.kouvee_mobile.Controller.API_client;
 import com.example.kouvee_mobile.Controller.Login_Interface;
+import com.example.kouvee_mobile.Controller.Produk_Interface;
 import com.example.kouvee_mobile.Model.Login_Model;
+import com.example.kouvee_mobile.Model.Produk_Model;
 import com.example.kouvee_mobile.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;

@@ -1,14 +1,18 @@
 package com.example.kouvee_mobile.View;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -16,8 +20,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -27,12 +34,20 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.kouvee_mobile.Controller.API_client;
 import com.example.kouvee_mobile.Controller.DataHewan_Interface;
+import com.example.kouvee_mobile.Controller.Jenis_Interface;
+import com.example.kouvee_mobile.Controller.Ukuran_Interface;
 import com.example.kouvee_mobile.Model.Hewan_Model;
+import com.example.kouvee_mobile.Model.Jenis_Model;
+import com.example.kouvee_mobile.Model.Ukuran_Model;
 import com.example.kouvee_mobile.R;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,12 +58,26 @@ public class Detail_DataHewan extends AppCompatActivity {
     private String nama_hewan, tgl_lahir_hewan, id_jenis, id_ukuran, id_customer, tanggal_dibuat, tanggal_diubah;
     private int id;
 
+    private Spinner spinnerJenisHewan;
+    private Spinner spinnerUkuranHewan;
+    private Spinner spinnerCustomerHewan;
+    private List<String> listSpinner;
     private Menu action;
 
     private final static String TAG = "Detail_DataHewan";
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
     private DataHewan_Interface apiInterface;
+
+    SharedPreferences sp;
+    private final String name="mYShared";
+    public static final int mode = Activity.MODE_PRIVATE;
+    private String sp_nama="";
+    private String sp_tanggalLahir="";
+    private String sp_jenis="";
+    private String sp_ukuran="";
+    private String sp_customer="";
+    private Button spSimpanBtn, spResetBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +96,10 @@ public class Detail_DataHewan extends AppCompatActivity {
         pId_Customer = findViewById(R.id.PemilikHewanJoinHewan);
         pTglDibuat = findViewById(R.id.tanggal_tambah_hewan_log);
         pTglDiubah = findViewById(R.id.tanggal_ubah_hewan_log);
+        //spResetBtn = findViewById(R.id.spResetHewanBtn);
+        //spSimpanBtn = findViewById(R.id.spSimpanHewanBtn);
+        listSpinner = new ArrayList<>();
+        spinnerJenisHewan = findViewById(R.id.spinnerJenis);
 
         /*
         pTglLahirCustomer = (EditText) findViewById(R.id.TglLahirCustomer); //date
@@ -98,6 +131,7 @@ public class Detail_DataHewan extends AppCompatActivity {
         tanggal_dibuat = intent.getStringExtra("tanggal_tambah_hewan_log");
         tanggal_diubah = intent.getStringExtra("tanggal_ubah_hewan_log");
         setDataFromIntentExtra();
+        loadSpinnerJenis();
 
     }
 
@@ -113,6 +147,7 @@ public class Detail_DataHewan extends AppCompatActivity {
             pId_Customer.setText(id_customer);
             pTglDibuat.setText(tanggal_dibuat);
             pTglDiubah.setText(tanggal_diubah);
+            //spinnerJenisHewan.getSelectedItem();
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -120,8 +155,15 @@ public class Detail_DataHewan extends AppCompatActivity {
             requestOptions.placeholder(R.drawable.add);
             requestOptions.error(R.drawable.add);
 
+            //spResetBtn.setVisibility(View.GONE);
+            //spSimpanBtn.setVisibility(View.GONE);
+
         } else {
             getSupportActionBar().setTitle("Tambah Hewan");
+
+            //loadPreference();
+            //setForm();
+
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
         }
@@ -176,12 +218,13 @@ public class Detail_DataHewan extends AppCompatActivity {
             case android.R.id.home:
 
                 this.finish();
-
                 return true;
 
             case R.id.menu_edit:
                 //Edit
                 editMode();
+                //spResetBtn.setVisibility(View.VISIBLE);
+                //spSimpanBtn.setVisibility(View.VISIBLE);
 
                 pTglLahirHewan = (EditText) findViewById(R.id.TglLahirHewan); //date
                 pTglLahirHewan.setOnClickListener(new View.OnClickListener() {
@@ -221,11 +264,15 @@ public class Detail_DataHewan extends AppCompatActivity {
 
             case R.id.menu_save:
                 if (id == 0) {
+                    //loadPreference();
+                    //setForm();
+
                     if (TextUtils.isEmpty(pNamaHewan.getText().toString()) ||
                             TextUtils.isEmpty(pTglLahirHewan.getText().toString()) ||
-                            TextUtils.isEmpty(pIdJenis.getText().toString()) ||
+                            /*TextUtils.isEmpty(pIdJenis.getText().toString()) || */
                             TextUtils.isEmpty(pIdUkuran.getText().toString()) ||
-                            TextUtils.isEmpty(pId_Customer.getText().toString())) {
+                            TextUtils.isEmpty(pId_Customer.getText().toString()) ||
+                            spinnerJenisHewan.getSelectedItemPosition()==0) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
                         alertDialog.setMessage("Isilah semua field yang tersedia!");
                         alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -287,9 +334,13 @@ public class Detail_DataHewan extends AppCompatActivity {
 
         String nama_hewan = pNamaHewan.getText().toString().trim();
         String tgl_lahir_hewan = pTglLahirHewan.getText().toString().trim();
-        String id_jenis = pIdJenis.getText().toString().trim();
+        //String id_jenis = pIdJenis.getText().toString().trim();
         String id_ukuran = pIdUkuran.getText().toString().trim();
         String id_customer = pId_Customer.getText().toString().trim();
+        id_jenis = spinnerJenisHewan.getSelectedItem().toString();
+
+        compareSpinnerJenis();
+        System.out.println("PIYEE "+id_jenis);
 
         apiInterface = API_client.getApiClient().create(DataHewan_Interface.class);
 
@@ -329,11 +380,12 @@ public class Detail_DataHewan extends AppCompatActivity {
 
         String nama_hewan = pNamaHewan.getText().toString().trim();
         String tgl_lahir_hewan = pTglLahirHewan.getText().toString().trim();
-        String id_jenis = pIdJenis.getText().toString().trim();
+        //String id_jenis = pIdJenis.getText().toString().trim();
         String id_ukuran = pIdUkuran.getText().toString().trim();
         String id_customer = pId_Customer.getText().toString().trim();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String tgl_ubah_hewan_log = simpleDateFormat.format(new Date());
+        String id_jenis = spinnerJenisHewan.getSelectedItem().toString();
 
         apiInterface = API_client.getApiClient().create(DataHewan_Interface.class);
 
@@ -404,6 +456,92 @@ public class Detail_DataHewan extends AppCompatActivity {
         });
     }
 
+    public void loadSpinnerJenis()
+    {
+        Jenis_Interface apiJenis = API_client.getApiClient().create(Jenis_Interface.class);
+        Call<List<Jenis_Model>> listCall = apiJenis.getJenis();
+
+        listCall.enqueue(new Callback<List<Jenis_Model>>() {
+            @Override
+            public void onResponse(Call<List<Jenis_Model>> call, Response<List<Jenis_Model>> response) {
+                List<Jenis_Model> jenisModels = response.body();
+                for(int i=0; i < jenisModels.size(); i++ ){
+                    String name = jenisModels.get(i).getNama_jenis();
+                    listSpinner.add(name);
+                }
+                listSpinner.add(0,"- PILIH JENIS HEWAN -");
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(Detail_DataHewan.this,
+                        android.R.layout.simple_spinner_item, listSpinner);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerJenisHewan.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<List<Jenis_Model>> call, Throwable t) {
+                Toast.makeText(Detail_DataHewan.this, "Cek " + t.getMessage().toString(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void loadSpinnerUkuran()
+    {
+        Ukuran_Interface apiUkuran = API_client.getApiClient().create(Ukuran_Interface.class);
+        Call<List<Ukuran_Model>> listCall = apiUkuran.getUkuran();
+
+        listCall.enqueue(new Callback<List<Ukuran_Model>>() {
+            @Override
+            public void onResponse(Call<List<Ukuran_Model>> call, Response<List<Ukuran_Model>> response) {
+                List<Ukuran_Model> ukuranModels = response.body();
+                for(int i=0; i < ukuranModels.size(); i++ ){
+                    String name = ukuranModels.get(i).getNama_ukuran();
+                    listSpinner.add(name);
+                }
+                listSpinner.add(0,"- PILIH JENIS HEWAN -");
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(Detail_DataHewan.this,
+                        android.R.layout.simple_spinner_item, listSpinner);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerUkuranHewan.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<List<Ukuran_Model>> call, Throwable t) {
+                Toast.makeText(Detail_DataHewan.this, "Cek " + t.getMessage().toString(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void compareSpinnerJenis()
+    {
+        Jenis_Interface apiJenis = API_client.getApiClient().create(Jenis_Interface.class);
+        Call<List<Jenis_Model>> listCall = apiJenis.getJenis();
+
+        listCall.enqueue(new Callback<List<Jenis_Model>>() {
+            @Override
+            public void onResponse(Call<List<Jenis_Model>> call, Response<List<Jenis_Model>> response) {
+                List<Jenis_Model> jenisModels = response.body();
+                for(int i=0; i < jenisModels.size(); i++ ){
+                    String nama = jenisModels.get(i).getNama_jenis();
+
+                    if(id_jenis.matches(nama))
+                    {
+                       id_jenis = String.valueOf(jenisModels.get(i).getId_jenis());
+                       System.out.println("AAAAAAAAAAAAAAA mashok");
+                       System.out.println(id_jenis);
+                    }
+                    System.out.println(name);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Jenis_Model>> call, Throwable t) {
+                Toast.makeText(Detail_DataHewan.this, "Cek " + t.getMessage().toString(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     private void editMode() {
         pNamaHewan.setFocusableInTouchMode(true);
         pTglLahirHewan.setFocusableInTouchMode(false); //disable
@@ -422,6 +560,8 @@ public class Detail_DataHewan extends AppCompatActivity {
         pId_Customer.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+        //spSimpanBtn.setFocusableInTouchMode(false);
+        //spResetBtn.setFocusableInTouchMode(false);
 
         alertDisable(pNamaHewan);
         alertDisable(pTglLahirHewan);
@@ -439,5 +579,78 @@ public class Detail_DataHewan extends AppCompatActivity {
             }
         });
     }
+
+    //-  Fungsi simpan dan load teks sementara [SharedPreferences]  -//
+    /*
+    private void setForm()
+    {
+        pNamaHewan = findViewById(R.id.NamaHewan);
+        pTglLahirHewan = findViewById(R.id.TglLahirHewan);
+        pIdJenis = findViewById(R.id.JenisHewanJoinHewan);
+        pIdUkuran = findViewById(R.id.UkuranHewanJoinHewan);
+        pId_Customer = findViewById(R.id.PemilikHewanJoinHewan);
+
+        pNamaHewan.setText(sp_nama);
+        pTglLahirHewan.setText(sp_tanggalLahir);
+        pIdJenis.setText(sp_jenis);
+        pIdUkuran.setText(sp_ukuran);
+        pId_Customer.setText(sp_customer);
+    }
+
+    private void loadPreference()
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp!=null)
+        {
+            sp_nama = sp.getString("sp_nama", "");
+            sp_tanggalLahir = sp.getString("sp_tanggalLahir", "");
+            sp_jenis = sp.getString("sp_jenis", "");
+            sp_ukuran = sp.getString("sp_ukuran", "");
+            sp_customer = sp.getString("sp_customer", "");
+        }
+    }
+
+    private void savePreference()
+    {
+        pNamaHewan = findViewById(R.id.NamaHewan);
+        pTglLahirHewan = findViewById(R.id.TglLahirHewan);
+        pIdJenis = findViewById(R.id.JenisHewanJoinHewan);
+        pIdUkuran = findViewById(R.id.UkuranHewanJoinHewan);
+        pId_Customer = findViewById(R.id.PemilikHewanJoinHewan);
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("sp_nama", pNamaHewan.getText().toString());
+        editor.putString("sp_tanggalLahir", pTglLahirHewan.getText().toString());
+        editor.putString("sp_jenis", pIdJenis.getText().toString());
+        editor.putString("sp_ukuran", pIdUkuran.getText().toString());
+        editor.putString("sp_customer", pId_Customer.getText().toString());
+        editor.apply();
+
+        Toast.makeText(Detail_DataHewan.this, "Data disimpan sementara",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    public void spButtonSimpan(View v)
+    {
+        savePreference();
+    }
+
+    public void spButtonReset(View v)
+    {
+        pNamaHewan = findViewById(R.id.NamaHewan);
+        pTglLahirHewan = findViewById(R.id.TglLahirHewan);
+        pIdJenis = findViewById(R.id.JenisHewanJoinHewan);
+        pIdUkuran = findViewById(R.id.UkuranHewanJoinHewan);
+        pId_Customer = findViewById(R.id.PemilikHewanJoinHewan);
+
+        pNamaHewan.setText("");
+        pTglLahirHewan.setText("");
+        pIdJenis.setText("");
+        pIdUkuran.setText("");
+        pId_Customer.setText("");
+    }
+     */
+
 }
 

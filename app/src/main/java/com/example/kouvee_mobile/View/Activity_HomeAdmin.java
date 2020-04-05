@@ -1,16 +1,20 @@
 package com.example.kouvee_mobile.View;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.kouvee_mobile.R;
+
 
 
 public class Activity_HomeAdmin extends AppCompatActivity {
@@ -22,7 +26,6 @@ public class Activity_HomeAdmin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
 
         btnDataHewan = findViewById(R.id.btnDataHewan);
         btnDataHewan.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +99,7 @@ public class Activity_HomeAdmin extends AppCompatActivity {
         }
 
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Klik Back lagi untuk Keluar", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Klik Back sekali lagi untuk Keluar", Toast.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
 
@@ -106,4 +109,5 @@ public class Activity_HomeAdmin extends AppCompatActivity {
             }
         }, 2000);
     }
+
 }

@@ -1,8 +1,5 @@
 package com.example.kouvee_mobile.View;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -18,8 +15,6 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,7 +22,6 @@ import com.example.kouvee_mobile.Controller.API_client;
 import com.example.kouvee_mobile.Controller.Produk_Interface;
 import com.example.kouvee_mobile.Model.Produk_Model;
 import com.example.kouvee_mobile.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -35,20 +29,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Activity_Produk extends AppCompatActivity {
+public class Activity_NotifStokProduk extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
 
-    private Adapter_Produk produkadapter;
+    private Adapter_NotifStokProduk produkadapter;
     private List<Produk_Model> produkList;
-    Adapter_Produk.RecyclerViewProdukClickListener listener;
+    Adapter_NotifStokProduk.RecyclerViewProdukClickListener listener;
     Produk_Interface apiInterface;
     ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity__produk);
+        setContentView(R.layout.activity__notif_stok_produk);
 
         apiInterface = API_client.getApiClient().create(Produk_Interface.class);
 
@@ -59,10 +53,10 @@ public class Activity_Produk extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         //parsing
-        listener = new Adapter_Produk.RecyclerViewProdukClickListener(){
+        listener = new Adapter_NotifStokProduk.RecyclerViewProdukClickListener(){
             @Override
             public void onRowClick(View view, int position) {
-                Intent intent = new Intent(Activity_Produk.this, Detail_Produk.class);
+                Intent intent = new Intent(Activity_NotifStokProduk.this, Detail_Produk.class);
                 intent.putExtra("id_produk", produkList.get(position).getId_produk());
                 intent.putExtra("nama_produk", produkList.get(position).getNama_produk());
                 intent.putExtra("satuan_produk", produkList.get(position).getSatuan_produk());
@@ -75,19 +69,11 @@ public class Activity_Produk extends AppCompatActivity {
                 startActivity(intent);
             }
         };
-
-        FloatingActionButton fab = findViewById(R.id.tambah_produk);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Activity_Produk.this, Detail_Produk.class));
-            }
-        });
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.produk_main_menu, menu);
+        inflater.inflate(R.menu.notif_stok_produk_menu, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         final SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -126,22 +112,22 @@ public class Activity_Produk extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getProduk(){
-        Call<List<Produk_Model>> call = apiInterface.getProduk();
+    public void getProdukHampirHabis(){
+        Call<List<Produk_Model>> call = apiInterface.getProdukHampirHabis();
         call.enqueue(new Callback<List<Produk_Model>>() {
             @Override
             public void onResponse(Call<List<Produk_Model>> call, Response<List<Produk_Model>> response) {
                 progressBar.setVisibility(View.GONE);
                 produkList = response.body();
-                Log.i(Activity_Produk.class.getSimpleName(), response.body().toString());
-                produkadapter = new Adapter_Produk(produkList,  listener);
+                Log.i(Activity_NotifStokProduk.class.getSimpleName(), response.body().toString());
+                produkadapter = new Adapter_NotifStokProduk(produkList,  listener);
                 recyclerView.setAdapter(produkadapter);
                 produkadapter.notifyDataSetChanged();
             }
 
             @Override
             public void onFailure(Call<List<Produk_Model>> call, Throwable t) {
-                Toast.makeText(Activity_Produk.this, "Rp" + t.getMessage().toString(),
+                Toast.makeText(Activity_NotifStokProduk.this, "Rp" + t.getMessage().toString(),
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -149,46 +135,7 @@ public class Activity_Produk extends AppCompatActivity {
 
     protected void onResume() {
         super.onResume();
-        getProduk();
-
-        /*
-        if(produkadapter.getItemCount() != 0)
-        {
-            Intent intent = new Intent(this, Activity_NotifStokProduk.class);  //click destination
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "NotifProduk")
-                    .setSmallIcon(R.drawable.kouvee)
-                    .setContentTitle("Terdapat Produk yang Hampir Habis")
-                    .setContentText("Update Stok Produk sekarang!")
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    // Set the intent that will fire when the user taps the notification
-                    .setContentIntent(pendingIntent)
-                    .setAutoCancel(true);
-
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-            // notificationId is a unique int for each notification that you must define
-            notificationManager.notify(1, builder.build());
-            //createNotificationChannel();
-        }
-        */
+        getProdukHampirHabis();
     }
 
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.app_name);
-            String description = getString(R.string.app_name);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("ID", name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
 }

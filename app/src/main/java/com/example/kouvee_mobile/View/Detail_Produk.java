@@ -10,16 +10,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,16 +42,36 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.kouvee_mobile.Controller.API_client;
 import com.example.kouvee_mobile.Controller.Produk_Interface;
 import com.example.kouvee_mobile.Model.Produk_Model;
 import com.example.kouvee_mobile.R;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -72,6 +98,12 @@ public class Detail_Produk extends AppCompatActivity {
             tanggal_dibuat, tanggal_diubah;
     private int id;
 
+    /* */
+    public static final String KEY_User_Document1 = "doc1";
+
+    private String Document_img1="";
+    /* */
+
     Button CaptureImageFromCamera;
     MenuItem saveImage;
     ImageView ImageViewHolder;
@@ -81,7 +113,7 @@ public class Detail_Produk extends AppCompatActivity {
     Bitmap bitmap;
     boolean check = true;
     String ImagePathFieldOnServer = "image_path";
-    String ImageUploadPathOnSever ="http://192.168.1.6:8181/api_android/insert_produk.php";
+    String ImageUploadPathOnSever ="http://192.168.1.6:8181/api_android/insertproduk.php";
 
     private Menu action;
     private final static String TAG = "Detail_Produk";
@@ -113,19 +145,23 @@ public class Detail_Produk extends AppCompatActivity {
         pTglDibuat = findViewById(R.id.tanggal_tambah_produk_log);
         pTglDiubah = findViewById(R.id.tanggal_ubah_produk_log);
 
+
         CaptureImageFromCamera.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+
                 if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
                 {
                     requestPermissions(new String[]{Manifest.permission.CAMERA}, 7);
+                    intentCam = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intentCam, 7);
                 }
                 else
                 {
-                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, 7);
+                    intentCam = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intentCam, 7);
                 }
             }
         });
@@ -153,7 +189,8 @@ public class Detail_Produk extends AppCompatActivity {
             pStokProduk.setText(stok_produk);
             pStokMin.setText(stok_min);
             pHargaProduk.setText(harga_produk);
-            //image_path
+            Picasso.get().load(image_path).
+                    resize(1000, 1000).centerCrop().into(ImageViewHolder);
             pTglDibuat.setText(tanggal_dibuat);
             pTglDiubah.setText(tanggal_diubah);
 
@@ -167,7 +204,6 @@ public class Detail_Produk extends AppCompatActivity {
             getSupportActionBar().setTitle("Tambah Produk");
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
-
         }
     }
 
@@ -391,7 +427,8 @@ public class Detail_Produk extends AppCompatActivity {
             @Override
             public void onFailure(Call<Produk_Model> call, Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(Detail_Produk.this, "Cek " + t.getMessage().toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(Detail_Produk.this, "Cek " + t.getMessage().toString(),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -427,17 +464,21 @@ public class Detail_Produk extends AppCompatActivity {
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(Detail_Produk.this, "Klik icon Edit terlebih dahulu untuk mengubah data!",
+                Toast.makeText(Detail_Produk.this,
+                        "Klik icon Edit terlebih dahulu untuk mengubah data!",
                         Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // SEPUTAR CAMERA //
+    // SEPUTAR CAMERA
     // Start activity for result method to Set captured image on image view after click.
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onActivityResult(int requestCode, int resultCode, Intent intentCam) {
+
+        super.onActivityResult(requestCode, resultCode, intentCam);
         System.out.println("YEEEEEEEEEEETT " + requestCode);
+        Uri uri = intentCam.getData();
+
         /*
         if (requestCode == 7 && resultCode == Activity.RESULT_OK) {
             Uri uri = data.getData();
@@ -451,10 +492,12 @@ public class Detail_Produk extends AppCompatActivity {
             }
         } */
 
-        if (requestCode == 7 && resultCode == Activity.RESULT_OK)
-        {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            ImageViewHolder.setImageBitmap(photo);
+        if(resultCode != RESULT_CANCELED){
+
+            if (requestCode == 7) {
+                bitmap = (Bitmap) intentCam.getExtras().get("data");
+                ImageViewHolder.setImageBitmap(bitmap);
+            }
         }
     }
 
@@ -474,13 +517,14 @@ public class Detail_Produk extends AppCompatActivity {
 
     // Upload captured image online on server function.
     public void ImageUploadToServerFunction(){
-        ByteArrayOutputStream byteArrayOutputStreamObject;
-        byteArrayOutputStreamObject = new ByteArrayOutputStream();
+        ByteArrayOutputStream bao;
+        bao = new ByteArrayOutputStream();
 
         // Converting bitmap image to jpeg format, so by default image will upload in jpeg format.
-        //bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStreamObject);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bao);
 
-        byte[] byteArrayVar = byteArrayOutputStreamObject.toByteArray();
+        byte[] byteArrayVar = bao.toByteArray();
+
         final String ConvertImage = Base64.encodeToString(byteArrayVar, Base64.DEFAULT);
 
         class AsyncTaskUploadClass extends AsyncTask<Void,Void,String> {
@@ -500,7 +544,7 @@ public class Detail_Produk extends AppCompatActivity {
                 progressDialog.dismiss();
 
                 // Printing uploading success message coming from server on android app.
-                Toast.makeText(Detail_Produk.this,string1,Toast.LENGTH_LONG).show();
+                Toast.makeText(Detail_Produk.this,string1 + "Success~",Toast.LENGTH_LONG).show();
 
                 // Setting image as transparent after done uploading.
                 ImageViewHolder.setImageResource(android.R.color.transparent);
@@ -534,7 +578,7 @@ public class Detail_Produk extends AppCompatActivity {
                 httpURLConnectionObject = (HttpURLConnection) url.openConnection();
                 httpURLConnectionObject.setReadTimeout(19000);
                 httpURLConnectionObject.setConnectTimeout(19000);
-                httpURLConnectionObject.setRequestMethod("insert");
+                httpURLConnectionObject.setRequestMethod("POST");
                 httpURLConnectionObject.setDoInput(true);
                 httpURLConnectionObject.setDoOutput(true);
                 OutPutStream = httpURLConnectionObject.getOutputStream();
@@ -548,7 +592,8 @@ public class Detail_Produk extends AppCompatActivity {
 
                 RC = httpURLConnectionObject.getResponseCode();
                 if (RC == HttpsURLConnection.HTTP_OK) {
-                    bufferedReaderObject = new BufferedReader(new InputStreamReader(httpURLConnectionObject.getInputStream()));
+                    bufferedReaderObject = new BufferedReader
+                            (new InputStreamReader(httpURLConnectionObject.getInputStream()));
                     stringBuilder = new StringBuilder();
 
                     String RC2;
@@ -585,32 +630,15 @@ public class Detail_Produk extends AppCompatActivity {
             case RequestPermissionCode:
                 if (PResult.length > 0 && PResult[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(Detail_Produk.this,
-                            "Permission Granted, Now your application can access CAMERA.", Toast.LENGTH_LONG).show();
+                            "Permission Granted, Now your application can access CAMERA.",
+                            Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(Detail_Produk.this,
-                            "Permission Canceled, Now your application cannot access CAMERA.", Toast.LENGTH_LONG).show();
+                            "Permission Canceled, Now your application cannot access CAMERA.",
+                            Toast.LENGTH_LONG).show();
                 }
                 break;
         }
     }
 
-    /*
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == RequestPermissionCode)
-        {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
-                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, 7);
-            }
-            else
-            {
-                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
-            }
-        }
-    } */
 }
