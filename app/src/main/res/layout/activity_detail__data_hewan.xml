@@ -75,6 +75,20 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <Spinner
+                        android:id="@+id/spinnerJenis"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Pilih Jenis Hewan"
+                        android:inputType="textPersonName|textCapWords">
+                    </Spinner>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <EditText
@@ -88,6 +102,20 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <Spinner
+                        android:id="@+id/spinnerUkuran"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Pilih Ukuran Hewan"
+                        android:inputType="textPersonName|textCapWords">
+                    </Spinner>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <EditText
@@ -97,6 +125,20 @@
                         android:fontFamily="sans-serif-light"
                         android:hint="Pemilik Hewan"
                         android:inputType="textPersonName|textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <Spinner
+                        android:id="@+id/spinnerCustomer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:hint="Pilih Pemilik Hewan"
+                        android:inputType="textPersonName|textCapWords">
+                    </Spinner>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -125,20 +167,6 @@
                         android:hint="Tanggal Diubah"
                         android:inputType="textPersonName|textCapWords"
                         android:textColor="#999999" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <Spinner
-                        android:id="@+id/spinnerJenis"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-light"
-                        android:hint="ID Type Sparepart"
-                        android:inputType="textPersonName|textCapWords">
-                    </Spinner>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!--
