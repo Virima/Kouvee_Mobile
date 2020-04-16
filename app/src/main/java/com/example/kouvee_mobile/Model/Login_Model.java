@@ -7,6 +7,10 @@ public class Login_Model {
     private String username;
     @SerializedName("password")
     private String password;
+    @SerializedName("value")
+    private String value;
+    @SerializedName("message")
+    private String message;
 
     public String getUsername() {
         return username;
@@ -22,5 +26,21 @@ public class Login_Model {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

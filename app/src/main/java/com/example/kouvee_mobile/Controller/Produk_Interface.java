@@ -50,4 +50,12 @@ public interface Produk_Interface {
             @Field("key") String key,
             @Field("id_produk") String id_produk
     );
+
+    @FormUrlEncoded
+    @POST("updatestokproduk.php")
+    Call<Produk_Model> updateStokProduk(
+            @Field("id_produk") String id_produk,
+            @Field("stok_produk") String stok_produk,
+            @Field("tanggal_ubah_produk_log") String tanggal_ubah_produk_log
+    );
 }

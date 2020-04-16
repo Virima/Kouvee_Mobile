@@ -83,6 +83,8 @@ public class Activity_Produk extends AppCompatActivity {
                 startActivity(new Intent(Activity_Produk.this, Detail_Produk.class));
             }
         });
+
+        buildNotification();
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -147,33 +149,56 @@ public class Activity_Produk extends AppCompatActivity {
         });
     }
 
+    public void buildNotification(){
+        Call<List<Produk_Model>> call = apiInterface.getProduk();
+        call.enqueue(new Callback<List<Produk_Model>>() {
+            @Override
+            public void onResponse(Call<List<Produk_Model>> call, Response<List<Produk_Model>> response) {
+                produkList = response.body();
+
+                for(int i=0 ; i<produkList.size() ; i++)
+                {
+                    if(Integer.valueOf(produkList.get(i).getStok_produk()) <
+                            Integer.valueOf(produkList.get(i).getStok_min_produk()))
+                    {
+                        createNotification();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Produk_Model>> call, Throwable t) {
+                Toast.makeText(Activity_Produk.this, "Rp" + t.getMessage().toString(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void createNotification()
+    {
+        Intent intent = new Intent(this, Activity_NotifStokProduk.class);  //click destination
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "NotifProduk")
+                .setSmallIcon(R.drawable.kouvee)
+                .setContentTitle("Terdapat Produk yang Hampir Habis")
+                .setContentText("Update Stok Produk sekarang!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                // Set the intent that will fire when the user taps the notification
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(1, builder.build());
+        //createNotificationChannel();
+    }
+
     protected void onResume() {
         super.onResume();
         getProduk();
-
-        /*
-        if(produkadapter.getItemCount() != 0)
-        {
-            Intent intent = new Intent(this, Activity_NotifStokProduk.class);  //click destination
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "NotifProduk")
-                    .setSmallIcon(R.drawable.kouvee)
-                    .setContentTitle("Terdapat Produk yang Hampir Habis")
-                    .setContentText("Update Stok Produk sekarang!")
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    // Set the intent that will fire when the user taps the notification
-                    .setContentIntent(pendingIntent)
-                    .setAutoCancel(true);
-
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-            // notificationId is a unique int for each notification that you must define
-            notificationManager.notify(1, builder.build());
-            //createNotificationChannel();
-        }
-        */
     }
 
     private void createNotificationChannel() {

@@ -3,4 +3,6 @@
     <color name="colorPrimary">#fff</color>
     <color name="colorPrimaryDark">#28732B</color> <!-- bar notif -->
     <color name="colorAccent">#7CB342</color>
+
+    <color name="merahMerona">#FF0000</color>
 </resources>

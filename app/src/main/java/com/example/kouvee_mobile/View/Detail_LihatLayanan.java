@@ -39,9 +39,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Detail_LihatLayanan extends AppCompatActivity {
-    private EditText pNamaLayanan, pTglDibuat, pTglDiubah;
+    private EditText pNamaLayanan, pHargaLayanan, pTglDibuat, pTglDiubah;
     private TextView pIdLayanan;
-    private String id_layanan, nama_layanan, tanggal_dibuat, tanggal_diubah;
+    private String id_layanan, nama_layanan, harga_layanan, tanggal_dibuat, tanggal_diubah;
     private int id;
 
     private Menu action;
@@ -62,6 +62,7 @@ public class Detail_LihatLayanan extends AppCompatActivity {
 
         //pIdLayanan = findViewById(R.id.IdLayananTxt);
         pNamaLayanan = findViewById(R.id.NamaLayanan);
+        pHargaLayanan = findViewById(R.id.HargaLayanan);
         pTglDibuat = findViewById(R.id.tanggal_tambah_layanan_log);
         pTglDiubah = findViewById(R.id.tanggal_ubah_layanan_log);
 
@@ -69,6 +70,7 @@ public class Detail_LihatLayanan extends AppCompatActivity {
         id = intent.getIntExtra("id_layanan", 0);
         id_layanan = intent.getStringExtra("id_layanan");
         nama_layanan = intent.getStringExtra("nama_layanan");
+        harga_layanan = intent.getStringExtra("harga_layanan");
         tanggal_dibuat = intent.getStringExtra("tanggal_tambah_layanan_log");
         tanggal_diubah = intent.getStringExtra("tanggal_ubah_layanan_log");
 
@@ -82,6 +84,7 @@ public class Detail_LihatLayanan extends AppCompatActivity {
 
             //pIdLayanan.setText(id_layanan);
             pNamaLayanan.setText(nama_layanan);
+            pHargaLayanan.setText(harga_layanan);
             pTglDibuat.setText(tanggal_dibuat);
             pTglDiubah.setText(tanggal_diubah);
 
@@ -138,8 +141,9 @@ public class Detail_LihatLayanan extends AppCompatActivity {
 
             case R.id.menu_save:
 
-                if (id == 0) {
-                    if (TextUtils.isEmpty(pNamaLayanan.getText().toString()) )   {
+                if (id == 0 || id==1) {
+                    if (TextUtils.isEmpty(pNamaLayanan.getText().toString()) ||
+                        TextUtils.isEmpty(pHargaLayanan.getText().toString()) )   {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
                         alertDialog.setMessage("Isilah semua field yang tersedia!");
                         alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -202,11 +206,12 @@ public class Detail_LihatLayanan extends AppCompatActivity {
         readMode();
 
         String nama_layanan = pNamaLayanan.getText().toString().trim();
+        String harga_layanan = pHargaLayanan.getText().toString().trim();
 
         apiInterface = API_client.getApiClient().create(Layanan_Interface.class);
 
         Call<Layanan_Model> call =
-                apiInterface.createLayanan(key, nama_layanan);
+                apiInterface.createLayanan(key, nama_layanan, harga_layanan);
 
         call.enqueue(new Callback<Layanan_Model>() {
             public void onResponse(Call<Layanan_Model> call, Response<Layanan_Model> response){
@@ -241,14 +246,15 @@ public class Detail_LihatLayanan extends AppCompatActivity {
         readMode();
 
         String nama_layanan = pNamaLayanan.getText().toString().trim();
+        String harga_layanan = pHargaLayanan.getText().toString().trim();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String tgl_ubah_layanan_log = simpleDateFormat.format(new Date());
 
         apiInterface = API_client.getApiClient().create(Layanan_Interface.class);
 
         Call<Layanan_Model> call =
-                apiInterface.editLayanan(key, String.valueOf(id), nama_layanan, tgl_ubah_layanan_log);
-
+                apiInterface.editLayanan(key, String.valueOf(id), nama_layanan, harga_layanan,
+                        tgl_ubah_layanan_log);
 
         call.enqueue(new Callback<Layanan_Model>() {
             public void onResponse(Call<Layanan_Model> call, Response<Layanan_Model> response){
@@ -271,7 +277,8 @@ public class Detail_LihatLayanan extends AppCompatActivity {
 
             public void onFailure(Call<Layanan_Model> call, Throwable t) {
                 progressDialog.dismiss();
-                Toast.makeText(Detail_LihatLayanan.this, t.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Detail_LihatLayanan.this, t.getMessage().toString(),
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -317,16 +324,19 @@ public class Detail_LihatLayanan extends AppCompatActivity {
 
     private void editMode() {
         pNamaLayanan.setFocusableInTouchMode(true);
+        pHargaLayanan.setFocusableInTouchMode(true);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
         pNamaLayanan.setFocusableInTouchMode(false);  //disable
+        pHargaLayanan.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
 
         alertDisable(pNamaLayanan);
+        alertDisable(pHargaLayanan);
     }
 
     private void alertDisable(EditText editText) {

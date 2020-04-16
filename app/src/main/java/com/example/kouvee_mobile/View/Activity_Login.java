@@ -1,6 +1,5 @@
 package com.example.kouvee_mobile.View;
 
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,14 +10,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
-import com.example.kouvee_mobile.Controller.API_client;
 import com.example.kouvee_mobile.Controller.Login_Interface;
-import com.example.kouvee_mobile.Controller.Produk_Interface;
 import com.example.kouvee_mobile.Model.Login_Model;
-import com.example.kouvee_mobile.Model.Produk_Model;
+import com.example.kouvee_mobile.Model.Pegawai_Model;
 import com.example.kouvee_mobile.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,6 +30,9 @@ public class Activity_Login extends AppCompatActivity {
     Button btn_login, btn_customer;
     private EditText inputusername, inputpassword;
     private ProgressDialog dialog;
+
+    private String role;
+    private List<Pegawai_Model> pegawaiList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,21 +62,23 @@ public class Activity_Login extends AppCompatActivity {
 
     public void requestLogin() {
         if (inputusername.getText().toString().isEmpty() || inputpassword.getText().toString().isEmpty()) {
-            Toast.makeText(Activity_Login.this, "Username atau Password Kosong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Activity_Login.this, "Username atau Password Kosong",
+                    Toast.LENGTH_SHORT).show();
         } else {
 
             dialog = new ProgressDialog(Activity_Login.this);
             dialog.setTitle("Please Wait");
-            dialog.setMessage("Loading..");
+            dialog.setMessage("Loading...");
             dialog.show();
 
             Gson gson = new GsonBuilder().setLenient().create();
-            Retrofit.Builder builder = new Retrofit.Builder().baseUrl("http://192.168.1.6:8181/api_android/");
+            Retrofit.Builder builder = new Retrofit.Builder().baseUrl("https://192.168.1.4:8181/api_android/");
             builder.addConverterFactory(GsonConverterFactory.create(gson));
             Retrofit retrofit = builder.build();
             Login_Interface interface_login = retrofit.create(Login_Interface.class);
 
-            Call<Login_Model> call = interface_login.loginRequest(inputusername.getText().toString(),
+            Call<Login_Model> call = interface_login.loginRequest(
+                    inputusername.getText().toString(),
                     inputpassword.getText().toString());
             call.enqueue(new Callback<Login_Model>() {
                 @Override
@@ -86,9 +86,28 @@ public class Activity_Login extends AppCompatActivity {
                     if (response.isSuccessful()) {
 
                         dialog.dismiss();
-                        Toast.makeText(Activity_Login.this, "Login Berhasil!", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(Activity_Login.this, Activity_HomeAdmin.class);
-                        startActivity(i);
+                        Toast.makeText(Activity_Login.this, "Login Berhasil!",
+                                Toast.LENGTH_SHORT).show();
+
+                        //dikasih if disini buat identifikasi login pegawai atau admin
+                        Log.i(Activity_Login.class.getSimpleName(), response.toString());
+                        String value = response.body().getValue();
+                        String message = response.body().getMessage();
+                        System.out.println("AAAAAAAAAWOI " + message);
+                        if (message.equals("Owner"))
+                        {
+                            Intent i = new Intent(Activity_Login.this, Activity_HomeAdmin.class);
+                            startActivity(i);
+                        } else if (message.equals("Customer Service"))
+                        {
+                            Intent i = new Intent(Activity_Login.this, Activity_HomeCS.class);
+                            startActivity(i);
+                        } else if (message.equals("Kasir"))
+                        {
+                            Intent i = new Intent(Activity_Login.this, Activity_HomeKasir.class);
+                            startActivity(i);
+                        }
+
                     } else {
                         dialog.dismiss();
                         Toast.makeText(Activity_Login.this, "Username atau Password Salah",
@@ -109,11 +128,33 @@ public class Activity_Login extends AppCompatActivity {
         }
     }
 
+    /*
+    public void identifikasiRole()
+    {
+        Pegawai_Interface apiPegawai = API_client.getApiClient().create(Pegawai_Interface.class);
+        Call<List<Pegawai_Model>> listCall = apiPegawai.getPegawai();
+
+        listCall.enqueue(new Callback<List<Pegawai_Model>>() {
+            @Override
+            public void onResponse(Call<List<Pegawai_Model>> call, Response<List<Pegawai_Model>> response) {
+                List<Pegawai_Model> pegawaiModels = response.body();
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Pegawai_Model>> call, Throwable t) {
+                Toast.makeText(Activity_Login.this, "Cek " + t.getMessage().toString(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
         inputusername.getText().clear();
         inputpassword.getText().clear();
     }
+    */
 
 }

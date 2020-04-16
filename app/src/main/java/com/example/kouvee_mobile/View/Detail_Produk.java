@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Context;
@@ -19,6 +21,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -41,6 +44,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -313,8 +318,8 @@ public class Detail_Produk extends AppCompatActivity {
 
         String nama_produk = pNamaProduk.getText().toString().trim();
         String satuan_produk = pSatuanProduk.getText().toString().trim();
-        String stok_produk = pStokProduk.getText().toString().trim();
-        String stok_min = pStokMin.getText().toString().trim();
+        final String stok_produk = pStokProduk.getText().toString().trim();
+        final String stok_min = pStokMin.getText().toString().trim();
         String harga_produk = pHargaProduk.getText().toString().trim();
 
         apiInterface = API_client.getApiClient().create(Produk_Interface.class);
@@ -356,8 +361,8 @@ public class Detail_Produk extends AppCompatActivity {
 
         String nama_produk = pNamaProduk.getText().toString().trim();
         String satuan_produk = pSatuanProduk.getText().toString().trim();
-        String stok_produk = pStokProduk.getText().toString().trim();
-        String stok_min = pStokMin.getText().toString().trim();
+        final String stok_produk = pStokProduk.getText().toString().trim();
+        final String stok_min = pStokMin.getText().toString().trim();
         String harga_produk = pHargaProduk.getText().toString().trim();
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -470,6 +475,7 @@ public class Detail_Produk extends AppCompatActivity {
             }
         });
     }
+
 
     // SEPUTAR CAMERA
     // Start activity for result method to Set captured image on image view after click.

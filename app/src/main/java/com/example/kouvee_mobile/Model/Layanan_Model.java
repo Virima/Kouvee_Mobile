@@ -7,6 +7,8 @@ public class Layanan_Model {
     private int id_layanan;
     @SerializedName("nama_layanan")
     private String nama_layanan;
+    @SerializedName("harga_layanan")
+    private String harga_layanan;
     @SerializedName("value")
     private String value;
     @SerializedName("message")
@@ -30,6 +32,14 @@ public class Layanan_Model {
 
     public void setNama_layanan(String nama_layanan) {
         this.nama_layanan = nama_layanan;
+    }
+
+    public String getHarga_layanan() {
+        return harga_layanan;
+    }
+
+    public void setHarga_layanan(String harga_layanan) {
+        this.harga_layanan = harga_layanan;
     }
 
     public String getValue() {

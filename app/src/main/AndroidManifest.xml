@@ -17,10 +17,13 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 
-        <!-- MENU -->
-        <activity android:name=".View.Activity_HomeAdmin" />
-        <activity android:name=".View.Activity_HomeCustomer" />
+        <!-- NOTIFIKASI -->
+        <activity
+            android:name=".View.Activity_NotifStokProduk"
+            android:theme="@style/AppThemeKu"
+            android:label="List Produk Hampir Habis" />
 
+        <!-- LOGIN DAN HOME MENU -->
         <activity android:name=".View.Splash_Atma">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,18 +32,21 @@
             </intent-filter>
         </activity>
 
-        <!-- NOTIFIKASI -->
-        <activity
-            android:name=".View.Activity_NotifStokProduk"
-            android:theme="@style/AppThemeKu"
-            android:label="List Produk Hampir Habis" />
+        <activity android:name=".View.Activity_HomeAdmin" />
+        <activity android:name=".View.Activity_HomeCS" />
+        <activity android:name=".View.Activity_HomeKasir" />
+        <activity android:name=".View.Activity_HomeCustomer" />
 
-        <!-- LOGIN DAN HOME CUSTOMER -->
-        <activity
-            android:name=".View.Activity_Login" />
+        <activity android:name=".View.Activity_Login" />
+        <activity android:name=".View.Activity_About_Us" />
 
-        <activity
-            android:name=".View.Activity_About_Us" />
+        <!-- MENU PEGAWAI -->
+        <activity android:name=".View.Activity_PenjualanProduk"
+            android:theme="@style/AppThemeKu"/>
+
+        <!-- PENGADAAN -->
+        <activity android:name=".View.Activity_Pengadaan"
+            android:theme="@style/AppThemeKu" />
 
         <!-- CUSTOMER -->
         <activity
@@ -90,7 +96,7 @@
             android:name=".View.Detail_DataHewan"
             android:theme="@style/AppThemeKu" />
 
-        <!-- HEWAN -->
+        <!-- PRODUK -->
         <activity
             android:name=".View.Activity_Produk"
             android:theme="@style/AppThemeKu" />

@@ -60,6 +60,7 @@ public class Activity_LihatLayanan extends AppCompatActivity {
                 Intent intent = new Intent(Activity_LihatLayanan.this, Detail_LihatLayanan.class);
                 intent.putExtra("id_layanan", layananList.get(position).getId_layanan());
                 intent.putExtra("nama_layanan", layananList.get(position).getNama_layanan());
+                intent.putExtra("harga_layanan", layananList.get(position).getHarga_layanan());
                 intent.putExtra("tanggal_tambah_layanan_log", layananList.get(position).getTanggalTambah());
                 intent.putExtra("tanggal_ubah_layanan_log", layananList.get(position).getTanggalUbah());
 
@@ -132,7 +133,8 @@ public class Activity_LihatLayanan extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Layanan_Model>> call, Throwable t) {
-                Toast.makeText(Activity_LihatLayanan.this, "Rp" + t.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(Activity_LihatLayanan.this, "Rp" +
+                        t.getMessage().toString(),Toast.LENGTH_SHORT).show();
             }
         });
     }

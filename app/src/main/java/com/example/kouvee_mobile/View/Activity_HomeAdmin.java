@@ -15,8 +15,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.kouvee_mobile.R;
 
-
-
 public class Activity_HomeAdmin extends AppCompatActivity {
 
     Button btnDataHewan, btnCustomer, btnSupplier, btnLayanan, btnUkuran, btnProduk;

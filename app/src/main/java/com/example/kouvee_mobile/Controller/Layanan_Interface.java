@@ -18,7 +18,8 @@ public interface Layanan_Interface {
     @POST("insertlayanan.php")
     Call<Layanan_Model> createLayanan(
             @Field("key") String key,
-            @Field("nama_layanan") String nama_layanan
+            @Field("nama_layanan") String nama_layanan,
+            @Field("harga_layanan") String harga_layanan
     );
 
     @FormUrlEncoded
@@ -27,6 +28,7 @@ public interface Layanan_Interface {
             @Field("key") String key,
             @Field("id_layanan") String id_layanan,
             @Field("nama_layanan") String nama_layanan,
+            @Field("harga_layanan") String harga_layanan,
             @Field("tgl_ubah_layanan_log") String tgl_ubah_layanan_log
     );
 

@@ -1,20 +1,32 @@
 package com.example.kouvee_mobile.View;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +35,8 @@ import com.example.kouvee_mobile.Controller.Produk_Interface;
 import com.example.kouvee_mobile.Model.Produk_Model;
 import com.example.kouvee_mobile.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -56,17 +70,7 @@ public class Activity_NotifStokProduk extends AppCompatActivity {
         listener = new Adapter_NotifStokProduk.RecyclerViewProdukClickListener(){
             @Override
             public void onRowClick(View view, int position) {
-                Intent intent = new Intent(Activity_NotifStokProduk.this, Detail_Produk.class);
-                intent.putExtra("id_produk", produkList.get(position).getId_produk());
-                intent.putExtra("nama_produk", produkList.get(position).getNama_produk());
-                intent.putExtra("satuan_produk", produkList.get(position).getSatuan_produk());
-                intent.putExtra("stok_produk", produkList.get(position).getStok_produk());
-                intent.putExtra("stok_min_produk", produkList.get(position).getStok_min_produk());
-                intent.putExtra("harga_produk", produkList.get(position).getHarga_produk());
-                intent.putExtra("image_path", produkList.get(position).getImage_path());
-                intent.putExtra("tanggal_tambah_produk_log", produkList.get(position).getTanggalTambah());
-                intent.putExtra("tanggal_ubah_produk_log", produkList.get(position).getTanggalUbah());
-                startActivity(intent);
+                alertStok(position);
             }
         };
     }
@@ -131,6 +135,87 @@ public class Activity_NotifStokProduk extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void alertStok(int position)
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        String namaprdk = produkList.get(position).getNama_produk();
+        namaprdk.toUpperCase();
+
+        alert.setTitle(produkList.get(position).getNama_produk());
+        alert.setMessage("Tambah Stok untuk Produk "+ namaprdk);
+
+        // Set an EditText view to get user input
+        final EditText inputTambahStok = new EditText(this);
+        inputTambahStok.setHint("Jumlah Tambah Stok");
+        inputTambahStok.setInputType(InputType.TYPE_CLASS_NUMBER);
+        alert.setView(inputTambahStok);
+
+        final int id = produkList.get(position).getId_produk();  //di final biar bs kepake di onclick
+        final String stokSebelum = produkList.get(position).getStok_produk();
+
+        alert.setPositiveButton("Oke", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                String stokTambah= inputTambahStok.getText().toString().trim();
+                updateStok(id, stokSebelum, stokTambah);
+            }
+        });
+
+        alert.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+    }
+
+    private void updateStok(final int id, String stokSebelum, String stokTambah) {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Updating...");
+        progressDialog.show();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String tgl_ubah_produk_log = simpleDateFormat.format(new Date());
+        String stokFinal = String.valueOf(Integer.valueOf(stokSebelum) + Integer.valueOf(stokTambah));
+
+        apiInterface = API_client.getApiClient().create(Produk_Interface.class);
+
+        Call<Produk_Model> call =
+                apiInterface.updateStokProduk(String.valueOf(id),
+                        stokFinal,
+                        tgl_ubah_produk_log);
+
+
+        call.enqueue(new Callback<Produk_Model>() {
+            public void onResponse(Call<Produk_Model> call, Response<Produk_Model> response) {
+                progressDialog.dismiss();
+
+                Log.i(Activity_NotifStokProduk.class.getSimpleName(), response.toString());
+
+                String value = response.body().getValue();
+                String message = response.body().getMessage();
+
+                if (value.equals("1")) {
+                    Toast.makeText(Activity_NotifStokProduk.this, message, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(Activity_NotifStokProduk.this, message, Toast.LENGTH_SHORT).show();
+                }
+
+                Intent back = new Intent(Activity_NotifStokProduk.this, Activity_Produk.class);
+                startActivity(back);
+            }
+
+            public void onFailure(Call<Produk_Model> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(Activity_NotifStokProduk.this, t.getMessage().toString(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     protected void onResume() {

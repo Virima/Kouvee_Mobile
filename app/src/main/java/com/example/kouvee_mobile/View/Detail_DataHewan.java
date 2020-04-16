@@ -49,8 +49,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,9 +62,9 @@ public class Detail_DataHewan extends AppCompatActivity {
     private Spinner spinnerJenisHewan;
     private Spinner spinnerUkuranHewan;
     private Spinner spinnerCustomerHewan;
-    private List<String> listSpinnerJenis, tempIdJenis;
-    private List<String> listSpinnerUkuran, tempIdUkuran;
-    private List<String> listSpinnerCustomer, tempIdCustomer;
+    private List<String> listSpinnerJenis;
+    private List<String> listSpinnerUkuran;
+    private List<String> listSpinnerCustomer;
     private Menu action;
 
     private final static String TAG = "Detail_DataHewan";
@@ -106,9 +104,7 @@ public class Detail_DataHewan extends AppCompatActivity {
         listSpinnerJenis = new ArrayList<>();
         listSpinnerUkuran = new ArrayList<>();
         listSpinnerCustomer = new ArrayList<>();
-        tempIdJenis = new ArrayList<>();
-        tempIdUkuran = new ArrayList<>();
-        tempIdCustomer = new ArrayList<>();
+
         spinnerJenisHewan = findViewById(R.id.spinnerJenis);
         spinnerUkuranHewan = findViewById(R.id.spinnerUkuran);
         spinnerCustomerHewan = findViewById(R.id.spinnerCustomer);
@@ -255,9 +251,13 @@ public class Detail_DataHewan extends AppCompatActivity {
                 //spResetBtn.setVisibility(View.VISIBLE);
                 //spSimpanBtn.setVisibility(View.VISIBLE);
 
+                setUpdateSpinnerJenis();
+                setUpdateSpinnerUkuran();
+                setUpdateSpinnerCustomer();
                 pIdJenis.setVisibility(View.GONE);
                 pIdUkuran.setVisibility(View.GONE);
                 pId_Customer.setVisibility(View.GONE);
+
                 spinnerJenisHewan.setVisibility(View.VISIBLE);
                 spinnerUkuranHewan.setVisibility(View.VISIBLE);
                 spinnerCustomerHewan.setVisibility(View.VISIBLE);
@@ -375,10 +375,6 @@ public class Detail_DataHewan extends AppCompatActivity {
         String id_jenis = pIdJenis.getText().toString().trim();
         String id_ukuran = pIdUkuran.getText().toString().trim();
         String id_customer = pId_Customer.getText().toString().trim();
-        //String id_jenis = spinnerJenisHewan.getSelectedItem().toString();
-
-        System.out.println("Edit text jenis cek up" + pIdJenis.getText().toString());
-        //System.out.println("NAHLOH "+ spinnerJenisHewan.getSelectedItem());
 
         apiInterface = API_client.getApiClient().create(DataHewan_Interface.class);
         Call<Hewan_Model> call =
@@ -602,7 +598,7 @@ public class Detail_DataHewan extends AppCompatActivity {
                     String temp = spinnerJenisHewan.getSelectedItem().toString();   //get selected nama jenis
 
                     String list_id = String.valueOf(jenisModels.get(i).getId_jenis());  //tampungan id jenis
-                    tempIdJenis.add(list_id);   //ngisi tampungan id jenis
+                    //tempIdJenis.add(list_id);   //ngisi tampungan id jenis
 
                     if(temp.equals(nama))
                     {
@@ -617,7 +613,6 @@ public class Detail_DataHewan extends AppCompatActivity {
                         */
 
                         pIdJenis.setText(String.valueOf(jenisModels.get(i).getId_jenis()));
-                        System.out.println("Edit text jenis cek" + pIdJenis.getText().toString());
                     }
                 }
             }
@@ -639,6 +634,7 @@ public class Detail_DataHewan extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Ukuran_Model>> call, Response<List<Ukuran_Model>> response) {
                 List<Ukuran_Model> ukuranModels = response.body();
+
                 for(int i=0; i < ukuranModels.size(); i++ ) {
                     String nama = ukuranModels.get(i).getNama_ukuran();
                     String temp = spinnerUkuranHewan.getSelectedItem().toString();
@@ -721,6 +717,95 @@ public class Detail_DataHewan extends AppCompatActivity {
                 Toast.makeText(Detail_DataHewan.this,
                         "Klik icon Edit terlebih dahulu untuk mengubah data!",
                         Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setUpdateSpinnerJenis()
+    {
+        Jenis_Interface apiJenis = API_client.getApiClient().create(Jenis_Interface.class);
+        Call<List<Jenis_Model>> listCall = apiJenis.getJenis();
+
+        listCall.enqueue(new Callback<List<Jenis_Model>>() {
+            @Override
+            public void onResponse(Call<List<Jenis_Model>> call, Response<List<Jenis_Model>> response) {
+                List<Jenis_Model> jenisModels = response.body();
+
+                String editText = pIdJenis.getText().toString();
+                System.out.println("EDIT TEXT NI " + editText);
+                for(int i=0; i < jenisModels.size(); i++ ) {
+                    String nama = jenisModels.get(i).getNama_jenis();   //get setiap nama jenis
+                    //String temp = spinnerJenisHewan.getSelectedItem().toString();   //get selected nama jenis
+
+                    if(editText.equals(nama))
+                    {
+                        spinnerJenisHewan.setSelection(i+1);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Jenis_Model>> call, Throwable t) {
+                Toast.makeText(Detail_DataHewan.this, "Cek " + t.getMessage().toString(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void setUpdateSpinnerUkuran()
+    {
+        Ukuran_Interface apiUkuran = API_client.getApiClient().create(Ukuran_Interface.class);
+        Call<List<Ukuran_Model>> listCall = apiUkuran.getUkuran();
+
+        listCall.enqueue(new Callback<List<Ukuran_Model>>() {
+            @Override
+            public void onResponse(Call<List<Ukuran_Model>> call, Response<List<Ukuran_Model>> response) {
+                List<Ukuran_Model> ukuranModels = response.body();
+
+                String editText = pIdUkuran.getText().toString();
+                for(int i=0; i < ukuranModels.size(); i++ ) {
+                    String nama = ukuranModels.get(i).getNama_ukuran();
+
+                    if(editText.equals(nama))
+                    {
+                        spinnerUkuranHewan.setSelection(i+1);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Ukuran_Model>> call, Throwable t) {
+                Toast.makeText(Detail_DataHewan.this, "Cek " + t.getMessage().toString(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void setUpdateSpinnerCustomer()
+    {
+        Customer_Interface apiCustomer = API_client.getApiClient().create(Customer_Interface.class);
+        Call<List<Customer_Model>> listCall = apiCustomer.getCustomer();
+
+        listCall.enqueue(new Callback<List<Customer_Model>>() {
+            @Override
+            public void onResponse(Call<List<Customer_Model>> call, Response<List<Customer_Model>> response) {
+                List<Customer_Model> customerModels = response.body();
+
+                String editText = pId_Customer.getText().toString();
+                for(int i=0; i < customerModels.size(); i++ ) {
+                    String nama = customerModels.get(i).getNama_customer();
+
+                    if(editText.equals(nama))
+                    {
+                        spinnerCustomerHewan.setSelection(i+1);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Customer_Model>> call, Throwable t) {
+                Toast.makeText(Detail_DataHewan.this, "Cek " + t.getMessage().toString(),
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
