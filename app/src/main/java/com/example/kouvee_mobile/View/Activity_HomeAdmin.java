@@ -17,7 +17,7 @@ import com.example.kouvee_mobile.R;
 
 public class Activity_HomeAdmin extends AppCompatActivity {
 
-    Button btnDataHewan, btnCustomer, btnSupplier, btnLayanan, btnUkuran, btnProduk;
+    Button btnDataHewan, btnCustomer, btnSupplier, btnLayanan, btnUkuran, btnProduk, btnPengadaan;
     boolean doubleBackToExitPressedOnce = false;
 
     @Override
@@ -84,6 +84,15 @@ public class Activity_HomeAdmin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent produk = new Intent(Activity_HomeAdmin.this, Activity_Produk.class);
+                startActivity(produk);
+            }
+        });
+
+        btnPengadaan = findViewById(R.id.btnPengadaanProduk);
+        btnPengadaan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent produk = new Intent(Activity_HomeAdmin.this, Activity_Pengadaan.class);
                 startActivity(produk);
             }
         });

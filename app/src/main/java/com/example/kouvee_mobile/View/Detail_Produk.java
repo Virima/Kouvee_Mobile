@@ -11,6 +11,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -24,6 +25,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -98,10 +100,12 @@ import retrofit2.Response;
 
 public class Detail_Produk extends AppCompatActivity {
     private EditText pNamaProduk, pSatuanProduk, pStokProduk, pStokMin, pHargaProduk,
-            pTglDibuat, pTglDiubah;
+            pTglDibuat, pTglDiubah, pUserLog;
     private String nama_produk, satuan_produk, stok_produk, stok_min, harga_produk, image_path,
-            tanggal_dibuat, tanggal_diubah;
+            tanggal_dibuat, tanggal_diubah, user_log;
     private int id;
+
+    public String sp_NamaPegawai="";
 
     /* */
     public static final String KEY_User_Document1 = "doc1";
@@ -149,7 +153,7 @@ public class Detail_Produk extends AppCompatActivity {
         //pImagePath = findViewById(R.id.PemilikHewanJoinHewan);
         pTglDibuat = findViewById(R.id.tanggal_tambah_produk_log);
         pTglDiubah = findViewById(R.id.tanggal_ubah_produk_log);
-
+        pUserLog = findViewById(R.id.user_produk_log);
 
         CaptureImageFromCamera.setOnClickListener(new View.OnClickListener()
         {
@@ -181,6 +185,7 @@ public class Detail_Produk extends AppCompatActivity {
         image_path = intent.getStringExtra("image_path");
         tanggal_dibuat = intent.getStringExtra("tanggal_tambah_produk_log");
         tanggal_diubah = intent.getStringExtra("tanggal_ubah_produk_log");
+        user_log = intent.getStringExtra("user_produk_log");
         setDataFromIntentExtra();
     }
 
@@ -198,6 +203,7 @@ public class Detail_Produk extends AppCompatActivity {
                     resize(1000, 1000).centerCrop().into(ImageViewHolder);
             pTglDibuat.setText(tanggal_dibuat);
             pTglDiubah.setText(tanggal_diubah);
+            pUserLog.setText(user_log);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -209,6 +215,7 @@ public class Detail_Produk extends AppCompatActivity {
             getSupportActionBar().setTitle("Tambah Produk");
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
+            pUserLog.setVisibility(View.GONE);
         }
     }
 
@@ -230,6 +237,13 @@ public class Detail_Produk extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp!=null)
+        {
+            sp_NamaPegawai = sp.getString("sp_nama_pegawai", "");
+        }
+
         switch (item.getItemId()) {
             case android.R.id.home:
 
@@ -326,7 +340,7 @@ public class Detail_Produk extends AppCompatActivity {
 
         Call<Produk_Model> call =
                 apiInterface.createProduk(key, nama_produk, satuan_produk, stok_produk, stok_min, harga_produk,
-                        ImageViewHolder.toString());
+                        ImageViewHolder.toString(), sp_NamaPegawai);
 
         call.enqueue(new Callback<Produk_Model>() {
             public void onResponse(Call<Produk_Model> call, Response<Produk_Model> response) {
@@ -372,7 +386,7 @@ public class Detail_Produk extends AppCompatActivity {
 
         Call<Produk_Model> call =
                 apiInterface.editProduk(key, String.valueOf(id), nama_produk, satuan_produk, stok_produk,
-                        stok_min, harga_produk, tgl_ubah_produk_log);
+                        stok_min, harga_produk, tgl_ubah_produk_log, sp_NamaPegawai);
 
 
         call.enqueue(new Callback<Produk_Model>() {
@@ -410,7 +424,7 @@ public class Detail_Produk extends AppCompatActivity {
 
         apiInterface = API_client.getApiClient().create(Produk_Interface.class);
 
-        Call<Produk_Model> call = apiInterface.hapusProduk(key, String.valueOf(id));
+        Call<Produk_Model> call = apiInterface.hapusProduk(key, String.valueOf(id), sp_NamaPegawai);
 
         call.enqueue(new Callback<Produk_Model>() {
             @Override
@@ -446,6 +460,7 @@ public class Detail_Produk extends AppCompatActivity {
         pHargaProduk.setFocusableInTouchMode(true);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
@@ -456,6 +471,7 @@ public class Detail_Produk extends AppCompatActivity {
         pHargaProduk.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
 
         alertDisable(pNamaProduk);
         alertDisable(pSatuanProduk);

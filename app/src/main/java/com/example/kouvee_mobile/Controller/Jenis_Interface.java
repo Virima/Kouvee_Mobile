@@ -20,20 +20,23 @@ public interface Jenis_Interface {
             @Field("key") String key,
             @Field("id_jenis") String id_jenis,
             @Field("nama_jenis") String nama_jenis,
-            @Field("tgl_ubah_jenis_log") String tgl_ubah_jenis_log
+            @Field("tgl_ubah_jenis_log") String tgl_ubah_jenis_log,
+            @Field("user_jenis_log") String user_jenis_log
     );
 
     @FormUrlEncoded
     @POST("insertjenis.php")
     Call<Jenis_Model> createJenis(
             @Field("key") String key,
-            @Field("nama_jenis") String nama_jenis
+            @Field("nama_jenis") String nama_jenis,
+            @Field("user_jenis_log") String user_jenis_log
     );
 
     @FormUrlEncoded
     @POST("hapusjenis.php")
     Call<Jenis_Model> hapusJenis(
             @Field("key") String key,
-            @Field("id_jenis") String id_jenis
+            @Field("id_jenis") String id_jenis,
+            @Field("user_jenis_log") String user_jenis_log
     );
 }

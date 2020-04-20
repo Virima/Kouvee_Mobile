@@ -6,7 +6,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -36,15 +38,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Detail_JenisHewan extends AppCompatActivity {
-    private EditText pNamaJenis, pTglDibuat, pTglDiubah;
+    private EditText pNamaJenis, pTglDibuat, pTglDiubah, pUserLog;
     private TextView pIdJenis;
-    private String id_jenis, nama_jenis, tanggal_dibuat, tanggal_diubah;
+    private String id_jenis, nama_jenis, tanggal_dibuat, tanggal_diubah, user_log;
     private int id;
 
     private Menu action;
 
     private final static String TAG = "Detail_JenisHewan";
     private DatePickerDialog.OnDateSetListener mDateSetListener;
+
+    public String sp_NamaPegawai="";
 
     private Jenis_Interface apiInterface;
     @Override
@@ -61,6 +65,7 @@ public class Detail_JenisHewan extends AppCompatActivity {
         pNamaJenis = findViewById(R.id.NamaJenis);
         pTglDibuat = findViewById(R.id.tanggal_tambah_jenis_log);
         pTglDiubah = findViewById(R.id.tanggal_ubah_jenis_log);
+        pUserLog = findViewById(R.id.user_jenis_log);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id_jenis", 0);
@@ -68,6 +73,7 @@ public class Detail_JenisHewan extends AppCompatActivity {
         nama_jenis = intent.getStringExtra("nama_jenis");
         tanggal_dibuat = intent.getStringExtra("tanggal_tambah_jenis_log");
         tanggal_diubah = intent.getStringExtra("tanggal_ubah_jenis_log");
+        user_log = intent.getStringExtra("user_jenis_log");
 
         setDataFromIntentExtra();
     }
@@ -81,6 +87,7 @@ public class Detail_JenisHewan extends AppCompatActivity {
             pNamaJenis.setText(nama_jenis);
             pTglDibuat.setText(tanggal_dibuat);
             pTglDiubah.setText(tanggal_diubah);
+            pUserLog.setText(user_log);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -92,6 +99,7 @@ public class Detail_JenisHewan extends AppCompatActivity {
             getSupportActionBar().setTitle("Tambah Jenis");
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
+            pUserLog.setVisibility(View.GONE);
         }
     }
 
@@ -112,6 +120,13 @@ public class Detail_JenisHewan extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp!=null)
+        {
+            sp_NamaPegawai = sp.getString("sp_nama_pegawai", "");
+        }
+
         switch (item.getItemId()) {
             case android.R.id.home:
 
@@ -203,7 +218,7 @@ public class Detail_JenisHewan extends AppCompatActivity {
         apiInterface = API_client.getApiClient().create(Jenis_Interface.class);
 
         Call<Jenis_Model> call =
-                apiInterface.createJenis(key, nama_jenis);
+                apiInterface.createJenis(key, nama_jenis, sp_NamaPegawai);
 
         call.enqueue(new Callback<Jenis_Model>() {
             public void onResponse(Call<Jenis_Model> call, Response<Jenis_Model> response){
@@ -244,7 +259,7 @@ public class Detail_JenisHewan extends AppCompatActivity {
         apiInterface = API_client.getApiClient().create(Jenis_Interface.class);
 
         Call<Jenis_Model> call =
-                apiInterface.editJenis(key, String.valueOf(id), nama_jenis, tgl_ubah_jenis_log);
+                apiInterface.editJenis(key, String.valueOf(id), nama_jenis, tgl_ubah_jenis_log, sp_NamaPegawai);
 
 
         call.enqueue(new Callback<Jenis_Model>() {
@@ -282,7 +297,7 @@ public class Detail_JenisHewan extends AppCompatActivity {
 
         apiInterface = API_client.getApiClient().create(Jenis_Interface.class);
 
-        Call<Jenis_Model> call = apiInterface.hapusJenis(key, String.valueOf(id));
+        Call<Jenis_Model> call = apiInterface.hapusJenis(key, String.valueOf(id), sp_NamaPegawai);
 
         call.enqueue(new Callback<Jenis_Model>() {
             @Override
@@ -316,12 +331,14 @@ public class Detail_JenisHewan extends AppCompatActivity {
         pNamaJenis.setFocusableInTouchMode(true);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
         pNamaJenis.setFocusableInTouchMode(false);  //disable
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
 
         alertDisable(pNamaJenis);
     }

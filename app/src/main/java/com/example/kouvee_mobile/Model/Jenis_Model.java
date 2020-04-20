@@ -15,6 +15,8 @@ public class Jenis_Model {
     private String tanggal_tambah_jenis_log;
     @SerializedName("tanggal_ubah_jenis_log")
     private String tanggal_ubah_jenis_log;
+    @SerializedName("user_jenis_log")
+    private String user_jenis_log;
 
     public int getId_jenis() {
         return id_jenis;
@@ -63,5 +65,13 @@ public class Jenis_Model {
 
     public void setTanggalUbah(String tanggal_ubah_jenis_log) {
         this.tanggal_ubah_jenis_log = tanggal_ubah_jenis_log;
+    }
+
+    public String getUser_jenis_log() {
+        return user_jenis_log;
+    }
+
+    public void setUser_jenis_log(String user_jenis_log) {
+        this.user_jenis_log = user_jenis_log;
     }
 }

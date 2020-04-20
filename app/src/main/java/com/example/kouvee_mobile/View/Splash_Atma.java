@@ -23,7 +23,7 @@ public class Splash_Atma extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent login = new Intent(Splash_Atma.this, Activity_HomeAdmin.class);
+                Intent login = new Intent(Splash_Atma.this, Activity_Login.class);
                 startActivity(login);
             }
         }, 1000);

@@ -20,20 +20,23 @@ public interface Ukuran_Interface {
             @Field("key") String key,
             @Field("id_ukuran") String id_ukuran,
             @Field("nama_ukuran") String nama_ukuran,
-            @Field("tgl_ubah_ukuran_log") String tgl_ubah_ukuran_log
+            @Field("tgl_ubah_ukuran_log") String tgl_ubah_ukuran_log,
+            @Field("user_ukuran_log") String user_ukuran_log
     );
 
     @FormUrlEncoded
     @POST("insertukuran.php")
     Call<Ukuran_Model> createUkuran(
             @Field("key") String key,
-            @Field("nama_ukuran") String nama_ukuran
+            @Field("nama_ukuran") String nama_ukuran,
+            @Field("user_ukuran_log") String user_ukuran_log
     );
 
     @FormUrlEncoded
     @POST("hapusukuran.php")
     Call<Ukuran_Model> hapusUkuran(
             @Field("key") String key,
-            @Field("id_ukuran") String id_ukuran
+            @Field("id_ukuran") String id_ukuran,
+            @Field("user_ukuran_log") String user_ukuran_log
     );
 }

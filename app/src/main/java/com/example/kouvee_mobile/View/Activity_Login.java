@@ -2,7 +2,9 @@ package com.example.kouvee_mobile.View;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,7 +33,8 @@ public class Activity_Login extends AppCompatActivity {
     private EditText inputusername, inputpassword;
     private ProgressDialog dialog;
 
-    private String role;
+    SharedPreferences sp;
+    public String sp_NamaPegawai="";
     private List<Pegawai_Model> pegawaiList;
 
     @Override
@@ -72,7 +75,7 @@ public class Activity_Login extends AppCompatActivity {
             dialog.show();
 
             Gson gson = new GsonBuilder().setLenient().create();
-            Retrofit.Builder builder = new Retrofit.Builder().baseUrl("https://192.168.1.4:8181/api_android/");
+            Retrofit.Builder builder = new Retrofit.Builder().baseUrl("http://192.168.1.6:8181/api_android/");
             builder.addConverterFactory(GsonConverterFactory.create(gson));
             Retrofit retrofit = builder.build();
             Login_Interface interface_login = retrofit.create(Login_Interface.class);
@@ -91,9 +94,10 @@ public class Activity_Login extends AppCompatActivity {
 
                         //dikasih if disini buat identifikasi login pegawai atau admin
                         Log.i(Activity_Login.class.getSimpleName(), response.toString());
-                        String value = response.body().getValue();
+                        sp_NamaPegawai = response.body().getValue();
+                        savePreference(sp_NamaPegawai);
+
                         String message = response.body().getMessage();
-                        System.out.println("AAAAAAAAAWOI " + message);
                         if (message.equals("Owner"))
                         {
                             Intent i = new Intent(Activity_Login.this, Activity_HomeAdmin.class);
@@ -156,5 +160,44 @@ public class Activity_Login extends AppCompatActivity {
         inputpassword.getText().clear();
     }
     */
+
+    //-  Fungsi simpan dan load teks sementara [SharedPreferences]  -//
+    /*
+    private void setForm()
+    {
+        pNamaHewan = findViewById(R.id.NamaHewan);
+        pTglLahirHewan = findViewById(R.id.TglLahirHewan);
+        pIdJenis = findViewById(R.id.JenisHewanJoinHewan);
+        pIdUkuran = findViewById(R.id.UkuranHewanJoinHewan);
+        pId_Customer = findViewById(R.id.PemilikHewanJoinHewan);
+
+        pNamaHewan.setText(sp_nama);
+        pTglLahirHewan.setText(sp_tanggalLahir);
+        pIdJenis.setText(sp_jenis);
+        pIdUkuran.setText(sp_ukuran);
+        pId_Customer.setText(sp_customer);
+    }
+
+    private void loadPreference()
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp!=null)
+        {
+            sp_nama = sp.getString("sp_nama", "");
+            sp_tanggalLahir = sp.getString("sp_tanggalLahir", "");
+            sp_jenis = sp.getString("sp_jenis", "");
+            sp_ukuran = sp.getString("sp_ukuran", "");
+            sp_customer = sp.getString("sp_customer", "");
+        }
+    }
+    */
+
+    private void savePreference(String string)
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("sp_nama_pegawai", string);
+        editor.apply();
+    }
 
 }

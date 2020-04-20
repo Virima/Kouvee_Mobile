@@ -93,7 +93,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnLihatProduk"
+        android:id="@+id/btnLihatProdukMenuCustomer"
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:layout_marginStart="86dp"

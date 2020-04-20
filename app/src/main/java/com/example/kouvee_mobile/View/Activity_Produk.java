@@ -72,6 +72,7 @@ public class Activity_Produk extends AppCompatActivity {
                 intent.putExtra("image_path", produkList.get(position).getImage_path());
                 intent.putExtra("tanggal_tambah_produk_log", produkList.get(position).getTanggalTambah());
                 intent.putExtra("tanggal_ubah_produk_log", produkList.get(position).getTanggalUbah());
+                intent.putExtra("user_produk_log", produkList.get(position).getUser_produk_log());
                 startActivity(intent);
             }
         };

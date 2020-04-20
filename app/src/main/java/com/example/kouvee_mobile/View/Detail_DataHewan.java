@@ -81,7 +81,6 @@ public class Detail_DataHewan extends AppCompatActivity {
     private String sp_customer="";
     private Button spSimpanBtn, spResetBtn;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

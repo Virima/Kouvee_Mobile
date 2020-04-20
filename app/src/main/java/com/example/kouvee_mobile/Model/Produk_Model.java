@@ -25,6 +25,8 @@ public class Produk_Model {
     private String tanggal_tambah_produk_log;
     @SerializedName("tanggal_ubah_produk_log")
     private String tanggal_ubah_produk_log;
+    @SerializedName("user_produk_log")
+    private String user_produk_log;
 
     public int getId_produk() {
         return id_produk;
@@ -114,5 +116,13 @@ public class Produk_Model {
 
     public void setTanggalUbah(String tanggal_ubah_produk_log) {
         this.tanggal_ubah_produk_log = tanggal_ubah_produk_log;
+    }
+
+    public String getUser_produk_log() {
+        return user_produk_log;
+    }
+
+    public void setUser_produk_log(String user_jenis_log) {
+        this.user_produk_log = user_produk_log;
     }
 }

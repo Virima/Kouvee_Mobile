@@ -61,6 +61,7 @@ public class Activity_JenisHewan extends AppCompatActivity {
                 intent.putExtra("nama_jenis", jenisList.get(position).getNama_jenis());
                 intent.putExtra("tanggal_tambah_jenis_log", jenisList.get(position).getTanggalTambah());
                 intent.putExtra("tanggal_ubah_jenis_log", jenisList.get(position).getTanggalUbah());
+                intent.putExtra("user_jenis_log", jenisList.get(position).getUser_jenis_log());
 
                 startActivity(intent);
             }

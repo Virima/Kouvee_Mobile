@@ -16,7 +16,7 @@ public interface Pengadaan_Interface {
 
     @FormUrlEncoded
     @POST("insertpengadaan.php")
-    Call<Pengadaan_Model> createPemesanan(
+    Call<Pengadaan_Model> createPengadaan(
             @Field("key") String key,
             @Field("id_pengadaan") String id_pengadaan,
             @Field("id_produk") String id_produk,
@@ -29,7 +29,7 @@ public interface Pengadaan_Interface {
 
     @FormUrlEncoded
     @POST("editpengadaan.php")
-    Call<Pengadaan_Model> editPemesanan(
+    Call<Pengadaan_Model> editPengadaan(
             @Field("key") String key,
             @Field("id_detail_pengadaan") String id_detail_pengadaan,
             @Field("id_pengadaan") String id_pengadaan,
@@ -43,7 +43,7 @@ public interface Pengadaan_Interface {
 
     @FormUrlEncoded
     @POST("hapuspengadaan.php")
-    Call<Pengadaan_Model> hapusPemesanan(
+    Call<Pengadaan_Model> hapusPengadaan(
             @Field("key") String key,
             @Field("id_detail_pengadaan") String id_detail_pengadaan
     );

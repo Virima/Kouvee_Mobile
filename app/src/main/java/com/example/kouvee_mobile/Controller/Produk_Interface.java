@@ -26,7 +26,8 @@ public interface Produk_Interface {
             @Field("stok_produk") String stok_produk,
             @Field("stok_min_produk") String stok_min_produk,
             @Field("harga_produk") String harga_produk,
-            @Field("image_path") String image_path
+            @Field("image_path") String image_path,
+            @Field("user_produk_log") String user_produk_log
     );
 
     @FormUrlEncoded
@@ -41,14 +42,16 @@ public interface Produk_Interface {
             @Field("harga_produk") String harga_produk,
             //@Field("image_name") String image_name,
             //@Field("image_path") String image_path,
-            @Field("tanggal_ubah_produk_log") String tanggal_ubah_produk_log
+            @Field("tanggal_ubah_produk_log") String tanggal_ubah_produk_log,
+            @Field("user_produk_log") String user_produk_log
     );
 
     @FormUrlEncoded
     @POST("hapusproduk.php")
     Call<Produk_Model> hapusProduk(
             @Field("key") String key,
-            @Field("id_produk") String id_produk
+            @Field("id_produk") String id_produk,
+            @Field("user_produk_log") String user_produk_log
     );
 
     @FormUrlEncoded

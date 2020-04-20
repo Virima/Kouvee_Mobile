@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Pengadaan_Model {
     @SerializedName("id_detail_pengadaan")
-    private int id;
+    private int id_detail_pengadaan;
     @SerializedName("id_pengadaan")
     private String id_pengadaan;
     @SerializedName("id_produk")
@@ -25,11 +25,11 @@ public class Pengadaan_Model {
     private String message;
 
     public int getId() {
-        return id;
+        return id_detail_pengadaan;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int id_detail_pengadaan) {
+        this.id_detail_pengadaan = id_detail_pengadaan;
     }
 
     public String getId_pengadaan() {

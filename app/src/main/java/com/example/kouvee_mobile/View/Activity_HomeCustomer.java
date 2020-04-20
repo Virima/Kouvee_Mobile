@@ -17,16 +17,17 @@ public class Activity_HomeCustomer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity__customer);
 
-        /*
-        btnLihatProduk = findViewById(R.id.btnLihatProduk);
+
+        btnLihatProduk = findViewById(R.id.btnLihatProdukMenuCustomer);
         btnLihatProduk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent lihatsparepart = new Intent(Activity_HomeCustomer.this, Activity_LihatProduk.class);
-                startActivity(lihatsparepart);
+                Intent lihatproduk = new Intent(Activity_HomeCustomer.this,
+                        ActivityCust_Produk.class);
+                startActivity(lihatproduk);
             }
         });
-
+        /*
         btnLihatLayanan = findViewById(R.id.btnLihatLayanan);
         btnLihatLayanan.setOnClickListener(new View.OnClickListener() {
             @Override

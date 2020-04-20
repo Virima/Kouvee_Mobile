@@ -47,6 +47,8 @@
         <!-- PENGADAAN -->
         <activity android:name=".View.Activity_Pengadaan"
             android:theme="@style/AppThemeKu" />
+        <activity android:name=".View.Detail_Pengadaan"
+            android:theme="@style/AppThemeKu" />
 
         <!-- CUSTOMER -->
         <activity

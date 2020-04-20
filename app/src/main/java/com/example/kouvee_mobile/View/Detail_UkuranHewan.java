@@ -6,7 +6,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -37,15 +39,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Detail_UkuranHewan extends AppCompatActivity {
-    private EditText pNamaUkuran, pTglDibuat, pTglDiubah;;
+    private EditText pNamaUkuran, pTglDibuat, pTglDiubah, pUserLog;
     private TextView pIdUkuran;
-    private String id_ukuran, nama_ukuran, tanggal_dibuat, tanggal_diubah;
+    private String id_ukuran, nama_ukuran, tanggal_dibuat, tanggal_diubah, user_log;
     private int id;
 
     private Menu action;
 
     private final static String TAG = "Detail_UkuranHewan";
     private DatePickerDialog.OnDateSetListener mDateSetListener;
+
+    public String sp_NamaPegawai="";
 
     private Ukuran_Interface apiInterface;
     @Override
@@ -62,6 +66,7 @@ public class Detail_UkuranHewan extends AppCompatActivity {
         pNamaUkuran = findViewById(R.id.NamaUkuran);
         pTglDibuat = findViewById(R.id.tanggal_tambah_ukuran_log);
         pTglDiubah = findViewById(R.id.tanggal_ubah_ukuran_log);
+        pUserLog = findViewById(R.id.user_ukuran_log);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id_ukuran", 0);
@@ -69,6 +74,7 @@ public class Detail_UkuranHewan extends AppCompatActivity {
         nama_ukuran = intent.getStringExtra("nama_ukuran");
         tanggal_dibuat = intent.getStringExtra("tanggal_tambah_ukuran_log");
         tanggal_diubah = intent.getStringExtra("tanggal_ubah_ukuran_log");
+        user_log = intent.getStringExtra("user_ukuran_log");
 
         setDataFromIntentExtra();
     }
@@ -82,6 +88,7 @@ public class Detail_UkuranHewan extends AppCompatActivity {
             pNamaUkuran.setText(nama_ukuran);
             pTglDibuat.setText(tanggal_dibuat);
             pTglDiubah.setText(tanggal_diubah);
+            pUserLog.setText(user_log);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -93,6 +100,7 @@ public class Detail_UkuranHewan extends AppCompatActivity {
             getSupportActionBar().setTitle("Tambah Ukuran");
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
+            pUserLog.setVisibility(View.GONE);
         }
     }
 
@@ -113,6 +121,13 @@ public class Detail_UkuranHewan extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp!=null)
+        {
+            sp_NamaPegawai = sp.getString("sp_nama_pegawai", "");
+        }
+
         switch (item.getItemId()) {
             case android.R.id.home:
 
@@ -204,7 +219,7 @@ public class Detail_UkuranHewan extends AppCompatActivity {
         apiInterface = API_client.getApiClient().create(Ukuran_Interface.class);
 
         Call<Ukuran_Model> call =
-                apiInterface.createUkuran(key, nama_ukuran);
+                apiInterface.createUkuran(key, nama_ukuran, sp_NamaPegawai);
 
         call.enqueue(new Callback<Ukuran_Model>() {
             public void onResponse(Call<Ukuran_Model> call, Response<Ukuran_Model> response){
@@ -245,7 +260,7 @@ public class Detail_UkuranHewan extends AppCompatActivity {
         apiInterface = API_client.getApiClient().create(Ukuran_Interface.class);
 
         Call<Ukuran_Model> call =
-                apiInterface.editUkuran(key, String.valueOf(id), nama_ukuran, tgl_ubah_ukuran_log);
+                apiInterface.editUkuran(key, String.valueOf(id), nama_ukuran, tgl_ubah_ukuran_log, sp_NamaPegawai);
 
 
         call.enqueue(new Callback<Ukuran_Model>() {
@@ -283,7 +298,7 @@ public class Detail_UkuranHewan extends AppCompatActivity {
 
         apiInterface = API_client.getApiClient().create(Ukuran_Interface.class);
 
-        Call<Ukuran_Model> call = apiInterface.hapusUkuran(key, String.valueOf(id));
+        Call<Ukuran_Model> call = apiInterface.hapusUkuran(key, String.valueOf(id), sp_NamaPegawai);
 
         call.enqueue(new Callback<Ukuran_Model>() {
             @Override
@@ -317,12 +332,14 @@ public class Detail_UkuranHewan extends AppCompatActivity {
         pNamaUkuran.setFocusableInTouchMode(true);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
         pNamaUkuran.setFocusableInTouchMode(false);  //disable
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
 
         alertDisable(pNamaUkuran);
     }

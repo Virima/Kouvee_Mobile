@@ -15,6 +15,8 @@ public class Ukuran_Model {
     private String tanggal_tambah_ukuran_log;
     @SerializedName("tanggal_ubah_ukuran_log")
     private String tanggal_ubah_ukuran_log;
+    @SerializedName("user_ukuran_log")
+    private String user_ukuran_log;
 
     public int getId_ukuran() {
         return id_ukuran;
@@ -63,5 +65,13 @@ public class Ukuran_Model {
 
     public void setTanggalUbah(String tanggal_ubah_ukuran_log) {
         this.tanggal_ubah_ukuran_log = tanggal_ubah_ukuran_log;
+    }
+
+    public String getUser_ukuran_log() {
+        return user_ukuran_log;
+    }
+
+    public void setUser_ukuran_log(String user_ukuran_log) {
+        this.user_ukuran_log = user_ukuran_log;
     }
 }
