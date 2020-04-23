@@ -5,7 +5,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -34,11 +36,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Detail_Supplier extends AppCompatActivity {
-    private EditText pNamaSupplier, pAlamatSupplier, pTeleponSupplier, pTglDibuat, pTglDiubah;;
-    private String nama_supplier, alamat_supplier, telepon_supplier, tanggal_dibuat, tanggal_diubah;
+    private EditText pNamaSupplier, pAlamatSupplier, pTeleponSupplier, pTglDibuat, pTglDiubah, pUserLog;;
+    private String nama_supplier, alamat_supplier, telepon_supplier, tanggal_dibuat, tanggal_diubah, user_log;
     private int id;
 
     private Menu action;
+
+    public String sp_NamaPegawai="";
 
     private Supplier_Interface apiInterface;
     @Override
@@ -56,6 +60,7 @@ public class Detail_Supplier extends AppCompatActivity {
         pTeleponSupplier = findViewById(R.id.TeleponSupplier);
         pTglDibuat = findViewById(R.id.tanggal_tambah_supplier_log);
         pTglDiubah = findViewById(R.id.tanggal_ubah_supplier_log);
+        pUserLog = findViewById(R.id.user_supplier_log);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id", 0);
@@ -64,6 +69,7 @@ public class Detail_Supplier extends AppCompatActivity {
         telepon_supplier = intent.getStringExtra("telepon_supplier");
         tanggal_dibuat = intent.getStringExtra("tanggal_tambah_supplier_log");
         tanggal_diubah = intent.getStringExtra("tanggal_ubah_supplier_log");
+        user_log = intent.getStringExtra("user_supplier_log");
 
         setDataFromIntentExtra();
     }
@@ -78,6 +84,7 @@ public class Detail_Supplier extends AppCompatActivity {
             pTeleponSupplier.setText(telepon_supplier);
             pTglDibuat.setText(tanggal_dibuat);
             pTglDiubah.setText(tanggal_diubah);
+            pUserLog.setText(user_log);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -89,6 +96,7 @@ public class Detail_Supplier extends AppCompatActivity {
             getSupportActionBar().setTitle("Tambah Supplier");
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
+            pUserLog.setVisibility(View.GONE);
         }
     }
 
@@ -109,6 +117,13 @@ public class Detail_Supplier extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp!=null)
+        {
+            sp_NamaPegawai = sp.getString("sp_nama_pegawai", "");
+        }
+
         switch (item.getItemId()) {
             case android.R.id.home:
 
@@ -203,7 +218,8 @@ public class Detail_Supplier extends AppCompatActivity {
 
         apiInterface = API_client.getApiClient().create(Supplier_Interface.class);
 
-        Call<Supplier_Model> call = apiInterface.createSupplier(key, nama_supplier, alamat_supplier, telepon_supplier);
+        Call<Supplier_Model> call = apiInterface.createSupplier(key, nama_supplier, alamat_supplier,
+                telepon_supplier, sp_NamaPegawai);
 
         call.enqueue(new Callback<Supplier_Model>() {
             public void onResponse(Call<Supplier_Model> call, Response<Supplier_Model> response){
@@ -246,8 +262,8 @@ public class Detail_Supplier extends AppCompatActivity {
 
         apiInterface = API_client.getApiClient().create(Supplier_Interface.class);
 
-        Call<Supplier_Model> call = apiInterface.editSupplier(key, String.valueOf(id), nama_supplier, alamat_supplier,
-                telepon_supplier, tgl_ubah_supplier_log);
+        Call<Supplier_Model> call = apiInterface.editSupplier(key, String.valueOf(id), nama_supplier,
+                alamat_supplier, telepon_supplier, tgl_ubah_supplier_log, sp_NamaPegawai);
 
 
         call.enqueue(new Callback<Supplier_Model>() {
@@ -286,7 +302,7 @@ public class Detail_Supplier extends AppCompatActivity {
 
         apiInterface = API_client.getApiClient().create(Supplier_Interface.class);
 
-        Call<Supplier_Model> call = apiInterface.hapusSupplier(key, String.valueOf(id_supplier)); //String.valueOf(id_supplier)
+        Call<Supplier_Model> call = apiInterface.hapusSupplier(key, String.valueOf(id_supplier), sp_NamaPegawai); //String.valueOf(id_supplier)
 
         call.enqueue(new Callback<Supplier_Model>() {
             @Override
@@ -322,6 +338,7 @@ public class Detail_Supplier extends AppCompatActivity {
         pTeleponSupplier.setFocusableInTouchMode(true);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
@@ -330,6 +347,7 @@ public class Detail_Supplier extends AppCompatActivity {
         pTeleponSupplier.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
 
         alertDisable(pNamaSupplier);
         alertDisable(pAlamatSupplier);

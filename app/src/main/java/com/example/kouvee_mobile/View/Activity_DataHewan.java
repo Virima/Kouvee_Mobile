@@ -65,6 +65,7 @@ public class Activity_DataHewan extends AppCompatActivity {
                 intent.putExtra("id_customer", hewansList.get(position).getId_customer());
                 intent.putExtra("tanggal_tambah_hewan_log", hewansList.get(position).getTanggalTambah());
                 intent.putExtra("tanggal_ubah_hewan_log", hewansList.get(position).getTanggalUbah());
+                intent.putExtra("user_hewan_log", hewansList.get(position).getUser_hewan_log());
                 startActivity(intent);
             }
         };

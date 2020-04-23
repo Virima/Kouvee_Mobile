@@ -68,6 +68,7 @@ public class Activity_LihatCustomer extends AppCompatActivity {
                 intent.putExtra("tgl_lahir_customer", customersList.get(position).getTgl_Lahir_customer());
                 intent.putExtra("tanggal_tambah_customer_log", customersList.get(position).getTanggalTambah());
                 intent.putExtra("tanggal_ubah_customer_log", customersList.get(position).getTanggalUbah());
+                intent.putExtra("user_customer_log", customersList.get(position).getUser_customer_log());
                 startActivity(intent);
             }
         };

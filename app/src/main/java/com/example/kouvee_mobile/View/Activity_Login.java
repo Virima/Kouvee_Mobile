@@ -75,7 +75,7 @@ public class Activity_Login extends AppCompatActivity {
             dialog.show();
 
             Gson gson = new GsonBuilder().setLenient().create();
-            Retrofit.Builder builder = new Retrofit.Builder().baseUrl("http://192.168.1.6:8181/api_android/");
+            Retrofit.Builder builder = new Retrofit.Builder().baseUrl("http://192.168.1.5:8181/api_android/");
             builder.addConverterFactory(GsonConverterFactory.create(gson));
             Retrofit retrofit = builder.build();
             Login_Interface interface_login = retrofit.create(Login_Interface.class);

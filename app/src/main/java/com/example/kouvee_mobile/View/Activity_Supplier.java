@@ -62,6 +62,7 @@ public class Activity_Supplier extends AppCompatActivity {
                 intent.putExtra("telepon_supplier", suppliersList.get(position).getTelepon_supplier());
                 intent.putExtra("tanggal_tambah_supplier_log", suppliersList.get(position).getTanggalTambah());
                 intent.putExtra("tanggal_ubah_supplier_log", suppliersList.get(position).getTanggalUbah());
+                intent.putExtra("user_supplier_log", suppliersList.get(position).getUser_supplier_log());
                 startActivity(intent);
             }
         };

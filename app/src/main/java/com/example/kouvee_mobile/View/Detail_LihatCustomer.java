@@ -6,10 +6,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -43,11 +45,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Detail_LihatCustomer extends AppCompatActivity {
-    private EditText pNamaCustomer, pAlamatCustomer, pTeleponCostumer, pTglLahirCustomer, pTglDibuat, pTglDiubah;
-    private String nama_customer, alamat_customer, telepon_customer, tgl_lahir_customer, tgl_dibuat, tgl_diubah;
+    private EditText pNamaCustomer, pAlamatCustomer, pTeleponCostumer, pTglLahirCustomer, pTglDibuat, pTglDiubah, pUserLog;
+    private String nama_customer, alamat_customer, telepon_customer, tgl_lahir_customer, tgl_dibuat, tgl_diubah, user_log;
     private int id;
 
     private Menu action;
+
+    public String sp_NamaPegawai="";
 
     private final static String TAG = "Detail_LihatCustomer";
     private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -69,6 +73,7 @@ public class Detail_LihatCustomer extends AppCompatActivity {
         pTglLahirCustomer = findViewById(R.id.TglLahirCustomer);
         pTglDibuat = findViewById(R.id.tanggal_tambah_customer_log);
         pTglDiubah = findViewById(R.id.tanggal_ubah_customer_log);
+        pUserLog = findViewById(R.id.user_customer_log);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id_customer", 0);
@@ -78,6 +83,7 @@ public class Detail_LihatCustomer extends AppCompatActivity {
         tgl_lahir_customer = intent.getStringExtra("tgl_lahir_customer");
         tgl_dibuat = intent.getStringExtra("tanggal_tambah_customer_log");
         tgl_diubah = intent.getStringExtra("tanggal_ubah_customer_log");
+        user_log = intent.getStringExtra("user_customer_log");
 
         setDataFromIntentExtra();
     }
@@ -93,6 +99,7 @@ public class Detail_LihatCustomer extends AppCompatActivity {
             pTglLahirCustomer.setText(tgl_lahir_customer);
             pTglDibuat.setText(tgl_dibuat);
             pTglDiubah.setText(tgl_diubah);
+            pUserLog.setText(user_log);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -104,6 +111,7 @@ public class Detail_LihatCustomer extends AppCompatActivity {
             getSupportActionBar().setTitle("Tambah Customer");
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
+            pUserLog.setVisibility(View.GONE);
         }
     }
 
@@ -152,6 +160,13 @@ public class Detail_LihatCustomer extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp!=null)
+        {
+            sp_NamaPegawai = sp.getString("sp_nama_pegawai", "");
+        }
+
         switch (item.getItemId()) {
             case android.R.id.home:
 
@@ -275,7 +290,8 @@ public class Detail_LihatCustomer extends AppCompatActivity {
         apiInterface = API_client.getApiClient().create(Customer_Interface.class);
 
         Call<Customer_Model> call =
-                apiInterface.createCustomer(key, nama_customer, alamat_customer, telepon_customer, tgl_lahir_customer);
+                apiInterface.createCustomer(key, nama_customer, alamat_customer, telepon_customer,
+                        tgl_lahir_customer, sp_NamaPegawai);
 
         call.enqueue(new Callback<Customer_Model>() {
             public void onResponse(Call<Customer_Model> call, Response<Customer_Model> response){
@@ -322,7 +338,7 @@ public class Detail_LihatCustomer extends AppCompatActivity {
 
         Call<Customer_Model> call =
                 apiInterface.editCustomer(key, String.valueOf(id), nama_customer, alamat_customer,
-                        telepon_customer, tgl_lahir_customer, tgl_ubah_customer_log);
+                        telepon_customer, tgl_lahir_customer, tgl_ubah_customer_log, sp_NamaPegawai);
 
 
         call.enqueue(new Callback<Customer_Model>() {
@@ -367,7 +383,7 @@ public class Detail_LihatCustomer extends AppCompatActivity {
         ResultSet rs = stmt.executeQuery("SELECT tanggal_hapus_customer_log FROM customer");
         */
 
-        Call<Customer_Model> call = apiInterface.hapusCustomer(key, String.valueOf(id));
+        Call<Customer_Model> call = apiInterface.hapusCustomer(key, String.valueOf(id), sp_NamaPegawai);
 
         call.enqueue(new Callback<Customer_Model>() {
             @Override
@@ -402,6 +418,7 @@ public class Detail_LihatCustomer extends AppCompatActivity {
         pTglLahirCustomer.setFocusableInTouchMode(false);   //disable
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
@@ -411,6 +428,7 @@ public class Detail_LihatCustomer extends AppCompatActivity {
         pTglLahirCustomer.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
 
         alertDisable(pNamaCustomer);
         alertDisable(pAlamatCustomer);

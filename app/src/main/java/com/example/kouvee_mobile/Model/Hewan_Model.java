@@ -23,6 +23,8 @@ public class Hewan_Model {
     private String tanggal_tambah_hewan_log;
     @SerializedName("tanggal_ubah_hewan_log")
     private String tanggal_ubah_hewan_log;
+    @SerializedName("user_hewan_log")
+    private String user_hewan_log;
 
     public int getIdHewan() {
         return id_hewan;
@@ -104,5 +106,13 @@ public class Hewan_Model {
 
     public void setTanggalUbah(String tanggal_ubah_hewan_log) {
         this.tanggal_ubah_hewan_log = tanggal_ubah_hewan_log;
+    }
+
+    public String getUser_hewan_log() {
+        return user_hewan_log;
+    }
+
+    public void setUser_hewan_log(String user_hewan_log) {
+        this.user_hewan_log = user_hewan_log;
     }
 }

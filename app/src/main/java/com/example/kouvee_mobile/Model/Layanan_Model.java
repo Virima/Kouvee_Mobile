@@ -17,6 +17,8 @@ public class Layanan_Model {
     private String tanggal_tambah_layanan_log;
     @SerializedName("tanggal_ubah_layanan_log")
     private String tanggal_ubah_layanan_log;
+    @SerializedName("user_layanan_log")
+    private String user_layanan_log;
 
     public int getId_layanan() {
         return id_layanan;
@@ -73,5 +75,13 @@ public class Layanan_Model {
 
     public void setTanggalUbah(String tanggal_ubah_layanan_log) {
         this.tanggal_ubah_layanan_log = tanggal_ubah_layanan_log;
+    }
+
+    public String getUser_layanan_log() {
+        return user_layanan_log;
+    }
+
+    public void setUser_layanan_log(String user_layanan_log) {
+        this.user_layanan_log = user_layanan_log;
     }
 }

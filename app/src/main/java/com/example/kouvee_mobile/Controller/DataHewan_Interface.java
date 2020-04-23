@@ -24,7 +24,8 @@ public interface DataHewan_Interface {
             @Field("tgl_lahir_hewan") String tgl_lahir_hewan,
             @Field("id_jenis") String id_jenis,
             @Field("id_ukuran") String id_ukuran,
-            @Field("id_customer") String id_customer
+            @Field("id_customer") String id_customer,
+            @Field("user_hewan_log") String user_hewan_log
     );
 
     @FormUrlEncoded
@@ -37,13 +38,15 @@ public interface DataHewan_Interface {
             @Field("id_jenis") String id_jenis,
             @Field("id_ukuran") String id_ukuran,
             @Field("id_customer") String id_customer,
-            @Field("tgl_ubah_hewan_log") String tgl_ubah_hewan_log
+            @Field("tgl_ubah_hewan_log") String tgl_ubah_hewan_log,
+            @Field("user_hewan_log") String user_hewan_log
     );
 
     @FormUrlEncoded
     @POST("hapushewan.php")
     Call<Hewan_Model> hapusHewan(
             @Field("key") String key,
-            @Field("id_hewan") String id_hewan
+            @Field("id_hewan") String id_hewan,
+            @Field("user_hewan_log") String user_hewan_log
     );
 }

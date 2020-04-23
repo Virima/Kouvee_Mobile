@@ -55,8 +55,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Detail_DataHewan extends AppCompatActivity {
-    private EditText pNamaHewan, pTglLahirHewan, pIdJenis, pIdUkuran, pId_Customer, pTglDibuat, pTglDiubah;
-    private String nama_hewan, tgl_lahir_hewan, id_jenis, id_ukuran, id_customer, tanggal_dibuat, tanggal_diubah;
+    private EditText pNamaHewan, pTglLahirHewan, pIdJenis, pIdUkuran, pId_Customer, pTglDibuat, pTglDiubah, pUserLog;
+    private String nama_hewan, tgl_lahir_hewan, id_jenis, id_ukuran, id_customer, tanggal_dibuat, tanggal_diubah, user_log;
     private int id;
 
     private Spinner spinnerJenisHewan;
@@ -80,6 +80,7 @@ public class Detail_DataHewan extends AppCompatActivity {
     private String sp_ukuran="";
     private String sp_customer="";
     private Button spSimpanBtn, spResetBtn;
+    public String sp_NamaPegawai="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +99,7 @@ public class Detail_DataHewan extends AppCompatActivity {
         pId_Customer = findViewById(R.id.PemilikHewanJoinHewan);
         pTglDibuat = findViewById(R.id.tanggal_tambah_hewan_log);
         pTglDiubah = findViewById(R.id.tanggal_ubah_hewan_log);
+        pUserLog = findViewById(R.id.user_hewan_log);
         //spResetBtn = findViewById(R.id.spResetHewanBtn);
         //spSimpanBtn = findViewById(R.id.spSimpanHewanBtn);
         listSpinnerJenis = new ArrayList<>();
@@ -117,6 +119,7 @@ public class Detail_DataHewan extends AppCompatActivity {
         id_customer = intent.getStringExtra("id_customer");
         tanggal_dibuat = intent.getStringExtra("tanggal_tambah_hewan_log");
         tanggal_diubah = intent.getStringExtra("tanggal_ubah_hewan_log");
+        user_log = intent.getStringExtra("user_hewan_log");
         setDataFromIntentExtra();
 
         loadSpinnerJenis();
@@ -166,6 +169,7 @@ public class Detail_DataHewan extends AppCompatActivity {
             pId_Customer.setText(id_customer);
             pTglDibuat.setText(tanggal_dibuat);
             pTglDiubah.setText(tanggal_diubah);
+            pUserLog.setText(user_log);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -190,6 +194,7 @@ public class Detail_DataHewan extends AppCompatActivity {
 
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
+            pUserLog.setVisibility(View.GONE);
         }
     }
 
@@ -238,6 +243,13 @@ public class Detail_DataHewan extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp!=null)
+        {
+            sp_NamaPegawai = sp.getString("sp_nama_pegawai", "");
+        }
+
         switch (item.getItemId()) {
             case android.R.id.home:
 
@@ -383,7 +395,8 @@ public class Detail_DataHewan extends AppCompatActivity {
                         tgl_lahir_hewan,
                         /*spinnerJenisHewan.getSelectedItem().toString()*/ id_jenis,
                         id_ukuran,
-                        id_customer);
+                        id_customer,
+                        sp_NamaPegawai);
 
         call.enqueue(new Callback<Hewan_Model>() {
             public void onResponse(Call<Hewan_Model> call, Response<Hewan_Model> response) {
@@ -435,7 +448,8 @@ public class Detail_DataHewan extends AppCompatActivity {
                         id_jenis,
                         id_ukuran,
                         id_customer,
-                        tgl_ubah_hewan_log);
+                        tgl_ubah_hewan_log,
+                        sp_NamaPegawai);
 
         call.enqueue(new Callback<Hewan_Model>() {
             public void onResponse(Call<Hewan_Model> call, Response<Hewan_Model> response) {
@@ -472,7 +486,7 @@ public class Detail_DataHewan extends AppCompatActivity {
 
         apiInterface = API_client.getApiClient().create(DataHewan_Interface.class);
 
-        Call<Hewan_Model> call = apiInterface.hapusHewan(key, String.valueOf(id));
+        Call<Hewan_Model> call = apiInterface.hapusHewan(key, String.valueOf(id), sp_NamaPegawai);
 
         call.enqueue(new Callback<Hewan_Model>() {
             @Override
@@ -689,6 +703,7 @@ public class Detail_DataHewan extends AppCompatActivity {
         pId_Customer.setFocusableInTouchMode(true);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
@@ -699,6 +714,7 @@ public class Detail_DataHewan extends AppCompatActivity {
         pId_Customer.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
         //spSimpanBtn.setFocusableInTouchMode(false);
         //spResetBtn.setFocusableInTouchMode(false);
 

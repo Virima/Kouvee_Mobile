@@ -63,6 +63,7 @@ public class Activity_LihatLayanan extends AppCompatActivity {
                 intent.putExtra("harga_layanan", layananList.get(position).getHarga_layanan());
                 intent.putExtra("tanggal_tambah_layanan_log", layananList.get(position).getTanggalTambah());
                 intent.putExtra("tanggal_ubah_layanan_log", layananList.get(position).getTanggalUbah());
+                intent.putExtra("user_layanan_log", layananList.get(position).getUser_layanan_log());
 
                 startActivity(intent);
             }

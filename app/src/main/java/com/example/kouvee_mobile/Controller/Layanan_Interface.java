@@ -19,7 +19,8 @@ public interface Layanan_Interface {
     Call<Layanan_Model> createLayanan(
             @Field("key") String key,
             @Field("nama_layanan") String nama_layanan,
-            @Field("harga_layanan") String harga_layanan
+            @Field("harga_layanan") String harga_layanan,
+            @Field("user_layanan_log") String user_layanan_log
     );
 
     @FormUrlEncoded
@@ -29,13 +30,15 @@ public interface Layanan_Interface {
             @Field("id_layanan") String id_layanan,
             @Field("nama_layanan") String nama_layanan,
             @Field("harga_layanan") String harga_layanan,
-            @Field("tgl_ubah_layanan_log") String tgl_ubah_layanan_log
+            @Field("tgl_ubah_layanan_log") String tgl_ubah_layanan_log,
+            @Field("user_layanan_log") String user_layanan_log
     );
 
     @FormUrlEncoded
     @POST("hapuslayanan.php")
     Call<Layanan_Model> hapusLayanan(
             @Field("key") String key,
-            @Field("id_layanan") String id_layanan
+            @Field("id_layanan") String id_layanan,
+            @Field("user_layanan_log") String user_layanan_log
     );
 }

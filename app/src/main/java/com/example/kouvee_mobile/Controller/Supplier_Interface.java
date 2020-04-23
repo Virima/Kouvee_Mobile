@@ -20,7 +20,8 @@ public interface Supplier_Interface {
             @Field("key") String key,
             @Field("nama_supplier") String nama_supplier,
             @Field("alamat_supplier") String alamat_supplier,
-            @Field("telepon_supplier") String telp
+            @Field("telepon_supplier") String telp,
+            @Field("user_supplier_log") String user_supplier_log
     );
 
     @FormUrlEncoded
@@ -31,13 +32,15 @@ public interface Supplier_Interface {
             @Field("nama_supplier") String nama_supplier,
             @Field("alamat_supplier") String alamat_supplier,
             @Field("telepon_supplier") String telp,
-            @Field("tgl_ubah_supplier_log") String tgl_ubah_supplier_log
+            @Field("tgl_ubah_supplier_log") String tgl_ubah_supplier_log,
+            @Field("user_supplier_log") String user_supplier_log
     );
 
     @FormUrlEncoded
     @POST("hapussupplier.php")
     Call<Supplier_Model> hapusSupplier(
             @Field("key") String key,
-            @Field("id_supplier") String id_supplier
+            @Field("id_supplier") String id_supplier,
+            @Field("user_supplier_log") String user_supplier_log
     );
 }

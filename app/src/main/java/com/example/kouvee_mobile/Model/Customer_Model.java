@@ -21,6 +21,8 @@ public class Customer_Model {
     private String tanggal_tambah_customer_log;
     @SerializedName("tanggal_ubah_customer_log")
     private String tanggal_ubah_customer_log;
+    @SerializedName("user_customer_log")
+    private String user_customer_log;
 
     public int getIdCustomer() {
         return id_customer;
@@ -93,5 +95,13 @@ public class Customer_Model {
 
     public void setTanggalUbah(String tanggal_ubah_customer_log) {
         this.tanggal_ubah_customer_log = tanggal_ubah_customer_log;
+    }
+
+    public String getUser_customer_log() {
+        return user_customer_log;
+    }
+
+    public void setUser_customer_log(String user_customer_log) {
+        this.user_customer_log = user_customer_log;
     }
 }

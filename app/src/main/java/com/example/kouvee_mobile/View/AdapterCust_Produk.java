@@ -25,10 +25,11 @@ import java.util.List;
 public class AdapterCust_Produk extends RecyclerView.Adapter<AdapterCust_Produk.ProdukViewHolder> implements Filterable  {
     List<Produk_Model> produk, produkFilter;
     private Context context;
-    private AdapterCust_Produk.RecyclerViewProdukClickListener mListener;
+    private AdapterCust_Produk.RecyclerViewProdukCustomerClickListener mListener;
     SearchCust_Filter_Produk filter;
 
-    public AdapterCust_Produk(List<Produk_Model> produk, AdapterCust_Produk.RecyclerViewProdukClickListener listener) {
+    public AdapterCust_Produk(List<Produk_Model> produk,
+                              AdapterCust_Produk.RecyclerViewProdukCustomerClickListener listener) {
         this.produk = produk;
         this.produkFilter = produk;
         //this.context = context;
@@ -47,15 +48,16 @@ public class AdapterCust_Produk extends RecyclerView.Adapter<AdapterCust_Produk.
     public void onBindViewHolder(final AdapterCust_Produk.ProdukViewHolder holder, int position) {
         Produk_Model sup = produk.get(position);
         holder.pNamaProduk.setText(sup.getNama_produk());
-        holder.pStokProduk.setText(sup.getStok_produk());
+        holder.pStokProduk.setText("Tersedia " + sup.getStok_produk() + " " + sup.getSatuan_produk());
         holder.pHargaProduk.setText("Rp." + sup.getHarga_produk());
+        Picasso.get().load(sup.getImage_path())
+                .into(holder.pGambarProduk);
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.skipMemoryCache(true);
         requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
         requestOptions.placeholder(R.drawable.add);
         requestOptions.error(R.drawable.add);
-
     }
 
     @Override
@@ -76,15 +78,16 @@ public class AdapterCust_Produk extends RecyclerView.Adapter<AdapterCust_Produk.
 
         private TextView pNamaProduk, pStokProduk, pHargaProduk;
         private ImageView pGambarProduk;
-        private AdapterCust_Produk.RecyclerViewProdukClickListener mListener;
+        private AdapterCust_Produk.RecyclerViewProdukCustomerClickListener mListener;
         private RelativeLayout mRowContainer;
 
-        public ProdukViewHolder(View itemView, AdapterCust_Produk.RecyclerViewProdukClickListener listener) {
+        public ProdukViewHolder(View itemView, AdapterCust_Produk.RecyclerViewProdukCustomerClickListener listener) {
             super(itemView);
             pNamaProduk = itemView.findViewById(R.id.NamaProduk2);
             pStokProduk = itemView.findViewById(R.id.StokProduk2);
             pHargaProduk = itemView.findViewById(R.id.HargaProduk2);
             pGambarProduk = itemView.findViewById(R.id.GambarProduk);
+
             mRowContainer = itemView.findViewById(R.id.row_container);
             mListener = listener;
             mRowContainer.setOnClickListener(this);
@@ -101,7 +104,7 @@ public class AdapterCust_Produk extends RecyclerView.Adapter<AdapterCust_Produk.
         }
     }
 
-    public interface RecyclerViewProdukClickListener {
+    public interface RecyclerViewProdukCustomerClickListener {
         void onRowClick(View view, int position);
     }
 }

@@ -20,11 +20,14 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.kouvee_mobile.Controller.API_client;
 import com.example.kouvee_mobile.Controller.Produk_Interface;
 import com.example.kouvee_mobile.Model.Produk_Model;
 import com.example.kouvee_mobile.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -38,7 +41,7 @@ public class ActivityCust_Produk extends AppCompatActivity {
 
     private AdapterCust_Produk produkadapter;
     private List<Produk_Model> produkList;
-    AdapterCust_Produk.RecyclerViewProdukClickListener listener;
+    AdapterCust_Produk.RecyclerViewProdukCustomerClickListener listener;
     Produk_Interface apiInterface;
     ProgressBar progressBar;
 
@@ -56,10 +59,10 @@ public class ActivityCust_Produk extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         //parsing
-        listener = new AdapterCust_Produk.RecyclerViewProdukClickListener(){
+        listener = new AdapterCust_Produk.RecyclerViewProdukCustomerClickListener(){
             @Override
             public void onRowClick(View view, int position) {
-                Intent intent = new Intent(ActivityCust_Produk.this, Detail_Produk.class);
+                Intent intent = new Intent(ActivityCust_Produk.this, ActivityCust_Produk.class);
                 intent.putExtra("id_produk", produkList.get(position).getId_produk());
                 intent.putExtra("nama_produk", produkList.get(position).getNama_produk());
                 intent.putExtra("satuan_produk", produkList.get(position).getSatuan_produk());
@@ -70,10 +73,11 @@ public class ActivityCust_Produk extends AppCompatActivity {
                 intent.putExtra("tanggal_tambah_produk_log", produkList.get(position).getTanggalTambah());
                 intent.putExtra("tanggal_ubah_produk_log", produkList.get(position).getTanggalUbah());
                 intent.putExtra("user_produk_log", produkList.get(position).getUser_produk_log());
-                startActivity(intent);
+                //startActivity(intent);
             }
         };
     }
+
 
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();

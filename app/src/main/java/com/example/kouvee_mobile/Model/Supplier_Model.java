@@ -19,6 +19,8 @@ public class Supplier_Model {
     private String tanggal_tambah_supplier_log;
     @SerializedName("tanggal_ubah_supplier_log")
     private String tanggal_ubah_supplier_log;
+    @SerializedName("user_supplier_log")
+    private String user_supplier_log;
 
     public int getId_supplier() {
         return id;
@@ -83,5 +85,13 @@ public class Supplier_Model {
 
     public void setTanggalUbah(String tanggal_ubah_supplier_log) {
         this.tanggal_ubah_supplier_log = tanggal_ubah_supplier_log;
+    }
+
+    public String getUser_supplier_log() {
+        return user_supplier_log;
+    }
+
+    public void setUser_supplier_log(String user_supplier_log) {
+        this.user_supplier_log = user_supplier_log;
     }
 }
