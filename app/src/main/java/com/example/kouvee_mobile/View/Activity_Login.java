@@ -75,7 +75,7 @@ public class Activity_Login extends AppCompatActivity {
             dialog.show();
 
             Gson gson = new GsonBuilder().setLenient().create();
-            Retrofit.Builder builder = new Retrofit.Builder().baseUrl("http://192.168.1.5:8181/api_android/");
+            Retrofit.Builder builder = new Retrofit.Builder().baseUrl("http://192.168.1.6:8181/api_android/");
             builder.addConverterFactory(GsonConverterFactory.create(gson));
             Retrofit retrofit = builder.build();
             Login_Interface interface_login = retrofit.create(Login_Interface.class);
@@ -92,7 +92,7 @@ public class Activity_Login extends AppCompatActivity {
                         Toast.makeText(Activity_Login.this, "Login Berhasil!",
                                 Toast.LENGTH_SHORT).show();
 
-                        //dikasih if disini buat identifikasi login pegawai atau admin
+                        //
                         Log.i(Activity_Login.class.getSimpleName(), response.toString());
                         sp_NamaPegawai = response.body().getValue();
                         savePreference(sp_NamaPegawai);

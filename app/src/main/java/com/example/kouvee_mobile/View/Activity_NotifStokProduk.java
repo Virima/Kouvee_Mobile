@@ -145,8 +145,9 @@ public class Activity_NotifStokProduk extends AppCompatActivity {
         namaprdk.toUpperCase();
 
         alert.setTitle(produkList.get(position).getNama_produk());
-        alert.setMessage("Tambah Stok untuk Produk "+ namaprdk);
+        alert.setMessage("Tambah Pengadaan baru untuk Produk "+ namaprdk + "?");
 
+        /*
         // Set an EditText view to get user input
         final EditText inputTambahStok = new EditText(this);
         inputTambahStok.setHint("Jumlah Tambah Stok");
@@ -155,12 +156,16 @@ public class Activity_NotifStokProduk extends AppCompatActivity {
 
         final int id = produkList.get(position).getId_produk();  //di final biar bs kepake di onclick
         final String stokSebelum = produkList.get(position).getStok_produk();
+         */
 
         alert.setPositiveButton("Oke", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
 
-                String stokTambah= inputTambahStok.getText().toString().trim();
-                updateStok(id, stokSebelum, stokTambah);
+                //String stokTambah= inputTambahStok.getText().toString().trim();
+                //updateStok(id, stokSebelum, stokTambah);
+
+                Intent i = new Intent(Activity_NotifStokProduk.this, Detail_Pengadaan.class);
+                startActivity(i);
             }
         });
 
@@ -173,6 +178,7 @@ public class Activity_NotifStokProduk extends AppCompatActivity {
         alert.show();
     }
 
+    /*
     private void updateStok(final int id, String stokSebelum, String stokTambah) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Updating...");
@@ -216,7 +222,7 @@ public class Activity_NotifStokProduk extends AppCompatActivity {
             }
         });
 
-    }
+    } */
 
     protected void onResume() {
         super.onResume();

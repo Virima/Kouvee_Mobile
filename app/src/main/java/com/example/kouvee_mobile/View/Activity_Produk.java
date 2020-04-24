@@ -50,6 +50,14 @@ public class Activity_Produk extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity__produk);
 
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel = new NotificationChannel("NotifProduk",getString(R.string.app_name),
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription(getString(R.string.app_name));
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+
         apiInterface = API_client.getApiClient().create(Produk_Interface.class);
 
         progressBar = findViewById(R.id.progress);
@@ -140,6 +148,15 @@ public class Activity_Produk extends AppCompatActivity {
                 produkadapter = new Adapter_Produk(produkList,  listener);
                 recyclerView.setAdapter(produkadapter);
                 produkadapter.notifyDataSetChanged();
+
+                for(int i=0 ; i<produkList.size() ; i++)
+                {
+                    if(Integer.valueOf(produkList.get(i).getStok_produk()) <
+                            Integer.valueOf(produkList.get(i).getStok_min_produk()))
+                    {
+                        createNotification();
+                    }
+                }
             }
 
             @Override
@@ -169,7 +186,7 @@ public class Activity_Produk extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Produk_Model>> call, Throwable t) {
-                Toast.makeText(Activity_Produk.this, "Rp" + t.getMessage().toString(),
+                Toast.makeText(Activity_Produk.this, "Rp " + t.getMessage().toString(),
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -185,7 +202,7 @@ public class Activity_Produk extends AppCompatActivity {
                 .setSmallIcon(R.drawable.kouvee)
                 .setContentTitle("Terdapat Produk yang Hampir Habis")
                 .setContentText("Update Stok Produk sekarang!")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 // Set the intent that will fire when the user taps the notification
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
@@ -194,7 +211,6 @@ public class Activity_Produk extends AppCompatActivity {
 
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1, builder.build());
-        //createNotificationChannel();
     }
 
     protected void onResume() {
@@ -202,19 +218,4 @@ public class Activity_Produk extends AppCompatActivity {
         getProduk();
     }
 
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.app_name);
-            String description = getString(R.string.app_name);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("ID", name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
 }
