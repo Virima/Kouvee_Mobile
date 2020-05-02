@@ -12,16 +12,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
         <androidx.cardview.widget.CardView
             android:id="@+id/layoutName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="0dp"
             app:cardElevation="@dimen/cardview_default_elevation">
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -178,8 +178,9 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
-            </ScrollView>
         </androidx.cardview.widget.CardView>
+
+        </ScrollView>
 
     </RelativeLayout>
 

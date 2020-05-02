@@ -29,6 +29,8 @@ import com.example.kouvee_mobile.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -81,7 +83,7 @@ public class ActivityCust_Produk extends AppCompatActivity {
 
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.produk_main_menu, menu);
+        inflater.inflate(R.menu.produk_main_menu_cust, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         final SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
@@ -114,9 +116,121 @@ public class ActivityCust_Produk extends AppCompatActivity {
 
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+
+            case R.id.Sorting_Stok_Ascending:
+                Call<List<Produk_Model>> call3 = apiInterface.getProduk();
+                call3.enqueue(new Callback<List<Produk_Model>>() {
+                    @Override
+                    public void onResponse(Call<List<Produk_Model>> call, Response<List<Produk_Model>> response) {
+                        progressBar.setVisibility(View.GONE);
+                        produkList = response.body();
+                        Log.i(ActivityCust_Produk.class.getSimpleName(), response.body().toString());
+
+                        Collections.sort(produkList, new Comparator<Produk_Model>() {
+                            @Override
+                            public int compare(Produk_Model o1, Produk_Model o2) {
+                                return o1.getStok_produk().compareTo(o2.getStok_produk());
+                            }
+                        });
+
+                        produkadapter = new AdapterCust_Produk(produkList, listener);
+                        recyclerView.setAdapter(produkadapter);
+                        produkadapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Produk_Model>> call, Throwable t) {
+
+                    }
+                });
+                break;
+
+            case R.id.Sorting_Stok_Descending:
+                Call<List<Produk_Model>> call4 = apiInterface.getProduk();
+                call4.enqueue(new Callback<List<Produk_Model>>() {
+                    @Override
+                    public void onResponse(Call<List<Produk_Model>> call, Response<List<Produk_Model>> response) {
+                        progressBar.setVisibility(View.GONE);
+                        produkList = response.body();
+                        Log.i(ActivityCust_Produk.class.getSimpleName(), response.body().toString());
+
+                        Collections.sort(produkList, new Comparator<Produk_Model>() {
+                            @Override
+                            public int compare(Produk_Model o1, Produk_Model o2) {
+                                return o2.getStok_produk().compareTo(o1.getStok_produk());
+                            }
+                        });
+
+                        produkadapter = new AdapterCust_Produk(produkList, listener);
+                        recyclerView.setAdapter(produkadapter);
+                        produkadapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Produk_Model>> call, Throwable t) {
+
+                    }
+                });
+                break;
+
+            case R.id.Sorting_Harga_Ascending:
+                Call<List<Produk_Model>> call = apiInterface.getProduk();
+                call.enqueue(new Callback<List<Produk_Model>>() {
+                    @Override
+                    public void onResponse(Call<List<Produk_Model>> call, Response<List<Produk_Model>> response) {
+                        progressBar.setVisibility(View.GONE);
+                        produkList = response.body();
+                        Log.i(ActivityCust_Produk.class.getSimpleName(), response.body().toString());
+
+                        Collections.sort(produkList, new Comparator<Produk_Model>() {
+                            @Override
+                            public int compare(Produk_Model o1, Produk_Model o2) {
+                                return o1.getHarga_produk().compareTo(o2.getHarga_produk());
+                            }
+                        });
+
+                        produkadapter = new AdapterCust_Produk(produkList, listener);
+                        recyclerView.setAdapter(produkadapter);
+                        produkadapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Produk_Model>> call, Throwable t) {
+
+                    }
+                });
+                break;
+
+            case R.id.Sorting_Harga_Descending:
+                Call<List<Produk_Model>> call2 = apiInterface.getProduk();
+                call2.enqueue(new Callback<List<Produk_Model>>() {
+                    @Override
+                    public void onResponse(Call<List<Produk_Model>> call, Response<List<Produk_Model>> response) {
+                        progressBar.setVisibility(View.GONE);
+                        produkList = response.body();
+                        Log.i(ActivityCust_Produk.class.getSimpleName(), response.body().toString());
+
+                        Collections.sort(produkList, new Comparator<Produk_Model>() {
+                            @Override
+                            public int compare(Produk_Model o1, Produk_Model o2) {
+                                return o2.getHarga_produk().compareTo(o1.getHarga_produk());
+                            }
+                        });
+
+                        produkadapter = new AdapterCust_Produk(produkList, listener);
+                        recyclerView.setAdapter(produkadapter);
+                        produkadapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Produk_Model>> call, Throwable t) {
+
+                    }
+                });
+                break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 

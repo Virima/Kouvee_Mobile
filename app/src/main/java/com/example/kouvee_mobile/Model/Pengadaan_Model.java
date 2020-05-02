@@ -11,6 +11,8 @@ public class Pengadaan_Model {
     private String id_produk;
     @SerializedName("id_supplier")
     private String id_supplier;
+    @SerializedName("kode_pengadaan")
+    private String kode_pengadaan;
     @SerializedName("tanggal_pengadaan")
     private String tanggal_pengadaan;
     @SerializedName("jumlah_pengadaan")
@@ -19,6 +21,12 @@ public class Pengadaan_Model {
     private String subtotal_pengadaan;
     @SerializedName("status_pengadaan")
     private String status_pengadaan;
+    @SerializedName("tanggal_tambah_pengadaan_log")
+    private String tanggal_tambah_pengadaan_log;
+    @SerializedName("tanggal_ubah_pengadaan_log")
+    private String tanggal_ubah_pengadaan_log;
+    @SerializedName("user_pengadaan_log")
+    private String user_pengadaan_log;
     @SerializedName("value")
     private String value;
     @SerializedName("message")
@@ -54,6 +62,14 @@ public class Pengadaan_Model {
 
     public void setId_supplier(String id_supplier) {
         this.id_supplier = id_supplier;
+    }
+
+    public String getKode_pengadaan() {
+        return kode_pengadaan;
+    }
+
+    public void setKode_pengadaan(String kode_pengadaan) {
+        this.kode_pengadaan = kode_pengadaan;
     }
 
     public String getTanggal_pengadaan() {
@@ -102,5 +118,30 @@ public class Pengadaan_Model {
 
     public void setMessage(String massage) {
         this.message = message;
+    }
+
+    // LOG //
+    public String getTanggalTambah() {
+        return tanggal_tambah_pengadaan_log;
+    }
+
+    public void setTanggalTambah(String tanggal_tambah_pengadaan_log) {
+        this.tanggal_tambah_pengadaan_log = tanggal_tambah_pengadaan_log;
+    }
+
+    public String getTanggalUbah() {
+        return tanggal_ubah_pengadaan_log;
+    }
+
+    public void setTanggalUbah(String tanggal_ubah_pengadaan_log) {
+        this.tanggal_ubah_pengadaan_log = tanggal_ubah_pengadaan_log;
+    }
+
+    public String getUser_pengadaan_log() {
+        return user_pengadaan_log;
+    }
+
+    public void setUser_pengadaan_log(String user_pengadaan_log) {
+        this.user_pengadaan_log = user_pengadaan_log;
     }
 }

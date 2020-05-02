@@ -29,7 +29,7 @@ public class Search_Filter_Pengadaan extends Filter {
             for (int i=0;i<filterList.size();i++)
             {
                 //CHECK
-                if(filterList.get(i).getId_pengadaan().toUpperCase().contains(constraint))
+                if(filterList.get(i).getKode_pengadaan().toUpperCase().contains(constraint))
                 {
                     //ADD PLAYER TO FILTERED PLAYERS
                     filteredPengadaan.add(filterList.get(i));

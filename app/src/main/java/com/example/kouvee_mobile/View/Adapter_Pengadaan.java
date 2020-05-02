@@ -45,7 +45,8 @@ public class Adapter_Pengadaan extends RecyclerView.Adapter<Adapter_Pengadaan.Pe
     @Override
     public void onBindViewHolder(final Adapter_Pengadaan.PengadaanViewHolder holder, int position) {
         Pengadaan_Model sup = pengadaan.get(position);
-        holder.pIdPengadaan.setText(sup.getId_pengadaan());
+
+        holder.pKodePengadaan.setText(sup.getKode_pengadaan());
         holder.pIdSupplier.setText(sup.getId_supplier());
         holder.pIdProduk.setText(sup.getId_produk());
 
@@ -73,13 +74,13 @@ public class Adapter_Pengadaan extends RecyclerView.Adapter<Adapter_Pengadaan.Pe
 
     public class PengadaanViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView pIdPengadaan, pIdSupplier, pIdProduk;
+        private TextView pKodePengadaan, pIdSupplier, pIdProduk;
         private Adapter_Pengadaan.RecyclerViewPengadaanClickListener mListener;
         private RelativeLayout mRowContainer;
 
         public PengadaanViewHolder(View itemView, Adapter_Pengadaan.RecyclerViewPengadaanClickListener listener) {
             super(itemView);
-            pIdPengadaan = itemView.findViewById(R.id.IdPengadaan);
+            pKodePengadaan = itemView.findViewById(R.id.KodePengadaan);
             pIdSupplier = itemView.findViewById(R.id.IdSupplierPengadaan);
             pIdProduk = itemView.findViewById(R.id.IdProdukPengadaan);
             mRowContainer = itemView.findViewById(R.id.row_container);

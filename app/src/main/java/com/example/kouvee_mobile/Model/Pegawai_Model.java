@@ -87,11 +87,11 @@ public class Pegawai_Model {
         this.value = value;
     }
 
-    public String getMassage() {
+    public String getMessage() {
         return message;
     }
 
-    public void setMassage(String message) {
+    public void setMessage(String message) {
         this.message = message;
     }
 

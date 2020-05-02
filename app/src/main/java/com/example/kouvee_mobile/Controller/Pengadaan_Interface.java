@@ -18,33 +18,38 @@ public interface Pengadaan_Interface {
     @POST("insertpengadaan.php")
     Call<Pengadaan_Model> createPengadaan(
             @Field("key") String key,
-            @Field("id_detail_pengadaan") String id_detail_pengadaan,
             @Field("id_produk") String id_produk,
             @Field("id_supplier") String id_supplier,
             @Field("tanggal_pengadaan") String tanggal_pengadaan,
             @Field("jumlah_pengadaan") String jumlah_pengadaan,
             @Field("subtotal_pengadaan") String subtotal_pengadaan,
-            @Field("status_pengadaan") String status_pengadaan
+            @Field("status_pengadaan") String status_pengadaan,
+            @Field("user_pengadaan_log") String user_pengadaan_log
     );
 
     @FormUrlEncoded
     @POST("editpengadaan.php")
     Call<Pengadaan_Model> editPengadaan(
             @Field("key") String key,
+            @Field("id_pengadaan") String id_pengadaan,
             @Field("id_detail_pengadaan") String id_detail_pengadaan,
             @Field("id_produk") String id_produk,
             @Field("id_supplier") String id_supplier,
+            @Field("kode_pengadaan") String kode_pengadaan,
             @Field("tanggal_pengadaan") String tanggal_pengadaan,
             @Field("jumlah_pengadaan") String jumlah_pengadaan,
             @Field("subtotal_pengadaan") String subtotal_pengadaan,
-            @Field("status_pengadaan") String status_pengadaan
+            @Field("status_pengadaan") String status_pengadaan,
+            @Field("tgl_ubah_pengadaan_log") String tgl_ubah_pengadaan_log,
+            @Field("user_pengadaan_log") String user_pengadaan_log
     );
 
     @FormUrlEncoded
     @POST("hapuspengadaan.php")
     Call<Pengadaan_Model> hapusPengadaan(
             @Field("key") String key,
+            @Field("id_pengadaan") String id_pengadaan,
             @Field("id_detail_pengadaan") String id_detail_pengadaan,
-            @Field("id_pengadaan") String id_pengadaan
+            @Field("user_pengadaan_log") String user_pengadaan_log
     );
 }

@@ -12,4 +12,28 @@
         app:showAsAction="collapseActionView|always"
         android:theme="@android:style/Theme.Holo.Light"/>
 
+    <item
+        android:id="@+id/Sorting_Stok_Ascending"
+        android:orderInCategory="100"
+        android:title="Sorting Stok Ascending"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/Sorting_Stok_Descending"
+        android:orderInCategory="100"
+        android:title="Sorting Stok Descending"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/Sorting_Harga_Ascending"
+        android:orderInCategory="100"
+        android:title="Sorting Harga Ascending"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/Sorting_Harga_Descending"
+        android:orderInCategory="100"
+        android:title="Sorting Harga Descending"
+        app:showAsAction="never" />
+
 </menu>

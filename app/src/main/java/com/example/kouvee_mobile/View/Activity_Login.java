@@ -13,12 +13,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kouvee_mobile.Controller.API_client;
 import com.example.kouvee_mobile.Controller.Login_Interface;
 import com.example.kouvee_mobile.Model.Login_Model;
 import com.example.kouvee_mobile.Model.Pegawai_Model;
 import com.example.kouvee_mobile.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.List;
 
@@ -86,6 +89,8 @@ public class Activity_Login extends AppCompatActivity {
             call.enqueue(new Callback<Login_Model>() {
                 @Override
                 public void onResponse(Call<Login_Model> call, Response<Login_Model> response) {
+                    String password = inputpassword.getText().toString();
+
                     if (response.isSuccessful()) {
 
                         dialog.dismiss();
@@ -114,7 +119,7 @@ public class Activity_Login extends AppCompatActivity {
 
                     } else {
                         dialog.dismiss();
-                        Toast.makeText(Activity_Login.this, "Username atau Password Salah",
+                        Toast.makeText(Activity_Login.this, "Username dan Password Salah",
                                 Toast.LENGTH_SHORT).show();
 
                         dialog.cancel();
@@ -124,7 +129,7 @@ public class Activity_Login extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<Login_Model> call, Throwable t) {
                     Log.d("TAG", t.toString());
-                    Toast.makeText(Activity_Login.this, "Username dan Password Salah",
+                    Toast.makeText(Activity_Login.this, "Username atau Password Salah",
                             Toast.LENGTH_SHORT).show();
                     dialog.cancel();
                 }

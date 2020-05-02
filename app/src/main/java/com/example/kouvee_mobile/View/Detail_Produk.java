@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -107,12 +108,6 @@ public class Detail_Produk extends AppCompatActivity {
 
     public String sp_NamaPegawai="";
 
-    /* */
-    public static final String KEY_User_Document1 = "doc1";
-
-    private String Document_img1="";
-    /* */
-
     Button CaptureImageFromCamera;
     MenuItem saveImage;
     ImageView ImageViewHolder;
@@ -122,7 +117,8 @@ public class Detail_Produk extends AppCompatActivity {
     Bitmap bitmap;
     boolean check = true;
     String ImagePathFieldOnServer = "image_path";
-    String ImageUploadPathOnSever ="http://192.168.1.6:8181/api_android/insertproduk.php";
+    String ImageUploadPathOnServer ="http://192.168.1.6:8181/api_android/insertproduk.php";
+    String ImageUpdatePathOnServer ="http://192.168.1.6:8181/api_android/editproduk.php";
 
     private Menu action;
     private final static String TAG = "Detail_Produk";
@@ -154,6 +150,10 @@ public class Detail_Produk extends AppCompatActivity {
         pTglDibuat = findViewById(R.id.tanggal_tambah_produk_log);
         pTglDiubah = findViewById(R.id.tanggal_ubah_produk_log);
         pUserLog = findViewById(R.id.user_produk_log);
+
+        pStokProduk.setInputType(InputType.TYPE_CLASS_NUMBER);
+        pStokMin.setInputType(InputType.TYPE_CLASS_NUMBER);
+        pHargaProduk.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         CaptureImageFromCamera.setOnClickListener(new View.OnClickListener()
         {
@@ -194,6 +194,8 @@ public class Detail_Produk extends AppCompatActivity {
             readMode();
             getSupportActionBar().setTitle(nama_produk.toString());     //Header
 
+            CaptureImageFromCamera.setVisibility(View.GONE);
+
             pNamaProduk.setText(nama_produk);
             pSatuanProduk.setText(satuan_produk);
             pStokProduk.setText(stok_produk);
@@ -227,7 +229,6 @@ public class Detail_Produk extends AppCompatActivity {
 
         if (id == 0) {
             editMode();
-
             action.findItem(R.id.menu_edit).setVisible(false);
             action.findItem(R.id.menu_delete).setVisible(false);
             action.findItem(R.id.menu_save).setVisible(true);
@@ -254,7 +255,7 @@ public class Detail_Produk extends AppCompatActivity {
             case R.id.menu_edit:
                 //Edit
                 editMode();
-
+                CaptureImageFromCamera.setVisibility(View.VISIBLE);
                 action.findItem(R.id.menu_edit).setVisible(false);
                 action.findItem(R.id.menu_delete).setVisible(false);
                 action.findItem(R.id.menu_save).setVisible(true);
@@ -263,6 +264,8 @@ public class Detail_Produk extends AppCompatActivity {
 
             case R.id.menu_save:
                 if (id == 0) {
+                    CaptureImageFromCamera.setVisibility(View.VISIBLE);
+
                     if (TextUtils.isEmpty(pNamaProduk.getText().toString()) ||
                             TextUtils.isEmpty(pSatuanProduk.getText().toString()) ||
                             TextUtils.isEmpty(pStokProduk.getText().toString()) ||
@@ -279,17 +282,31 @@ public class Detail_Produk extends AppCompatActivity {
                         alertDialog.show();
                     } else {
                         //sehabis insert muncul icon edit dan delete
-                        postData("insert");
+                        //postData("insert");
+                        nama_produk = pNamaProduk.getText().toString().trim();
+                        satuan_produk = pSatuanProduk.getText().toString().trim();
+                        stok_produk = pStokProduk.getText().toString().trim();
+                        stok_min = pStokMin.getText().toString().trim();
+                        harga_produk = pHargaProduk.getText().toString().trim();
+
+                        ImageUploadToServerFunctionInsert();
+
                         action.findItem(R.id.menu_edit).setVisible(true);
                         action.findItem(R.id.menu_save).setVisible(false);
                         action.findItem(R.id.menu_delete).setVisible(true);
 
                         readMode();
                     }
-                    ImageUploadToServerFunction();
 
                 } else {
-                    updateData("update", id);
+                    nama_produk = pNamaProduk.getText().toString().trim();
+                    satuan_produk = pSatuanProduk.getText().toString().trim();
+                    stok_produk = pStokProduk.getText().toString().trim();
+                    stok_min = pStokMin.getText().toString().trim();
+                    harga_produk = pHargaProduk.getText().toString().trim();
+
+                    ImageUploadToServerFunctionUpdate(id);
+                    //updateData("update", id);
                     action.findItem(R.id.menu_edit).setVisible(true);
                     action.findItem(R.id.menu_save).setVisible(false);
                     action.findItem(R.id.menu_delete).setVisible(true);
@@ -323,6 +340,7 @@ public class Detail_Produk extends AppCompatActivity {
         }
     }
 
+    /*
     private void postData(final String key) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Menyimpan...");
@@ -335,6 +353,7 @@ public class Detail_Produk extends AppCompatActivity {
         final String stok_produk = pStokProduk.getText().toString().trim();
         final String stok_min = pStokMin.getText().toString().trim();
         String harga_produk = pHargaProduk.getText().toString().trim();
+        //ImageUploadToServerFunction();
 
         apiInterface = API_client.getApiClient().create(Produk_Interface.class);
 
@@ -363,9 +382,10 @@ public class Detail_Produk extends AppCompatActivity {
                 Toast.makeText(Detail_Produk.this, t.getMessage().toString(), Toast.LENGTH_SHORT).show();
             }
         });
-
     }
+    */
 
+    /*
     private void updateData(final String key, final int id) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Updating...");
@@ -414,7 +434,7 @@ public class Detail_Produk extends AppCompatActivity {
             }
         });
 
-    }
+    } */
 
     private void deleteData(String key, int id) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -498,21 +518,7 @@ public class Detail_Produk extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intentCam) {
 
         super.onActivityResult(requestCode, resultCode, intentCam);
-        System.out.println("YEEEEEEEEEEETT " + requestCode);
         Uri uri = intentCam.getData();
-
-        /*
-        if (requestCode == 7 && resultCode == Activity.RESULT_OK) {
-            Uri uri = data.getData();
-            try {
-                // Adding captured image in bitmap.
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                // adding captured image in imageview.
-                ImageViewHolder.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } */
 
         if(resultCode != RESULT_CANCELED){
 
@@ -538,7 +544,7 @@ public class Detail_Produk extends AppCompatActivity {
     }
 
     // Upload captured image online on server function.
-    public void ImageUploadToServerFunction(){
+    public void ImageUploadToServerFunctionInsert() {
         ByteArrayOutputStream bao;
         bao = new ByteArrayOutputStream();
 
@@ -576,16 +582,90 @@ public class Detail_Produk extends AppCompatActivity {
             protected String doInBackground(Void... params) {
                 ImageProcessClass imageProcessClass = new ImageProcessClass();
                 HashMap<String,String> HashMapParams = new HashMap<String,String>();
+
+                HashMapParams.put("nama_produk", nama_produk);
+                HashMapParams.put("satuan_produk", satuan_produk);
+                HashMapParams.put("stok_produk", stok_produk);
+                HashMapParams.put("stok_min_produk", stok_min);
+                HashMapParams.put("harga_produk", harga_produk);
+                HashMapParams.put("user_produk_log", sp_NamaPegawai);
+
                 HashMapParams.put(ImagePathFieldOnServer, ConvertImage);
-                String FinalData = imageProcessClass.ImageHttpRequest(ImageUploadPathOnSever, HashMapParams);
+                String FinalData = imageProcessClass.ImageHttpRequest(ImageUploadPathOnServer, HashMapParams);
                 return FinalData;
             }
         }
         AsyncTaskUploadClass AsyncTaskUploadClassOBJ = new AsyncTaskUploadClass();
         AsyncTaskUploadClassOBJ.execute();
+
+        Intent back = new Intent(Detail_Produk.this, Activity_Produk.class);
+        startActivity(back);
     }
 
-    public class ImageProcessClass{
+    public void ImageUploadToServerFunctionUpdate(final int id) {
+        ByteArrayOutputStream bao;
+        bao = new ByteArrayOutputStream();
+
+        // Converting bitmap image to jpeg format, so by default image will upload in jpeg format.
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bao);
+
+        byte[] byteArrayVar = bao.toByteArray();
+
+        final String ConvertImage = Base64.encodeToString(byteArrayVar, Base64.DEFAULT);
+
+        class AsyncTaskUploadClass extends AsyncTask<Void,Void,String> {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                // Showing progress dialog at image upload time.
+                progressDialog = ProgressDialog.show(Detail_Produk.this,
+                        "Image is Uploading","Please Wait",false,false);
+            }
+
+            @Override
+            protected void onPostExecute(String string1) {
+                super.onPostExecute(string1);
+
+                // Dismiss the progress dialog after done uploading.
+                progressDialog.dismiss();
+
+                // Printing uploading success message coming from server on android app.
+                Toast.makeText(Detail_Produk.this,string1 + "Success~",Toast.LENGTH_LONG).show();
+
+                // Setting image as transparent after done uploading.
+                ImageViewHolder.setImageResource(android.R.color.transparent);
+            }
+
+            @Override
+            protected String doInBackground(Void... params) {
+                ImageProcessClass imageProcessClass = new ImageProcessClass();
+                HashMap<String,String> HashMapParams = new HashMap<String,String>();
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String tgl_ubah_produk_log = simpleDateFormat.format(new Date());
+
+                HashMapParams.put("id_produk", String.valueOf(id));
+                HashMapParams.put("nama_produk", nama_produk);
+                HashMapParams.put("satuan_produk", satuan_produk);
+                HashMapParams.put("stok_produk", stok_produk);
+                HashMapParams.put("stok_min_produk", stok_min);
+                HashMapParams.put("harga_produk", harga_produk);
+                HashMapParams.put("user_produk_log", sp_NamaPegawai);
+                HashMapParams.put("tanggal_ubah_produk_log", tgl_ubah_produk_log);
+
+                HashMapParams.put(ImagePathFieldOnServer, ConvertImage);
+                String FinalData = imageProcessClass.ImageHttpRequest(ImageUpdatePathOnServer, HashMapParams);
+                return FinalData;
+            }
+        }
+        AsyncTaskUploadClass AsyncTaskUploadClassOBJ = new AsyncTaskUploadClass();
+        AsyncTaskUploadClassOBJ.execute();
+
+        Intent back = new Intent(Detail_Produk.this, Activity_Produk.class);
+        startActivity(back);
+    }
+
+    public class ImageProcessClass {
         public String ImageHttpRequest(String requestURL,HashMap<String, String> PData) {
             StringBuilder stringBuilder = new StringBuilder();
             try {
@@ -652,11 +732,11 @@ public class Detail_Produk extends AppCompatActivity {
             case RequestPermissionCode:
                 if (PResult.length > 0 && PResult[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(Detail_Produk.this,
-                            "Permission Granted, Now your application can access CAMERA.",
+                            "Permission Akses Kamera Diaktifkan.",
                             Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(Detail_Produk.this,
-                            "Permission Canceled, Now your application cannot access CAMERA.",
+                            "Permission Akses Kamera Ditolak.",
                             Toast.LENGTH_LONG).show();
                 }
                 break;

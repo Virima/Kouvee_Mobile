@@ -11,6 +11,8 @@ public class Login_Model {
     private String value;
     @SerializedName("message")
     private String message;
+    @SerializedName("hash")
+    private String hash;
 
     public String getUsername() {
         return username;
@@ -42,5 +44,13 @@ public class Login_Model {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 }

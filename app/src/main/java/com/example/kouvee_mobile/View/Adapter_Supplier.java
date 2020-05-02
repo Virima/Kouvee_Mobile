@@ -53,7 +53,6 @@ public class Adapter_Supplier extends RecyclerView.Adapter<Adapter_Supplier.Supp
         requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
         requestOptions.placeholder(R.drawable.add);
         requestOptions.error(R.drawable.add);
-
     }
 
     @Override

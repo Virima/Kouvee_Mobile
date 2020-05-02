@@ -61,4 +61,17 @@ public interface Produk_Interface {
             @Field("stok_produk") String stok_produk,
             @Field("tanggal_ubah_produk_log") String tanggal_ubah_produk_log
     );
+
+    // SORTING //
+    @GET("tampilprodukSortStokAsc.php")
+    Call<List<Produk_Model>> getProdukSortStokAsc();
+
+    @GET("tampilprodukSortStokDesc.php")
+    Call<List<Produk_Model>> getProdukSortStokDesc();
+
+    @GET("tampilprodukSortHargaAsc.php")
+    Call<List<Produk_Model>> getProdukSortHargaAsc();
+
+    @GET("tampilprodukSortHargaDesc.php")
+    Call<List<Produk_Model>> getProdukSortHargaDesc();
 }

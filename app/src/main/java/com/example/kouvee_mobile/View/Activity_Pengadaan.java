@@ -69,10 +69,13 @@ public class Activity_Pengadaan extends AppCompatActivity {
                 intent.putExtra("id_pengadaan", pengadaanList.get(position).getId_pengadaan());
                 intent.putExtra("id_produk", pengadaanList.get(position).getId_produk());
                 intent.putExtra("id_supplier", pengadaanList.get(position).getId_supplier());
+                intent.putExtra("kode_pengadaan", pengadaanList.get(position).getKode_pengadaan());
                 intent.putExtra("tanggal_pengadaan", pengadaanList.get(position).getTanggal_pengadaan());
                 intent.putExtra("jumlah_pengadaan", pengadaanList.get(position).getJumlah_pengadaan());
                 intent.putExtra("subtotal_pengadaan", pengadaanList.get(position).getSubtotal_pengadaan());
                 intent.putExtra("status_pengadaan", pengadaanList.get(position).getStatus_pengadaan());
+                intent.putExtra("tanggal_tambah_pengadaan_log", pengadaanList.get(position).getTanggalTambah());
+                intent.putExtra("tanggal_ubah_pengadaan_log", pengadaanList.get(position).getTanggalUbah());
                 startActivity(intent);
             }
         };
@@ -99,7 +102,7 @@ public class Activity_Pengadaan extends AppCompatActivity {
                 searchManager.getSearchableInfo(getComponentName())
         );
 
-        searchView.setQueryHint("Cari Id Pengadaan");
+        searchView.setQueryHint("Cari Pengadaan");
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
