@@ -58,12 +58,14 @@ import retrofit2.Response;
 
 public class Detail_Pengadaan extends AppCompatActivity {
     private EditText pIdPengadaan, pIdProduk, pIdSupplier, pTanggalPengadaan, pJumlahPengadaan, pSubtotalPengadaan,
-            pStatusPengadaan;
+            pStatusPengadaan, pTglDibuat, pTglDiubah, pUserLog;
     private String id_pengadaan, id_produk, id_supplier, kode_pengadaan, tanggal_pengadaan, jumlah_pengadaan,
-            subtotal_pengadaan, status_pengadaan;
+            subtotal_pengadaan, status_pengadaan, tgl_dibuat, tgl_diubah, user_log;
     private int id;
 
     private int jumlah, harga;
+
+    public String sp_NamaPegawai="";
 
     private Spinner spinnerProduk;
     private Spinner spinnerSupplier;
@@ -80,7 +82,6 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
     SharedPreferences sp;
     public static final int mode = Activity.MODE_PRIVATE;
-    public String sp_NamaPegawai="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +100,10 @@ public class Detail_Pengadaan extends AppCompatActivity {
         pJumlahPengadaan = findViewById(R.id.JumlahPengadaan);
         pSubtotalPengadaan = findViewById(R.id.SubtotalPengadaan);
         pStatusPengadaan = findViewById(R.id.StatusPengadaan);
-
         pJumlahPengadaan.setInputType(InputType.TYPE_CLASS_NUMBER);
+        pTglDibuat = findViewById(R.id.tanggal_tambah_pengadaan_log);
+        pTglDiubah = findViewById(R.id.tanggal_ubah_pengadaan_log);
+        pUserLog = findViewById(R.id.user_pengadaan_log);
 
         listSpinnerProduk = new ArrayList<>();
         listSpinnerSupplier = new ArrayList<>();
@@ -120,6 +123,9 @@ public class Detail_Pengadaan extends AppCompatActivity {
         jumlah_pengadaan = intent.getStringExtra("jumlah_pengadaan");
         subtotal_pengadaan = intent.getStringExtra("subtotal_pengadaan");
         status_pengadaan = intent.getStringExtra("status_pengadaan");
+        tgl_dibuat = intent.getStringExtra("tanggal_tambah_pengadaan_log");
+        tgl_diubah = intent.getStringExtra("tanggal_ubah_pengadaan_log");
+        user_log = intent.getStringExtra("user_pengadaan_log");
         setDataFromIntentExtra();
 
         loadSpinnerProduk();
@@ -168,6 +174,9 @@ public class Detail_Pengadaan extends AppCompatActivity {
             pJumlahPengadaan.setText(jumlah_pengadaan);
             pSubtotalPengadaan.setText(subtotal_pengadaan);
             pStatusPengadaan.setText(status_pengadaan);
+            pTglDibuat.setText(tgl_dibuat);
+            pTglDiubah.setText(tgl_diubah);
+            pUserLog.setText(user_log);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -187,6 +196,10 @@ public class Detail_Pengadaan extends AppCompatActivity {
             pIdProduk.setVisibility(View.GONE);
             pIdSupplier.setVisibility(View.GONE);
             pStatusPengadaan.setVisibility(View.GONE);
+
+            pTglDibuat.setVisibility(View.GONE);
+            pTglDiubah.setVisibility(View.GONE);
+            pUserLog.setVisibility(View.GONE);
         }
     }
 
@@ -410,7 +423,8 @@ public class Detail_Pengadaan extends AppCompatActivity {
                         tanggal_pengadaan,
                         jumlah_pengadaan,
                         subtotal_pengadaan,
-                        status_pengadaan);
+                        status_pengadaan,
+                        sp_NamaPegawai);
 
         call.enqueue(new Callback<Pengadaan_Model>() {
             public void onResponse(Call<Pengadaan_Model> call, Response<Pengadaan_Model> response) {
@@ -450,6 +464,9 @@ public class Detail_Pengadaan extends AppCompatActivity {
         String subtotal_pengadaan = pSubtotalPengadaan.getText().toString().trim();
         String status_pengadaan = pStatusPengadaan.getText().toString().trim();
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String tgl_ubah_customer_log = simpleDateFormat.format(new Date());
+
         apiInterface = API_client.getApiClient().create(Pengadaan_Interface.class);
 
         Call<Pengadaan_Model> call =
@@ -463,7 +480,9 @@ public class Detail_Pengadaan extends AppCompatActivity {
                         tanggal_pengadaan,
                         jumlah_pengadaan,
                         subtotal_pengadaan,
-                        status_pengadaan);
+                        status_pengadaan,
+                        tgl_ubah_customer_log,
+                        sp_NamaPegawai);
 
         call.enqueue(new Callback<Pengadaan_Model>() {
             public void onResponse(Call<Pengadaan_Model> call, Response<Pengadaan_Model> response) {
@@ -500,7 +519,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
         apiInterface = API_client.getApiClient().create(Pengadaan_Interface.class);
 
-        Call<Pengadaan_Model> call = apiInterface.hapusPengadaan(key, id_pengadaan, String.valueOf(id));
+        Call<Pengadaan_Model> call = apiInterface.hapusPengadaan(key, id_pengadaan, String.valueOf(id), sp_NamaPegawai);
 
         call.enqueue(new Callback<Pengadaan_Model>() {
             @Override
@@ -677,6 +696,9 @@ public class Detail_Pengadaan extends AppCompatActivity {
         pTanggalPengadaan.setFocusableInTouchMode(false);
         pJumlahPengadaan.setFocusableInTouchMode(true);
         pSubtotalPengadaan.setFocusableInTouchMode(false);
+        pTglDibuat.setFocusableInTouchMode(false);
+        pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
 
         alertIsiNamaProdukDulu(pJumlahPengadaan);
     }
@@ -690,6 +712,9 @@ public class Detail_Pengadaan extends AppCompatActivity {
         pTanggalPengadaan.setFocusableInTouchMode(false);
         pJumlahPengadaan.setFocusableInTouchMode(false);
         pSubtotalPengadaan.setFocusableInTouchMode(false);
+        pTglDibuat.setFocusableInTouchMode(false);
+        pTglDiubah.setFocusableInTouchMode(false);
+        pUserLog.setFocusableInTouchMode(false);
 
         alertDisable(pIdProduk);
         alertDisable(pIdSupplier);
@@ -796,7 +821,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
     private void setUpdateSpinnerStatusPengadaan()
     {
         String editText = pStatusPengadaan.getText().toString();
-        for(int i=0; i < spinnerStatusPengadaan.getCount(); i++ ) {
+        for(int i=0; i < spinnerStatusPengadaan.getCount(); i++) {
 
             String nama = spinnerStatusPengadaan.getSelectedItem().toString();
 
@@ -812,7 +837,9 @@ public class Detail_Pengadaan extends AppCompatActivity {
         et1.addTextChangedListener(new TextWatcher() {
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {

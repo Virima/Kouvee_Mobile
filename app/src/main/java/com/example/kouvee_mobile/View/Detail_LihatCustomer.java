@@ -121,7 +121,7 @@ public class Detail_LihatCustomer extends AppCompatActivity {
         action = menu;
         action.findItem(R.id.menu_save).setVisible(false);
 
-        if (id == 0){
+        if (id == 0) {
             editMode();
 
             pTglLahirCustomer = (EditText) findViewById(R.id.TglLahirCustomer); //date
@@ -332,7 +332,6 @@ public class Detail_LihatCustomer extends AppCompatActivity {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String tgl_ubah_customer_log = simpleDateFormat.format(new Date());
-        System.out.println(tgl_ubah_customer_log);
 
         apiInterface = API_client.getApiClient().create(Customer_Interface.class);
 

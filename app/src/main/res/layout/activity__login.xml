@@ -12,7 +12,7 @@
         android:layout_width="187dp"
         android:layout_height="179dp"
         android:layout_marginStart="122dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="123dp"
         android:background="@drawable/my_button_bg2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:layout_marginStart="99dp"
-        android:layout_marginTop="310dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="99dp"
         android:background="@drawable/round_border"
         android:ems="10"
@@ -36,7 +36,7 @@
         android:textIsSelectable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/textViewMenuPegawai" />
 
 
     <EditText
@@ -62,7 +62,7 @@
         android:layout_width="100dp"
         android:layout_height="40dp"
         android:layout_marginStart="115dp"
-        android:layout_marginTop="410dp"
+        android:layout_marginTop="55dp"
         android:layout_marginEnd="115dp"
         android:background="@drawable/my_button_bg"
         android:fontFamily="sans-serif-condensed-medium"
@@ -72,14 +72,14 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/inputPassword" />
 
     <Button
         android:id="@+id/btnCustomer"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="115dp"
-        android:layout_marginTop="535dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="115dp"
         android:background="@drawable/my_button_bg2"
         android:fontFamily="sans-serif-condensed-medium"
@@ -88,10 +88,10 @@
         android:text="Menu Customer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/textView2" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewMenuPegawai"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginStart="115dp"
@@ -110,7 +110,7 @@
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:layout_marginStart="115dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="115dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:textSize="16sp"

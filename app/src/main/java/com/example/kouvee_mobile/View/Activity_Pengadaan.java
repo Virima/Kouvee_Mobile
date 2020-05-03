@@ -76,6 +76,7 @@ public class Activity_Pengadaan extends AppCompatActivity {
                 intent.putExtra("status_pengadaan", pengadaanList.get(position).getStatus_pengadaan());
                 intent.putExtra("tanggal_tambah_pengadaan_log", pengadaanList.get(position).getTanggalTambah());
                 intent.putExtra("tanggal_ubah_pengadaan_log", pengadaanList.get(position).getTanggalUbah());
+                intent.putExtra("user_pengadaan_log", pengadaanList.get(position).getUser_pengadaan_log());
                 startActivity(intent);
             }
         };

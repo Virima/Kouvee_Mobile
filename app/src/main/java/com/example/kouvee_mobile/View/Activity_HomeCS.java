@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.kouvee_mobile.R;
 
 public class Activity_HomeCS extends AppCompatActivity  {
-    Button btnDataHewan, btnCustomer;
+    Button btnDataHewan, btnCustomer, btnLogoutCS;
     Button btnPenjualanProduk, btnPenjualanLayanan;
 
     boolean doubleBackToExitPressedOnce = false;
@@ -40,7 +40,14 @@ public class Activity_HomeCS extends AppCompatActivity  {
             }
         });
 
-
+        btnLogoutCS = findViewById(R.id.btnLogoutCS);
+        btnLogoutCS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent customer = new Intent(Activity_HomeCS.this, Activity_Login.class);
+                startActivity(customer);
+            }
+        });
     }
 
     @Override
