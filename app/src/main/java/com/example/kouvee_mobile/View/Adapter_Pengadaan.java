@@ -48,7 +48,7 @@ public class Adapter_Pengadaan extends RecyclerView.Adapter<Adapter_Pengadaan.Pe
 
         holder.pKodePengadaan.setText(sup.getKode_pengadaan());
         holder.pIdSupplier.setText(sup.getId_supplier());
-        holder.pIdProduk.setText(sup.getId_produk());
+        holder.pStatusPengadaan.setText(sup.getStatus_pengadaan());
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.skipMemoryCache(true);
@@ -74,7 +74,7 @@ public class Adapter_Pengadaan extends RecyclerView.Adapter<Adapter_Pengadaan.Pe
 
     public class PengadaanViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView pKodePengadaan, pIdSupplier, pIdProduk;
+        private TextView pKodePengadaan, pIdSupplier, pStatusPengadaan;
         private Adapter_Pengadaan.RecyclerViewPengadaanClickListener mListener;
         private RelativeLayout mRowContainer;
 
@@ -82,7 +82,7 @@ public class Adapter_Pengadaan extends RecyclerView.Adapter<Adapter_Pengadaan.Pe
             super(itemView);
             pKodePengadaan = itemView.findViewById(R.id.KodePengadaan);
             pIdSupplier = itemView.findViewById(R.id.IdSupplierPengadaan);
-            pIdProduk = itemView.findViewById(R.id.IdProdukPengadaan);
+            pStatusPengadaan = itemView.findViewById(R.id.StatusPengadaanTxt);
             mRowContainer = itemView.findViewById(R.id.row_container);
             mListener = listener;
             mRowContainer.setOnClickListener(this);

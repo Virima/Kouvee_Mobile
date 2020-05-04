@@ -94,8 +94,6 @@ public class Activity_Login extends AppCompatActivity {
                     if (response.isSuccessful()) {
 
                         dialog.dismiss();
-                        Toast.makeText(Activity_Login.this, "Login Berhasil!",
-                                Toast.LENGTH_SHORT).show();
 
                         //
                         Log.i(Activity_Login.class.getSimpleName(), response.toString());
@@ -105,16 +103,20 @@ public class Activity_Login extends AppCompatActivity {
                         String message = response.body().getMessage();
                         if (message.equals("Owner"))
                         {
+                            Toast.makeText(Activity_Login.this, "Login Berhasil!",
+                                    Toast.LENGTH_SHORT).show();
                             Intent i = new Intent(Activity_Login.this, Activity_HomeAdmin.class);
                             startActivity(i);
                         } else if (message.equals("Customer Service"))
                         {
+                            Toast.makeText(Activity_Login.this, "Login Berhasil!",
+                                    Toast.LENGTH_SHORT).show();
                             Intent i = new Intent(Activity_Login.this, Activity_HomeCS.class);
                             startActivity(i);
                         } else if (message.equals("Kasir"))
                         {
-                            Intent i = new Intent(Activity_Login.this, Activity_HomeKasir.class);
-                            startActivity(i);
+                            Toast.makeText(Activity_Login.this, "Kasir Silakan Login menggunakan Web atau Desktop",
+                                    Toast.LENGTH_SHORT).show();
                         }
 
                     } else {

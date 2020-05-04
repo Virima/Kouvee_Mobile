@@ -58,10 +58,12 @@ import retrofit2.Response;
 
 public class Detail_Pengadaan extends AppCompatActivity {
     private EditText pIdPengadaan, pIdProduk, pIdSupplier, pTanggalPengadaan, pJumlahPengadaan, pSubtotalPengadaan,
-            pStatusPengadaan, pTglDibuat, pTglDiubah, pUserLog;
+            pStatusPengadaan, pTotalPengadaan, pTglDibuat, pTglDiubah, pUserLog;
     private String id_pengadaan, id_produk, id_supplier, kode_pengadaan, tanggal_pengadaan, jumlah_pengadaan,
-            subtotal_pengadaan, status_pengadaan, tgl_dibuat, tgl_diubah, user_log;
+            subtotal_pengadaan, status_pengadaan, total_pengadaan, tgl_dibuat, tgl_diubah, user_log;
     private int id;
+
+    private Button tambahProdukPengadaanBtn;
 
     private int jumlah, harga;
 
@@ -94,16 +96,19 @@ public class Detail_Pengadaan extends AppCompatActivity {
         }
 
         pIdPengadaan = findViewById(R.id.KodePengadaan);
-        pIdProduk = findViewById(R.id.NamaProdukJoinPengadaan);
+        //pIdProduk = findViewById(R.id.NamaProdukJoinPengadaan);
         pIdSupplier = findViewById(R.id.NamaSupplierJoinPengadaan);
         pTanggalPengadaan = findViewById(R.id.TanggalPengadaan);
-        pJumlahPengadaan = findViewById(R.id.JumlahPengadaan);
-        pSubtotalPengadaan = findViewById(R.id.SubtotalPengadaan);
+        //pJumlahPengadaan = findViewById(R.id.JumlahPengadaan);
+        //pSubtotalPengadaan = findViewById(R.id.SubtotalPengadaan);
         pStatusPengadaan = findViewById(R.id.StatusPengadaan);
-        pJumlahPengadaan.setInputType(InputType.TYPE_CLASS_NUMBER);
+        pTotalPengadaan = findViewById(R.id.TotalPengadaan);
+        //pJumlahPengadaan.setInputType(InputType.TYPE_CLASS_NUMBER);
         pTglDibuat = findViewById(R.id.tanggal_tambah_pengadaan_log);
         pTglDiubah = findViewById(R.id.tanggal_ubah_pengadaan_log);
         pUserLog = findViewById(R.id.user_pengadaan_log);
+
+        tambahProdukPengadaanBtn = findViewById(R.id.btnTambahProdukPengadaan);
 
         listSpinnerProduk = new ArrayList<>();
         listSpinnerSupplier = new ArrayList<>();
@@ -114,24 +119,25 @@ public class Detail_Pengadaan extends AppCompatActivity {
         spinnerStatusPengadaan = findViewById(R.id.spinnerStatusPengadaan);
 
         Intent intent = getIntent();
-        id = intent.getIntExtra("id_detail_pengadaan", 0);
-        id_pengadaan = intent.getStringExtra("id_pengadaan");
-        id_produk = intent.getStringExtra("id_produk");
+        id = intent.getIntExtra("id_pengadaan", 0);
+        //id_produk = intent.getStringExtra("id_produk");
         id_supplier = intent.getStringExtra("id_supplier");
         kode_pengadaan = intent.getStringExtra("kode_pengadaan");
         tanggal_pengadaan = intent.getStringExtra("tanggal_pengadaan");
-        jumlah_pengadaan = intent.getStringExtra("jumlah_pengadaan");
-        subtotal_pengadaan = intent.getStringExtra("subtotal_pengadaan");
+        //jumlah_pengadaan = intent.getStringExtra("jumlah_pengadaan");
+        //subtotal_pengadaan = intent.getStringExtra("subtotal_pengadaan");
         status_pengadaan = intent.getStringExtra("status_pengadaan");
+        total_pengadaan = intent.getStringExtra("total_pengadaan");
         tgl_dibuat = intent.getStringExtra("tanggal_tambah_pengadaan_log");
         tgl_diubah = intent.getStringExtra("tanggal_ubah_pengadaan_log");
         user_log = intent.getStringExtra("user_pengadaan_log");
         setDataFromIntentExtra();
 
-        loadSpinnerProduk();
+        //loadSpinnerProduk();
         loadSpinnerSupplier();
         loadSpinnerStatus();
 
+        /*
         spinnerProduk.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
@@ -141,6 +147,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent)
             {}
         });
+        */
 
         spinnerSupplier.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
@@ -161,6 +168,14 @@ public class Detail_Pengadaan extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent)
             {}
         });
+
+        tambahProdukPengadaanBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent tambahProduk = new Intent(Detail_Pengadaan.this, Detail_ProdukPengadaan.class);
+                startActivity(tambahProduk);
+            }
+        });
     }
 
     private void setDataFromIntentExtra() {
@@ -168,12 +183,13 @@ public class Detail_Pengadaan extends AppCompatActivity {
             readMode();
 
             pIdPengadaan.setText(kode_pengadaan);
-            pIdProduk.setText(id_produk);
+            //pIdProduk.setText(id_produk);
             pIdSupplier.setText(id_supplier);
             pTanggalPengadaan.setText(tanggal_pengadaan);
-            pJumlahPengadaan.setText(jumlah_pengadaan);
-            pSubtotalPengadaan.setText(subtotal_pengadaan);
+            //pJumlahPengadaan.setText(jumlah_pengadaan);
+            //pSubtotalPengadaan.setText(subtotal_pengadaan);
             pStatusPengadaan.setText(status_pengadaan);
+            pTotalPengadaan.setText(total_pengadaan);
             pTglDibuat.setText(tgl_dibuat);
             pTglDiubah.setText(tgl_diubah);
             pUserLog.setText(user_log);
@@ -184,7 +200,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
             requestOptions.placeholder(R.drawable.add);
             requestOptions.error(R.drawable.add);
 
-            spinnerProduk.setVisibility(View.GONE);
+            //spinnerProduk.setVisibility(View.GONE);
             spinnerSupplier.setVisibility(View.GONE);
             spinnerStatusPengadaan.setVisibility(View.GONE);
 
@@ -192,14 +208,17 @@ public class Detail_Pengadaan extends AppCompatActivity {
             getSupportActionBar().setTitle("Tambah Pengadaan");
 
             pIdPengadaan.setVisibility(View.GONE);
-            setUpdateSubtotal(pJumlahPengadaan);
-            pIdProduk.setVisibility(View.GONE);
+            //setUpdateSubtotal(pJumlahPengadaan);
+            //pIdProduk.setVisibility(View.GONE);
             pIdSupplier.setVisibility(View.GONE);
             pStatusPengadaan.setVisibility(View.GONE);
-
+            pTotalPengadaan.setVisibility(View.GONE);
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
             pUserLog.setVisibility(View.GONE);
+
+            tambahProdukPengadaanBtn.setVisibility(View.GONE);
+            pTotalPengadaan.setText("0");
         }
     }
 
@@ -265,17 +284,17 @@ public class Detail_Pengadaan extends AppCompatActivity {
                 //Edit
                 editMode();
 
-                setUpdateSpinnerProduk();
+                //setUpdateSpinnerProduk();
                 setUpdateSpinnerSupplier();
                 setUpdateSpinnerStatusPengadaan();
 
-                setUpdateSubtotal(pJumlahPengadaan);
+                //setUpdateSubtotal(pJumlahPengadaan);
 
-                pIdProduk.setVisibility(View.GONE);
+                //pIdProduk.setVisibility(View.GONE);
                 pIdSupplier.setVisibility(View.GONE);
                 pStatusPengadaan.setVisibility(View.GONE);
 
-                spinnerProduk.setVisibility(View.VISIBLE);
+                //spinnerProduk.setVisibility(View.VISIBLE);
                 spinnerSupplier.setVisibility(View.VISIBLE);
                 spinnerStatusPengadaan.setVisibility(View.VISIBLE);
 
@@ -321,8 +340,8 @@ public class Detail_Pengadaan extends AppCompatActivity {
                     //setForm();
 
                     if (TextUtils.isEmpty(pTanggalPengadaan.getText().toString()) ||
-                            TextUtils.isEmpty(pJumlahPengadaan.getText().toString()) ||
-                            spinnerProduk.getSelectedItemPosition()==0 ||
+                            /*TextUtils.isEmpty(pJumlahPengadaan.getText().toString()) || */
+                            /*spinnerProduk.getSelectedItemPosition()==0 || */
                             spinnerSupplier.getSelectedItemPosition()==0 ||
                             spinnerStatusPengadaan.getSelectedItemPosition()==0) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -383,47 +402,23 @@ public class Detail_Pengadaan extends AppCompatActivity {
         progressDialog.show();
 
         readMode();
-        /*
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        month = month + 1;
-        String date = year + "-" + month + "-" + day;
-        if(day<10)
-        {
-            date = year + "-" + month + "-" + "0" + day;
-        }
 
-        Integer temp = Integer.valueOf(id_pengadaan);
-        if(temp < 10)
-        {
-            id_pengadaan = "00" + id_pengadaan;
-        }
-        else if(temp >= 10 && temp <100)
-        {
-            id_pengadaan = "0" + id_pengadaan;
-        }
-
-        String kode_pengadaan = "PO" + "-" + date + "-" + id_pengadaan;
-         */
-        String id_produk = pIdProduk.getText().toString().trim();
+        //String id_produk = pIdProduk.getText().toString().trim();
         String id_supplier = pIdSupplier.getText().toString().trim();
         String tanggal_pengadaan = pTanggalPengadaan.getText().toString().trim();
-        String jumlah_pengadaan = pJumlahPengadaan.getText().toString().trim();
-        String subtotal_pengadaan = pSubtotalPengadaan.getText().toString().trim();
+        //String jumlah_pengadaan = pJumlahPengadaan.getText().toString().trim();
+        //String subtotal_pengadaan = pSubtotalPengadaan.getText().toString().trim();
         String status_pengadaan = pStatusPengadaan.getText().toString().trim();
+        String total_pengadaan = pTotalPengadaan.getText().toString().trim();
 
         apiInterface = API_client.getApiClient().create(Pengadaan_Interface.class);
         Call<Pengadaan_Model> call =
                 apiInterface.createPengadaan(
                         key,
-                        id_produk,
                         id_supplier,
                         tanggal_pengadaan,
-                        jumlah_pengadaan,
-                        subtotal_pengadaan,
                         status_pengadaan,
+                        total_pengadaan,
                         sp_NamaPegawai);
 
         call.enqueue(new Callback<Pengadaan_Model>() {
@@ -463,6 +458,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
         String jumlah_pengadaan = pJumlahPengadaan.getText().toString().trim();
         String subtotal_pengadaan = pSubtotalPengadaan.getText().toString().trim();
         String status_pengadaan = pStatusPengadaan.getText().toString().trim();
+        String total_pengadaan = pTotalPengadaan.getText().toString().trim();
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String tgl_ubah_customer_log = simpleDateFormat.format(new Date());
@@ -481,6 +477,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
                         jumlah_pengadaan,
                         subtotal_pengadaan,
                         status_pengadaan,
+                        total_pengadaan,
                         tgl_ubah_customer_log,
                         sp_NamaPegawai);
 
@@ -519,7 +516,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
         apiInterface = API_client.getApiClient().create(Pengadaan_Interface.class);
 
-        Call<Pengadaan_Model> call = apiInterface.hapusPengadaan(key, id_pengadaan, String.valueOf(id), sp_NamaPegawai);
+        Call<Pengadaan_Model> call = apiInterface.hapusPengadaan(key, String.valueOf(id), sp_NamaPegawai);
 
         call.enqueue(new Callback<Pengadaan_Model>() {
             @Override
@@ -690,53 +687,52 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
     private void editMode() {
         pIdPengadaan.setFocusableInTouchMode(false);
-        pIdProduk.setFocusableInTouchMode(true);
+        //pIdProduk.setFocusableInTouchMode(true);
         pIdSupplier.setFocusableInTouchMode(true);
         pStatusPengadaan.setFocusableInTouchMode(true);
+        pTotalPengadaan.setFocusableInTouchMode(false);
         pTanggalPengadaan.setFocusableInTouchMode(false);
-        pJumlahPengadaan.setFocusableInTouchMode(true);
-        pSubtotalPengadaan.setFocusableInTouchMode(false);
+        //pJumlahPengadaan.setFocusableInTouchMode(true);
+        //pSubtotalPengadaan.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
         pUserLog.setFocusableInTouchMode(false);
 
-        alertIsiNamaProdukDulu(pJumlahPengadaan);
+        //alertIsiNamaProdukDulu(pJumlahPengadaan);
     }
 
     private void readMode() {
         pIdPengadaan.setFocusableInTouchMode(false);
         pIdSupplier.setFocusableInTouchMode(false);
-        pIdProduk.setFocusableInTouchMode(false);
+        //pIdProduk.setFocusableInTouchMode(false);
         pIdSupplier.setFocusableInTouchMode(false);
         pStatusPengadaan.setFocusableInTouchMode(false);
+        pTotalPengadaan.setFocusableInTouchMode(false);
         pTanggalPengadaan.setFocusableInTouchMode(false);
-        pJumlahPengadaan.setFocusableInTouchMode(false);
-        pSubtotalPengadaan.setFocusableInTouchMode(false);
+        //pJumlahPengadaan.setFocusableInTouchMode(false);
+        //pSubtotalPengadaan.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
         pUserLog.setFocusableInTouchMode(false);
 
-        alertDisable(pIdProduk);
+        //alertDisable(pIdProduk);
         alertDisable(pIdSupplier);
         alertDisable(pStatusPengadaan);
+        alertDisable(pTotalPengadaan);
         alertDisable(pTanggalPengadaan);
-        alertDisable(pJumlahPengadaan);
-        alertDisable(pSubtotalPengadaan);
+        //alertDisable(pJumlahPengadaan);
+        //alertDisable(pSubtotalPengadaan);
     }
 
     private void alertDisable(EditText editText) {
-        if(spinnerProduk.getSelectedItemPosition()==0)
-        {
-            editText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(Detail_Pengadaan.this,
-                            "Klik icon Edit terlebih dahulu untuk mengubah data!",
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-        else{}
+        editText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(Detail_Pengadaan.this,
+                        "Klik icon Edit terlebih dahulu untuk mengubah data!",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void alertIsiNamaProdukDulu(final EditText editText) {

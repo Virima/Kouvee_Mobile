@@ -18,13 +18,20 @@ public interface Pengadaan_Interface {
     @POST("insertpengadaan.php")
     Call<Pengadaan_Model> createPengadaan(
             @Field("key") String key,
-            @Field("id_produk") String id_produk,
             @Field("id_supplier") String id_supplier,
             @Field("tanggal_pengadaan") String tanggal_pengadaan,
-            @Field("jumlah_pengadaan") String jumlah_pengadaan,
-            @Field("subtotal_pengadaan") String subtotal_pengadaan,
             @Field("status_pengadaan") String status_pengadaan,
+            @Field("total_pengadaan") String total_pengadaan,
             @Field("user_pengadaan_log") String user_pengadaan_log
+    );
+
+    @FormUrlEncoded
+    @POST("insertprodukpengadaan.php")
+    Call<Pengadaan_Model> createProdukPengadaan(
+            @Field("key") String key,
+            @Field("id_produk") String id_produk,
+            @Field("jumlah_pengadaan") String jumlah_pengadaan,
+            @Field("subtotal_pengadaan") String subtotal_pengadaan
     );
 
     @FormUrlEncoded
@@ -40,6 +47,7 @@ public interface Pengadaan_Interface {
             @Field("jumlah_pengadaan") String jumlah_pengadaan,
             @Field("subtotal_pengadaan") String subtotal_pengadaan,
             @Field("status_pengadaan") String status_pengadaan,
+            @Field("total_pengadaan") String total_pengadaan,
             @Field("tgl_ubah_pengadaan_log") String tgl_ubah_pengadaan_log,
             @Field("user_pengadaan_log") String user_pengadaan_log
     );
@@ -49,7 +57,6 @@ public interface Pengadaan_Interface {
     Call<Pengadaan_Model> hapusPengadaan(
             @Field("key") String key,
             @Field("id_pengadaan") String id_pengadaan,
-            @Field("id_detail_pengadaan") String id_detail_pengadaan,
             @Field("user_pengadaan_log") String user_pengadaan_log
     );
 }

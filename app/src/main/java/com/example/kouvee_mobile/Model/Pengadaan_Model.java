@@ -3,10 +3,8 @@ package com.example.kouvee_mobile.Model;
 import com.google.gson.annotations.SerializedName;
 
 public class Pengadaan_Model {
-    @SerializedName("id_detail_pengadaan")
-    private int id_detail_pengadaan;
     @SerializedName("id_pengadaan")
-    private String id_pengadaan;
+    private int id_pengadaan;
     @SerializedName("id_produk")
     private String id_produk;
     @SerializedName("id_supplier")
@@ -21,6 +19,8 @@ public class Pengadaan_Model {
     private String subtotal_pengadaan;
     @SerializedName("status_pengadaan")
     private String status_pengadaan;
+    @SerializedName("total_pengadaan")
+    private String total_pengadaan;
     @SerializedName("tanggal_tambah_pengadaan_log")
     private String tanggal_tambah_pengadaan_log;
     @SerializedName("tanggal_ubah_pengadaan_log")
@@ -32,19 +32,11 @@ public class Pengadaan_Model {
     @SerializedName("message")
     private String message;
 
-    public int getId() {
-        return id_detail_pengadaan;
-    }
-
-    public void setId(int id_detail_pengadaan) {
-        this.id_detail_pengadaan = id_detail_pengadaan;
-    }
-
-    public String getId_pengadaan() {
+    public int getId_pengadaan() {
         return id_pengadaan;
     }
 
-    public void setId_pengadaan(String id_pengadaan) {
+    public void setId_pengadaan(int id_pengadaan) {
         this.id_pengadaan = id_pengadaan;
     }
 
@@ -102,6 +94,14 @@ public class Pengadaan_Model {
 
     public void setStatus_pengadaan(String status_pengadaan) {
         this.status_pengadaan = status_pengadaan;
+    }
+
+    public String getTotal_pengadaan() {
+        return total_pengadaan;
+    }
+
+    public void setTotal_pengadaan(String total_pengadaan) {
+        this.total_pengadaan = total_pengadaan;
     }
 
     public String getValue() {

@@ -65,11 +65,11 @@
             android:textSize="19sp" />
 
         <TextView
-            android:id="@+id/IdProdukPengadaan"
+            android:id="@+id/StatusPengadaanTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="ID Produk"
+            android:text="Status Pengadaan"
             android:textSize="15sp" />
     </LinearLayout>
 
