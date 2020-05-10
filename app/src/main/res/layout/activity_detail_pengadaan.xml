@@ -41,8 +41,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="0dp"
-                android:background="@drawable/my_button_bg2"
+                android:padding="10dp"
+                android:background="@drawable/round_border_warna"
                 android:orientation="vertical">
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -103,6 +103,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
+                        android:textColor="#999999"
                         android:hint="Total Pengadaan"
                         android:inputType="date|textCapWords" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -116,9 +117,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
+                            android:textColor="#999999"
                             android:hint="Status Pengadaan"
                             android:inputType="textPersonName|textCapWords" />
 
+                        <!--
                         <Spinner
                             android:id="@+id/spinnerStatusPengadaan"
                             android:layout_width="match_parent"
@@ -127,6 +130,7 @@
                             android:hint="Pilih Status Pengadaan"
                             android:inputType="textPersonName|textCapWords">
                         </Spinner>
+                        -->
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -223,12 +227,21 @@
                 </com.google.android.material.textfield.TextInputLayout>
                 -->
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
                 <Button
                     android:id="@+id/btnTambahProdukPengadaan"
-                    android:layout_width="160dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
+                    android:layout_weight="1"
                     android:background="@drawable/my_button_bg2"
                     android:fontFamily="sans-serif-condensed-medium"
                     android:textColor="#FFFFFF"
@@ -236,6 +249,54 @@
                     android:text="Tambah Produk"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
+
+                <Button
+                    android:id="@+id/btnVerifikasiPengadaan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/my_button_bg3"
+                    android:fontFamily="sans-serif-condensed-medium"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:text="Verifikasi"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
+            </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-light"
+                    android:text="Produk yang Dipesan : "
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:id="@+id/placeHolderFragmentPengadaan"
+                    android:background="@drawable/round_border_warna"
+                    tools:context=".View.Activity_ProdukPengadaan">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:background="@drawable/round_border_warna"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                    <ProgressBar
+                        android:layout_marginTop="100dp"
+                        android:id="@+id/progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </FrameLayout>
 
             </LinearLayout>
 

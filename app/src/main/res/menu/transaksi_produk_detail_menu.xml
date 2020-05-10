@@ -4,12 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_print"
-        android:title="Cetak Surat Pengadaan"
-        android:icon="@drawable/print"
-        app:showAsAction="always"/>
-
-    <item
         android:id="@+id/menu_edit"
         android:title="Edit"
         android:icon="@drawable/edit"

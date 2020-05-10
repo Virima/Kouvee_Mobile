@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -67,6 +68,8 @@ public class Detail_UkuranHewan extends AppCompatActivity {
         pTglDibuat = findViewById(R.id.tanggal_tambah_ukuran_log);
         pTglDiubah = findViewById(R.id.tanggal_ubah_ukuran_log);
         pUserLog = findViewById(R.id.user_ukuran_log);
+
+        pNamaUkuran.setInputType(InputType.TYPE_CLASS_TEXT);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id_ukuran", 0);

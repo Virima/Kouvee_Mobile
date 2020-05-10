@@ -2,4 +2,39 @@
     <string name="app_name">Kouvee Mobile</string>
     <string name="title_activity__customer">Activity_Customer</string>
     <string name="title_activity__cust">Activity_Cust</string>
+
+    <string name="html_header">
+        <![CDATA[
+        <h2 style="text-align: center;"><em><strong>Kouvee Pet Shop</strong></em></h2>
+        <p style="text-align: center;">Jl. Moses Gatotkaca No.22 Yogyakarta 55281</p>
+        <p style="text-align: center;">Telp. (0274) 357735</p>
+        <p style="text-align: center;"><a href="http://www.sayanghewan.com">http://www.sayanghewan.com</a></p>
+        <p style="text-align: center;">&nbsp;</p>
+        <p style="text-align: center;">&nbsp;</p>
+        <h3 style="text-align: center;"><strong><span style="text-decoration: underline;">SURAT PEMESANAN</span></strong></h3>
+        ]]>
+    </string>
+
+    <string name="html_content">
+        <![CDATA[
+        <p style="text-align: right;">No: PO-YYYY-MM-DD-XX</p>
+        <p style="text-align: right;">Tanggal: 20 Januari 2020</p>
+        <p style="text-align: right;">&nbsp;</p>
+        <p style="text-align: left;">Kepada Yth:</p>
+        <p style="text-align: left;">PT. Royal Canin Indonesia</p>
+        <p style="text-align: left;">Semarang</p>
+        <p style="text-align: left;">(024) 67558875</p>
+        <p style="text-align: left;">&nbsp;</p>
+        <p style="text-align: left;">Mohon untuk disediakan produk-produk berikut ini:</p>
+        <p style="text-align: left;">1. Nama Produk, Jumlah Satuan</p>
+        <p style="text-align: left;">2. Nama Produk, Jumlah Satuan</p>
+        <p style="text-align: left;">3. Nama Produk, Jumlah Satuan</p>
+        <p style="text-align: left;">4. Nama Produk, Jumlah Satuan</p>
+        <p style="text-align: left;">5. Nama Produk, Jumlah Satuan</p>
+        <p style="text-align: left;">&nbsp;</p>
+        <p style="text-align: left;">&nbsp;</p>
+        <p style="text-align: right;">Dicetak tanggal 20 Januari 2020</p>
+        ]]>
+    </string>
+
 </resources>

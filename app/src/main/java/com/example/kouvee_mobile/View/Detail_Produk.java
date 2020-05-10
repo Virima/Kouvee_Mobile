@@ -117,8 +117,8 @@ public class Detail_Produk extends AppCompatActivity {
     Bitmap bitmap;
     boolean check = true;
     String ImagePathFieldOnServer = "image_path";
-    String ImageUploadPathOnServer ="http://192.168.1.6:8181/api_android/insertproduk.php";
-    String ImageUpdatePathOnServer ="http://192.168.1.6:8181/api_android/editproduk.php";
+    String ImageUploadPathOnServer ="http://192.168.1.3:8181/api_android/insertproduk.php";
+    String ImageUpdatePathOnServer ="http://192.168.1.3:8181/api_android/editproduk.php";
 
     private Menu action;
     private final static String TAG = "Detail_Produk";

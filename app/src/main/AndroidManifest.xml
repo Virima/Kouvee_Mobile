@@ -51,6 +51,8 @@
             android:theme="@style/AppThemeKu" />
         <activity android:name=".View.Detail_ProdukPengadaan"
             android:theme="@style/AppThemeKu" />
+        <activity android:name=".View.Activity_ProdukPengadaan"
+            android:theme="@style/AppThemeKu" />
 
         <!-- CUSTOMER -->
         <activity

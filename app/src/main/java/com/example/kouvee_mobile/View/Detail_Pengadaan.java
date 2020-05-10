@@ -13,9 +13,13 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.print.PrintAttributes;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -29,11 +33,19 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -45,6 +57,7 @@ import com.example.kouvee_mobile.Model.Pengadaan_Model;
 import com.example.kouvee_mobile.Model.Produk_Model;
 import com.example.kouvee_mobile.Model.Supplier_Model;
 import com.example.kouvee_mobile.R;
+import com.uttampanchasara.pdfgenerator.CreatePdf;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,21 +70,31 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Detail_Pengadaan extends AppCompatActivity {
+
+    //private RecyclerView recyclerView;
+    //private RecyclerView.LayoutManager layoutManager;
+    //private Adapter_Detail_Pengadaan pengadaanadapter;
+    //private List<Pengadaan_Model> pengadaanList;
+    //Adapter_Detail_Pengadaan.RecyclerViewDetailPengadaanClickListener listener;
+    //ProgressBar progressBar;
+    Pengadaan_Interface apiInterface;
+
     private EditText pIdPengadaan, pIdProduk, pIdSupplier, pTanggalPengadaan, pJumlahPengadaan, pSubtotalPengadaan,
             pStatusPengadaan, pTotalPengadaan, pTglDibuat, pTglDiubah, pUserLog;
     private String id_pengadaan, id_produk, id_supplier, kode_pengadaan, tanggal_pengadaan, jumlah_pengadaan,
             subtotal_pengadaan, status_pengadaan, total_pengadaan, tgl_dibuat, tgl_diubah, user_log;
     private int id;
 
-    private Button tambahProdukPengadaanBtn;
+    private Button tambahProdukPengadaanBtn, verifikasiBtn;
 
-    private int jumlah, harga;
+    private int total=0;
 
     public String sp_NamaPegawai="";
+    public String sp_IdPengadaan="";
 
     private Spinner spinnerProduk;
     private Spinner spinnerSupplier;
-    private Spinner spinnerStatusPengadaan;
+    //private Spinner spinnerStatusPengadaan;
     private List<String> listSpinnerProduk;
     private List<String> listSpinnerSupplier;
     private List<String> listSpinnerStatusPengadaan;
@@ -79,8 +102,6 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
     private final static String TAG = "Detail_Pengadaan";
     private DatePickerDialog.OnDateSetListener mDateSetListener;
-
-    private Pengadaan_Interface apiInterface;
 
     SharedPreferences sp;
     public static final int mode = Activity.MODE_PRIVATE;
@@ -90,10 +111,37 @@ public class Detail_Pengadaan extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_pengadaan);
 
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp!=null)
+        {
+            sp_NamaPegawai = sp.getString("sp_nama_pegawai", "");
+        }
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        /*
+        progressBar = findViewById(R.id.progress);
+        recyclerView = findViewById(R.id.recyclerView);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        //parsing
+        listener = new Adapter_Detail_Pengadaan.RecyclerViewDetailPengadaanClickListener(){
+            @Override
+            public void onRowClick(View view, int position) {
+                Intent intent = new Intent(Detail_Pengadaan.this, Detail_Pengadaan.class);
+                intent.putExtra("id_detail_pengadaan", pengadaanList.get(position).getId_detail_pengadaan());
+                //intent.putExtra("id_pengadaan", pengadaanList.get(position).getId_pengadaan());
+                intent.putExtra("id_produk", pengadaanList.get(position).getId_produk());
+                intent.putExtra("jumlah_pengadaan", pengadaanList.get(position).getJumlah_pengadaan());
+                intent.putExtra("subtotal_pengadaan", pengadaanList.get(position).getSubtotal_pengadaan());
+                startActivity(intent);
+            }
+        };
+        */
 
         pIdPengadaan = findViewById(R.id.KodePengadaan);
         //pIdProduk = findViewById(R.id.NamaProdukJoinPengadaan);
@@ -109,6 +157,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
         pUserLog = findViewById(R.id.user_pengadaan_log);
 
         tambahProdukPengadaanBtn = findViewById(R.id.btnTambahProdukPengadaan);
+        verifikasiBtn = findViewById(R.id.btnVerifikasiPengadaan);
 
         listSpinnerProduk = new ArrayList<>();
         listSpinnerSupplier = new ArrayList<>();
@@ -116,7 +165,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
         spinnerProduk = findViewById(R.id.spinnerProdukPengadaan);
         spinnerSupplier = findViewById(R.id.spinnerSupplierPengadaan);
-        spinnerStatusPengadaan = findViewById(R.id.spinnerStatusPengadaan);
+        //spinnerStatusPengadaan = findViewById(R.id.spinnerStatusPengadaan);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id_pengadaan", 0);
@@ -131,11 +180,15 @@ public class Detail_Pengadaan extends AppCompatActivity {
         tgl_dibuat = intent.getStringExtra("tanggal_tambah_pengadaan_log");
         tgl_diubah = intent.getStringExtra("tanggal_ubah_pengadaan_log");
         user_log = intent.getStringExtra("user_pengadaan_log");
+
+        sp_IdPengadaan = String.valueOf(id);
+        savePreferenceIdPengadaan(sp_IdPengadaan);
+
         setDataFromIntentExtra();
 
         //loadSpinnerProduk();
         loadSpinnerSupplier();
-        loadSpinnerStatus();
+        //loadSpinnerStatus();
 
         /*
         spinnerProduk.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
@@ -159,6 +212,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
             {}
         });
 
+        /*
         spinnerStatusPengadaan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
@@ -168,6 +222,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent)
             {}
         });
+         */
 
         tambahProdukPengadaanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,11 +231,31 @@ public class Detail_Pengadaan extends AppCompatActivity {
                 startActivity(tambahProduk);
             }
         });
+
+        verifikasiBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String cekStatus = pStatusPengadaan.getText().toString();
+
+                if(cekStatus.equals("Belum Selesai"))
+                {
+                    verifikasiPengadaan();
+                }
+                else if(cekStatus.equals("Selesai"))
+                {
+                    Toast.makeText(Detail_Pengadaan.this, "Pengadaan ini sudah terverifikasi!",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void setDataFromIntentExtra() {
         if (id != 0) {
             readMode();
+
+            FrameLayout layout = (FrameLayout)findViewById(R.id.placeHolderFragmentPengadaan);
+            layout.setVisibility(View.VISIBLE);
 
             pIdPengadaan.setText(kode_pengadaan);
             //pIdProduk.setText(id_produk);
@@ -190,6 +265,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
             //pSubtotalPengadaan.setText(subtotal_pengadaan);
             pStatusPengadaan.setText(status_pengadaan);
             pTotalPengadaan.setText(total_pengadaan);
+
             pTglDibuat.setText(tgl_dibuat);
             pTglDiubah.setText(tgl_diubah);
             pUserLog.setText(user_log);
@@ -202,10 +278,14 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
             //spinnerProduk.setVisibility(View.GONE);
             spinnerSupplier.setVisibility(View.GONE);
-            spinnerStatusPengadaan.setVisibility(View.GONE);
+
+            //spinnerStatusPengadaan.setVisibility(View.GONE);
 
         } else {
             getSupportActionBar().setTitle("Tambah Pengadaan");
+
+            FrameLayout layout = (FrameLayout)findViewById(R.id.placeHolderFragmentPengadaan);
+            layout.setVisibility(View.GONE);
 
             pIdPengadaan.setVisibility(View.GONE);
             //setUpdateSubtotal(pJumlahPengadaan);
@@ -218,6 +298,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
             pUserLog.setVisibility(View.GONE);
 
             tambahProdukPengadaanBtn.setVisibility(View.GONE);
+            verifikasiBtn.setVisibility(View.GONE);
             pTotalPengadaan.setText("0");
         }
     }
@@ -260,6 +341,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
             action.findItem(R.id.menu_edit).setVisible(false);
             action.findItem(R.id.menu_delete).setVisible(false);
+            action.findItem(R.id.menu_print).setVisible(false);
             action.findItem(R.id.menu_save).setVisible(true);
 
         }
@@ -267,12 +349,6 @@ public class Detail_Pengadaan extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        if(sp!=null)
-        {
-            sp_NamaPegawai = sp.getString("sp_nama_pegawai", "");
-        }
 
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -286,17 +362,17 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
                 //setUpdateSpinnerProduk();
                 setUpdateSpinnerSupplier();
-                setUpdateSpinnerStatusPengadaan();
+                //setUpdateSpinnerStatusPengadaan();
 
                 //setUpdateSubtotal(pJumlahPengadaan);
 
                 //pIdProduk.setVisibility(View.GONE);
                 pIdSupplier.setVisibility(View.GONE);
-                pStatusPengadaan.setVisibility(View.GONE);
+                pStatusPengadaan.setVisibility(View.VISIBLE);
 
                 //spinnerProduk.setVisibility(View.VISIBLE);
                 spinnerSupplier.setVisibility(View.VISIBLE);
-                spinnerStatusPengadaan.setVisibility(View.VISIBLE);
+                //spinnerStatusPengadaan.setVisibility(View.VISIBLE);
 
                 pTanggalPengadaan = (EditText) findViewById(R.id.TanggalPengadaan); //date
                 pTanggalPengadaan.setOnClickListener(new View.OnClickListener() {
@@ -330,6 +406,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
                 action.findItem(R.id.menu_edit).setVisible(false);
                 action.findItem(R.id.menu_delete).setVisible(false);
+                action.findItem(R.id.menu_print).setVisible(false);
                 action.findItem(R.id.menu_save).setVisible(true);
 
                 return true;
@@ -342,8 +419,8 @@ public class Detail_Pengadaan extends AppCompatActivity {
                     if (TextUtils.isEmpty(pTanggalPengadaan.getText().toString()) ||
                             /*TextUtils.isEmpty(pJumlahPengadaan.getText().toString()) || */
                             /*spinnerProduk.getSelectedItemPosition()==0 || */
-                            spinnerSupplier.getSelectedItemPosition()==0 ||
-                            spinnerStatusPengadaan.getSelectedItemPosition()==0) {
+                            spinnerSupplier.getSelectedItemPosition()==0 /* ||
+                            spinnerStatusPengadaan.getSelectedItemPosition()==0 */ ) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
                         alertDialog.setMessage("Isilah semua field yang tersedia!");
                         alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -354,18 +431,22 @@ public class Detail_Pengadaan extends AppCompatActivity {
                         });
                         alertDialog.show();
                     } else {
+                        //habis insert, keluar ke recyclerview
                         postData("insert");
                         action.findItem(R.id.menu_edit).setVisible(true);
                         action.findItem(R.id.menu_save).setVisible(false);
                         action.findItem(R.id.menu_delete).setVisible(true);
+                        action.findItem(R.id.menu_print).setVisible(true);
 
                         readMode();
                     }
                 } else {
                     updateData("update", id);
+                    //habis update, keluar ke recyclerview
                     action.findItem(R.id.menu_edit).setVisible(true);
                     action.findItem(R.id.menu_save).setVisible(false);
                     action.findItem(R.id.menu_delete).setVisible(true);
+                    action.findItem(R.id.menu_print).setVisible(true);
 
                     readMode();
                 }
@@ -391,6 +472,37 @@ public class Detail_Pengadaan extends AppCompatActivity {
                 dialog.show();
 
                 return true;
+
+            case R.id.menu_print:
+                /////
+                // get our html content
+                String html_header = getString(R.string.html_header);
+                String html_content = getString(R.string.html_content);
+
+                new CreatePdf(this)
+                        .setPdfName(pIdPengadaan.getText().toString())
+                        .openPrintDialog(true)
+                        .setContentBaseUrl(null)
+                        .setPageSize(PrintAttributes.MediaSize.ISO_A4)
+                        .setContent(html_header + html_content)
+                        .setFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/KouveePDF")
+                        .setCallbackListener(new CreatePdf.PdfCallbackListener() {
+                            @Override
+                            public void onFailure(String s) {
+                                Toast.makeText(Detail_Pengadaan.this, "Cetak Surat Pengadaan " +
+                                        pIdPengadaan.getText().toString() + " Gagal", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onSuccess(String s) {
+                                Toast.makeText(Detail_Pengadaan.this, "Cetak Surat Pengadaan " +
+                                        pIdPengadaan.getText().toString() + " Berhasil", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .create();
+                /////
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -408,7 +520,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
         String tanggal_pengadaan = pTanggalPengadaan.getText().toString().trim();
         //String jumlah_pengadaan = pJumlahPengadaan.getText().toString().trim();
         //String subtotal_pengadaan = pSubtotalPengadaan.getText().toString().trim();
-        String status_pengadaan = pStatusPengadaan.getText().toString().trim();
+        //String status_pengadaan = pStatusPengadaan.getText().toString().trim();
         String total_pengadaan = pTotalPengadaan.getText().toString().trim();
 
         apiInterface = API_client.getApiClient().create(Pengadaan_Interface.class);
@@ -417,8 +529,8 @@ public class Detail_Pengadaan extends AppCompatActivity {
                         key,
                         id_supplier,
                         tanggal_pengadaan,
-                        status_pengadaan,
-                        total_pengadaan,
+                        "Belum Selesai",
+                        "0",
                         sp_NamaPegawai);
 
         call.enqueue(new Callback<Pengadaan_Model>() {
@@ -452,11 +564,11 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
         readMode();
 
-        String id_produk = pIdProduk.getText().toString().trim();
+        //String id_produk = pIdProduk.getText().toString().trim();
         String id_supplier = pIdSupplier.getText().toString().trim();
         String tanggal_pengadaan = pTanggalPengadaan.getText().toString().trim();
-        String jumlah_pengadaan = pJumlahPengadaan.getText().toString().trim();
-        String subtotal_pengadaan = pSubtotalPengadaan.getText().toString().trim();
+        //String jumlah_pengadaan = pJumlahPengadaan.getText().toString().trim();
+        //String subtotal_pengadaan = pSubtotalPengadaan.getText().toString().trim();
         String status_pengadaan = pStatusPengadaan.getText().toString().trim();
         String total_pengadaan = pTotalPengadaan.getText().toString().trim();
 
@@ -468,14 +580,9 @@ public class Detail_Pengadaan extends AppCompatActivity {
         Call<Pengadaan_Model> call =
                 apiInterface.editPengadaan(
                         key,
-                        id_pengadaan,
-                        String.valueOf(id),     //id_detail
-                        id_produk,
+                        String.valueOf(id),
                         id_supplier,
-                        kode_pengadaan,
                         tanggal_pengadaan,
-                        jumlah_pengadaan,
-                        subtotal_pengadaan,
                         status_pengadaan,
                         total_pengadaan,
                         tgl_ubah_customer_log,
@@ -516,7 +623,10 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
         apiInterface = API_client.getApiClient().create(Pengadaan_Interface.class);
 
-        Call<Pengadaan_Model> call = apiInterface.hapusPengadaan(key, String.valueOf(id), sp_NamaPegawai);
+        Call<Pengadaan_Model> call = apiInterface.hapusPengadaan(
+                key,
+                String.valueOf(id),
+                sp_NamaPegawai);
 
         call.enqueue(new Callback<Pengadaan_Model>() {
             @Override
@@ -599,6 +709,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
         });
     }
 
+    /*
     public void loadSpinnerStatus()
     {
         listSpinnerStatusPengadaan.add(0,"- PILIH STATUS PENGADAAN -");
@@ -609,7 +720,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
                 android.R.layout.simple_spinner_item, listSpinnerStatusPengadaan);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerStatusPengadaan.setAdapter(adapter);
-    }
+    } */
 
     public void compareSpinnerProduk()
     {
@@ -671,6 +782,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
         });
     }
 
+    /*
     public void compareSpinnerStatusPengadaan()
     {
         String temp = spinnerStatusPengadaan.getSelectedItem().toString();
@@ -683,13 +795,13 @@ public class Detail_Pengadaan extends AppCompatActivity {
         {
             pStatusPengadaan.setText("Belum Selesai");
         }
-    }
+    } */
 
     private void editMode() {
         pIdPengadaan.setFocusableInTouchMode(false);
         //pIdProduk.setFocusableInTouchMode(true);
         pIdSupplier.setFocusableInTouchMode(true);
-        pStatusPengadaan.setFocusableInTouchMode(true);
+        pStatusPengadaan.setFocusableInTouchMode(false);
         pTotalPengadaan.setFocusableInTouchMode(false);
         pTanggalPengadaan.setFocusableInTouchMode(false);
         //pJumlahPengadaan.setFocusableInTouchMode(true);
@@ -717,8 +829,8 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
         //alertDisable(pIdProduk);
         alertDisable(pIdSupplier);
-        alertDisable(pStatusPengadaan);
-        alertDisable(pTotalPengadaan);
+        //alertDisable(pStatusPengadaan);
+        //alertDisable(pTotalPengadaan);
         alertDisable(pTanggalPengadaan);
         //alertDisable(pJumlahPengadaan);
         //alertDisable(pSubtotalPengadaan);
@@ -814,6 +926,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
         });
     }
 
+    /*
     private void setUpdateSpinnerStatusPengadaan()
     {
         String editText = pStatusPengadaan.getText().toString();
@@ -826,60 +939,117 @@ public class Detail_Pengadaan extends AppCompatActivity {
                 spinnerStatusPengadaan.setSelection(i+1);
             }
         }
+    } */
+
+
+    private void savePreferenceIdPengadaan(String string)
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("sp_id_pengadaan", string);
+        editor.apply();
     }
 
-    private void setUpdateSubtotal(EditText et1)
-    {
-        et1.addTextChangedListener(new TextWatcher() {
-
+    /*
+    public void getProdukPengadaan(){
+        Call<List<Pengadaan_Model>> call = apiInterface.getProdukPengadaan();
+        call.enqueue(new Callback<List<Pengadaan_Model>>() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+            public void onResponse(Call<List<Pengadaan_Model>> call, Response<List<Pengadaan_Model>> response) {
+                progressBar.setVisibility(View.GONE);
+                pengadaanList = response.body();
+                Log.i(Detail_Pengadaan.class.getSimpleName(), response.body().toString());
+                pengadaanadapter = new Adapter_Detail_Pengadaan(pengadaanList,  listener);
+                recyclerView.setAdapter(pengadaanadapter);
+                pengadaanadapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().length() > 0) {
-
-                    Produk_Interface apiProduk = API_client.getApiClient().create(Produk_Interface.class);
-                    Call<List<Produk_Model>> listCall = apiProduk.getProduk();
-
-                    listCall.enqueue(new Callback<List<Produk_Model>>() {
-                        @Override
-                        public void onResponse(Call<List<Produk_Model>> call, Response<List<Produk_Model>> response) {
-                            List<Produk_Model> produkModels = response.body();
-
-                            String editText = spinnerProduk.getSelectedItem().toString();
-                            System.out.println("TES SPINNER" + editText);
-
-                            for(int i=0; i < produkModels.size(); i++ ) {
-                                String nama = produkModels.get(i).getNama_produk();
-
-                                if(editText.equals(nama))
-                                {
-                                    harga = Integer.valueOf(produkModels.get(i).getHarga_produk());
-                                    jumlah = Integer.valueOf(pJumlahPengadaan.getText().toString());
-                                    int subtotal = harga * jumlah;
-                                    pSubtotalPengadaan.setText(String.valueOf(subtotal));
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<Produk_Model>> call, Throwable t) {
-                            Toast.makeText(Detail_Pengadaan.this, "Cek " + t.getMessage().toString(),
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
-
-                } else {
-                    pSubtotalPengadaan.setText("0");
-                }
+            public void onFailure(Call<List<Pengadaan_Model>> call, Throwable t) {
+                Toast.makeText(Detail_Pengadaan.this, "Rp " + t.getMessage().toString(),
+                        Toast.LENGTH_SHORT).show();
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
         });
+    }
+    */
+
+    public void verifikasiPengadaan()
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle(kode_pengadaan);
+        alert.setMessage("Verifikasi Pengadaan berarti Status Pengadaan Selesai dan akan Mengupdate " +
+                "Stok Produk!");
+
+        alert.setPositiveButton("Verifikasi", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                ////
+                //final ProgressDialog progressDialog = new ProgressDialog(this);
+                //progressDialog.setMessage("Updating...");
+                //progressDialog.show();
+
+                readMode();
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String tgl_ubah_pengadaan_log = simpleDateFormat.format(new Date());
+
+                apiInterface = API_client.getApiClient().create(Pengadaan_Interface.class);
+
+                Call<Pengadaan_Model> call =
+                        apiInterface.verifikasiPengadaan(
+                                String.valueOf(id),
+                                "Selesai",
+                                tgl_ubah_pengadaan_log,
+                                sp_NamaPegawai);
+
+                call.enqueue(new Callback<Pengadaan_Model>() {
+                    public void onResponse(Call<Pengadaan_Model> call, Response<Pengadaan_Model> response) {
+                        //progressDialog.dismiss();
+
+                        Log.i(Detail_Pengadaan.class.getSimpleName(), response.toString());
+
+                        String value = response.body().getValue();
+                        String message = response.body().getMessage();
+
+                        if (value.equals("1")) {
+                            Toast.makeText(Detail_Pengadaan.this, message, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(Detail_Pengadaan.this, message, Toast.LENGTH_SHORT).show();
+                        }
+
+                        Intent back = new Intent(Detail_Pengadaan.this, Activity_Pengadaan.class);
+                        startActivity(back);
+                    }
+
+                    public void onFailure(Call<Pengadaan_Model> call, Throwable t) {
+                        //progressDialog.dismiss();
+                        Toast.makeText(Detail_Pengadaan.this, t.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+
+        alert.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+    }
+
+    protected void onResume() {
+        super.onResume();
+
+        //
+        Fragment_Pengadaan fragment = new Fragment_Pengadaan();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.placeHolderFragmentPengadaan, fragment);
+        fragmentTransaction.commit();
+        //
     }
 
 }

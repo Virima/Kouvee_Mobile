@@ -48,4 +48,6 @@ dependencies {
 
     implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
 
+    implementation 'com.uttampanchasara.pdfgenerator:pdfgenerator:1.3'
+
 }

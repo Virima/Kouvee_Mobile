@@ -30,6 +30,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -59,6 +62,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
 
     private Button tambahProdukPengadaanBtn;
 
+    public String sp_IdPengadaan = "";
     private int jumlah, harga;
 
     private Spinner spinnerProduk;
@@ -91,7 +95,6 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
 
         spinnerProduk = findViewById(R.id.spinnerProdukPengadaan);
 
-
         Intent intent = getIntent();
         id = intent.getIntExtra("id_detail_pengadaan", 0);
         id_pengadaan = intent.getStringExtra("id_pengadaan");
@@ -122,7 +125,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
         if (id != 0) {
             readMode();
 
-            pIdPengadaan.setText(kode_pengadaan);
+            //pIdPengadaan.setText(kode_pengadaan);
             pIdProduk.setText(id_produk);
             pJumlahPengadaan.setText(jumlah_pengadaan);
             pSubtotalPengadaan.setText(subtotal_pengadaan);
@@ -163,12 +166,18 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
             action.findItem(R.id.menu_edit).setVisible(false);
             action.findItem(R.id.menu_delete).setVisible(false);
             action.findItem(R.id.menu_save).setVisible(true);
-
+            action.findItem(R.id.menu_print).setVisible(false);
         }
         return true;
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp!=null)
+        {
+            sp_IdPengadaan = sp.getString("sp_id_pengadaan", "");
+        }
 
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -193,6 +202,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
                 action.findItem(R.id.menu_edit).setVisible(false);
                 action.findItem(R.id.menu_delete).setVisible(false);
                 action.findItem(R.id.menu_save).setVisible(true);
+                action.findItem(R.id.menu_print).setVisible(false);
 
                 return true;
 
@@ -217,14 +227,16 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
                         action.findItem(R.id.menu_edit).setVisible(true);
                         action.findItem(R.id.menu_save).setVisible(false);
                         action.findItem(R.id.menu_delete).setVisible(true);
+                        action.findItem(R.id.menu_print).setVisible(false);
 
                         readMode();
                     }
                 } else {
-                    /////////////////updateData("update", id);
+                    updateData("update", id);
                     action.findItem(R.id.menu_edit).setVisible(true);
                     action.findItem(R.id.menu_save).setVisible(false);
                     action.findItem(R.id.menu_delete).setVisible(true);
+                    action.findItem(R.id.menu_print).setVisible(false);
 
                     readMode();
                 }
@@ -238,7 +250,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        //////////////deleteData("delete", id);
+                        deleteData("delete", id);
                     }
                 });
                 dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -270,6 +282,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
         Call<Pengadaan_Model> call =
                 apiInterface.createProdukPengadaan(
                         key,
+                        sp_IdPengadaan,
                         id_produk,
                         jumlah_pengadaan,
                         subtotal_pengadaan);
@@ -289,6 +302,8 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
                 } else {
                     Toast.makeText(Detail_ProdukPengadaan.this, message, Toast.LENGTH_SHORT).show();
                 }
+                Intent back = new Intent(Detail_ProdukPengadaan.this, Activity_Pengadaan.class);
+                startActivity(back);
             }
 
             public void onFailure(Call<Pengadaan_Model> call, Throwable t) {
@@ -298,7 +313,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
         });
     }
 
-    /*
+
     private void updateData(final String key, final int id) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Updating...");
@@ -310,26 +325,17 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
         String jumlah_pengadaan = pJumlahPengadaan.getText().toString().trim();
         String subtotal_pengadaan = pSubtotalPengadaan.getText().toString().trim();
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String tgl_ubah_customer_log = simpleDateFormat.format(new Date());
+        //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //String tgl_ubah_customer_log = simpleDateFormat.format(new Date());
 
         apiInterface = API_client.getApiClient().create(Pengadaan_Interface.class);
 
         Call<Pengadaan_Model> call =
-                apiInterface.editPengadaan(
+                apiInterface.editProdukPengadaan(
                         key,
-                        id_pengadaan,
                         String.valueOf(id),     //id_detail
-                        id_produk,
-                        id_supplier,
-                        kode_pengadaan,
-                        tanggal_pengadaan,
                         jumlah_pengadaan,
-                        subtotal_pengadaan,
-                        status_pengadaan,
-                        total_pengadaan,
-                        tgl_ubah_customer_log,
-                        sp_NamaPegawai);
+                        subtotal_pengadaan);
 
         call.enqueue(new Callback<Pengadaan_Model>() {
             public void onResponse(Call<Pengadaan_Model> call, Response<Pengadaan_Model> response) {
@@ -358,6 +364,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
 
     }
 
+
     private void deleteData(String key, int id) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Menghapus...");
@@ -366,7 +373,10 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
 
         apiInterface = API_client.getApiClient().create(Pengadaan_Interface.class);
 
-        Call<Pengadaan_Model> call = apiInterface.hapusPengadaan(key, id_pengadaan, String.valueOf(id), sp_NamaPegawai);
+        Call<Pengadaan_Model> call = apiInterface.hapusProdukPengadaan(
+                key,
+                String.valueOf(id)
+        );
 
         call.enqueue(new Callback<Pengadaan_Model>() {
             @Override
@@ -392,7 +402,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
             }
         });
     }
-    */
+
 
     public void loadSpinnerProduk()
     {
