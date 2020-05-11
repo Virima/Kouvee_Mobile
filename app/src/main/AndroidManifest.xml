@@ -40,18 +40,24 @@
         <activity android:name=".View.Activity_Login" />
         <activity android:name=".View.Activity_About_Us" />
 
-        <!-- MENU PEGAWAI -->
-        <activity android:name=".View.Activity_PenjualanProduk"
-            android:theme="@style/AppThemeKu"/>
+        <!-- MENU PEGAWAI [CS] -->
+        <activity android:name=".View.Activity_TransaksiProduk"
+        android:theme="@style/AppThemeKu" />
+        <activity android:name=".View.Detail_TransaksiProduk"
+            android:theme="@style/AppThemeKu" />
+        <activity android:name=".View.Activity_ProdukTransaksiProduk"
+            android:theme="@style/AppThemeKu" />
+        <activity android:name=".View.Detail_ProdukTransaksiProduk"
+            android:theme="@style/AppThemeKu" />
 
         <!-- PENGADAAN -->
         <activity android:name=".View.Activity_Pengadaan"
             android:theme="@style/AppThemeKu" />
         <activity android:name=".View.Detail_Pengadaan"
             android:theme="@style/AppThemeKu" />
-        <activity android:name=".View.Detail_ProdukPengadaan"
-            android:theme="@style/AppThemeKu" />
         <activity android:name=".View.Activity_ProdukPengadaan"
+            android:theme="@style/AppThemeKu" />
+        <activity android:name=".View.Detail_ProdukPengadaan"
             android:theme="@style/AppThemeKu" />
 
         <!-- CUSTOMER -->

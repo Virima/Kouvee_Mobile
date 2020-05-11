@@ -62,7 +62,6 @@ public class Fragment_Pengadaan extends Fragment {
         if(sp!=null)
         {
             sp_IdPengadaan = sp.getString("sp_id_pengadaan", "");
-            System.out.println("WAAAWWW " + sp_IdPengadaan);
         }
 
         //parsing
