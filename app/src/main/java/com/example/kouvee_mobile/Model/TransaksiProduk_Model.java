@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName;
 public class TransaksiProduk_Model {
     @SerializedName("id_transaksi_produk")
     private int id_transaksi_produk;
-    @SerializedName("id_detail_produk")
-    private int id_detail_produk;
+    @SerializedName("id_detail_transaksi")
+    private int id_detail_transaksi;
     @SerializedName("id_customer")
     private String id_customer;
     @SerializedName("id_produk")
@@ -15,12 +15,10 @@ public class TransaksiProduk_Model {
     private String kode_transaksi_produk;
     @SerializedName("tanggal_transaksi_produk")
     private String tanggal_transaksi_produk;
-    @SerializedName("jumlah_transaksi_produk")
+    @SerializedName("jumlah_detail_produk")
     private String jumlah_transaksi_produk;
-    @SerializedName("subtotal_transaksi_produk")
+    @SerializedName("subtotal_detail_produk")
     private String subtotal_transaksi_produk;
-    @SerializedName("status_transaksi_produk")
-    private String status_transaksi_produkn;
     @SerializedName("total_transaksi_produk")
     private String total_transaksi_produk;
     @SerializedName("tanggal_tambah_transaksi_log")
@@ -42,12 +40,12 @@ public class TransaksiProduk_Model {
         this.id_transaksi_produk = id_transaksi_produk;
     }
 
-    public int getId_detail_produk() {
-        return id_detail_produk;
+    public int getId_detail_transaksi() {
+        return id_detail_transaksi;
     }
 
-    public void setId_detail_produk(int id_detail_produk) {
-        this.id_detail_produk = id_detail_produk;
+    public void setId_detail_transaksi(int id_detail_transaksi) {
+        this.id_detail_transaksi = id_detail_transaksi;
     }
 
     public String getId_customer() {

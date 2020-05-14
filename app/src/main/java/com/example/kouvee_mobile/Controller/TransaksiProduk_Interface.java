@@ -31,6 +31,16 @@ public interface TransaksiProduk_Interface {
     );
 
     @FormUrlEncoded
+    @POST("insertproduktransaksiproduk.php")
+    Call<TransaksiProduk_Model> createProdukTransaksiProduk(
+            @Field("key") String key,
+            @Field("id_transaksi_produk") String id_transaksi_produk,
+            @Field("id_produk") String id_produk,
+            @Field("jumlah_transaksi_produk") String jumlah_transaksi_produk,
+            @Field("subtotal_transaksi_produk") String subtotal_transaksi_produk
+    );
+
+    @FormUrlEncoded
     @POST("edittransaksiproduk.php")
     Call<TransaksiProduk_Model> editTransaksiProduk(
             @Field("key") String key,
@@ -43,10 +53,26 @@ public interface TransaksiProduk_Interface {
     );
 
     @FormUrlEncoded
+    @POST("editproduktransaksiproduk.php")
+    Call<TransaksiProduk_Model> editProdukTransaksiProduk(
+            @Field("key") String key,
+            @Field("id_detail_produk") String id_detail_produk,
+            @Field("jumlah_transaksi_produk") String jumlah_transaksi_produk,
+            @Field("subtotal_transaksi_produk") String subtotal_transaksi_produk
+    );
+
+    @FormUrlEncoded
     @POST("hapustransaksiproduk.php")
     Call<TransaksiProduk_Model> hapusTransaksiProduk(
             @Field("key") String key,
             @Field("id_transaksi_produk") String id_transaksi_produk,
             @Field("user_transaksi_log") String user_transaksi_log
+    );
+
+    @FormUrlEncoded
+    @POST("hapusproduktransaksiproduk.php")
+    Call<TransaksiProduk_Model> hapusProdukTransaksiProduk(
+            @Field("key") String key,
+            @Field("id_detail_produk") String id_detail_produk
     );
 }

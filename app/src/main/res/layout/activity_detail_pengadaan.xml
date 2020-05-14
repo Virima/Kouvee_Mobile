@@ -281,8 +281,7 @@
                     android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:id="@+id/placeHolderFragmentPengadaan"
-                    android:background="@drawable/round_border_warna"
-                    tools:context=".View.Activity_ProdukPengadaan">
+                    android:background="@drawable/round_border_warna">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"

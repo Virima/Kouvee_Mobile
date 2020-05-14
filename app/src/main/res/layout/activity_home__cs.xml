@@ -39,7 +39,7 @@
         android:layout_marginStart="280dp"
         android:layout_marginTop="124dp"
         android:layout_marginEnd="51dp"
-        android:text="Penjualan Produk"
+        android:background="@drawable/transaksi_produk"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -51,7 +51,7 @@
         android:layout_marginStart="53dp"
         android:layout_marginTop="265dp"
         android:layout_marginEnd="278dp"
-        android:text="Penjualan Layanan"
+        android:background="@drawable/transaksi_layanan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

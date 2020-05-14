@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -45,6 +46,7 @@ public class Fragment_Pengadaan extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_pengadaan, container, false);
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        final TextView recyclerKosong = (TextView) view.findViewById(R.id.recyclerKosong);
 
         //Adapter_Detail_Pengadaan listAdapter = new Adapter_Detail_Pengadaan();
         //recyclerView.setAdapter(listAdapter);
@@ -87,10 +89,21 @@ public class Fragment_Pengadaan extends Fragment {
 
                 //progressBar.setVisibility(View.GONE);
                 pengadaanList = response.body();
-                Log.i(Activity_ProdukPengadaan.class.getSimpleName(), response.body().toString());
+                Log.i(Detail_Pengadaan.class.getSimpleName(), response.body().toString());
                 pengadaanadapter = new Adapter_Detail_Pengadaan(pengadaanList,  listener);
-                recyclerView.setAdapter(pengadaanadapter);
-                pengadaanadapter.notifyDataSetChanged();
+
+                if(pengadaanadapter.getItemCount() == 0)
+                {
+                    recyclerKosong.setVisibility(View.VISIBLE);
+                    recyclerView.setAdapter(pengadaanadapter);
+                    pengadaanadapter.notifyDataSetChanged();
+                }
+                else
+                {
+                    recyclerKosong.setVisibility(View.GONE);
+                    recyclerView.setAdapter(pengadaanadapter);
+                    pengadaanadapter.notifyDataSetChanged();
+                }
             }
 
             @Override

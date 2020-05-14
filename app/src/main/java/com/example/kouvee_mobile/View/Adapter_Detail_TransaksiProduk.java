@@ -28,7 +28,7 @@ public class Adapter_Detail_TransaksiProduk extends
     private Adapter_Detail_TransaksiProduk.RecyclerViewDetailTransaksiClickListener mListener;
     Search_Filter_Detail_TransaksiProduk filter;
 
-    public Adapter_Detail_TransaksiProduk(List<TransaksiProduk_Model> pengadaan,
+    public Adapter_Detail_TransaksiProduk(List<TransaksiProduk_Model> transaksi,
                                     Adapter_Detail_TransaksiProduk.RecyclerViewDetailTransaksiClickListener listener) {
         this.transaksi = transaksi;
         this.transaksiFilter = transaksi;
@@ -60,7 +60,8 @@ public class Adapter_Detail_TransaksiProduk extends
 
     @Override
     public int getItemCount() {
-        return transaksi.size();
+        //return transaksi.size();
+        return transaksi == null ? 0 : transaksi.size();
     }
 
     public Filter getFilter() {

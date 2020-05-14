@@ -59,9 +59,11 @@ public interface Pengadaan_Interface {
     @POST("editprodukpengadaan.php")
     Call<Pengadaan_Model> editProdukPengadaan(
             @Field("key") String key,
+            @Field("id_pengadaan") String id_pengadaan,
             @Field("id_detail_pengadaan") String id_detail_pengadaan,
             @Field("jumlah_pengadaan") String jumlah_pengadaan,
-            @Field("subtotal_pengadaan") String subtotal_pengadaan
+            @Field("subtotal_pengadaan") String subtotal_pengadaan,
+            @Query("subtotal_before") String subtotal_before
     );
 
     @FormUrlEncoded
@@ -76,7 +78,9 @@ public interface Pengadaan_Interface {
     @POST("hapusprodukpengadaan.php")
     Call<Pengadaan_Model> hapusProdukPengadaan(
             @Field("key") String key,
-            @Field("id_detail_pengadaan") String id_pengadaan
+            @Field("id_pengadaan") String id_pengadaan,
+            @Field("id_detail_pengadaan") String id_detail_pengadaan,
+            @Field("subtotal_pengadaan") String subtotal_pengadaan
     );
 
     @FormUrlEncoded

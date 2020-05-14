@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -45,6 +46,7 @@ public class Fragment_TransaksiProduk extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_transaksi_produk, container, false);
         final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        final TextView recyclerKosong = (TextView) view.findViewById(R.id.recyclerKosong);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -65,7 +67,7 @@ public class Fragment_TransaksiProduk extends Fragment {
             @Override
             public void onRowClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), Detail_ProdukTransaksiProduk.class);
-                intent.putExtra("id_detail_produk", transaksiList.get(position).getId_detail_produk());
+                intent.putExtra("id_detail_transaksi", transaksiList.get(position).getId_detail_transaksi());
                 intent.putExtra("id_produk", transaksiList.get(position).getId_produk());
                 intent.putExtra("jumlah_transaksi_produk", transaksiList.get(position).getJumlah_transaksi_produk());
                 intent.putExtra("subtotal_transaksi_produk", transaksiList.get(position).getSubtotal_transaksi_produk());
@@ -82,10 +84,21 @@ public class Fragment_TransaksiProduk extends Fragment {
                 recyclerView.setLayoutManager(layoutManager);
 
                 transaksiList = response.body();
-                Log.i(Activity_ProdukTransaksiProduk.class.getSimpleName(), response.body().toString());
+                //Log.i(Detail_TransaksiProduk.class.getSimpleName(), response.body().toString());
                 transaksiadapter = new Adapter_Detail_TransaksiProduk(transaksiList,  listener);
-                recyclerView.setAdapter(transaksiadapter);
-                transaksiadapter.notifyDataSetChanged();
+
+                if(transaksiadapter.getItemCount() == 0)
+                {
+                    recyclerKosong.setVisibility(View.VISIBLE);
+                    recyclerView.setAdapter(transaksiadapter);
+                    transaksiadapter.notifyDataSetChanged();
+                }
+                else
+                {
+                    recyclerKosong.setVisibility(View.GONE);
+                    recyclerView.setAdapter(transaksiadapter);
+                    transaksiadapter.notifyDataSetChanged();
+                }
             }
 
             @Override

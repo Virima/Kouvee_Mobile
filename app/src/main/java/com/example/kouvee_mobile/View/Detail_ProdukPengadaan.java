@@ -323,7 +323,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
 
         String id_produk = pIdProduk.getText().toString().trim();
         String jumlah_pengadaan = pJumlahPengadaan.getText().toString().trim();
-        String subtotal_pengadaan = pSubtotalPengadaan.getText().toString().trim();
+        String subtotal_edit = pSubtotalPengadaan.getText().toString().trim();
 
         //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //String tgl_ubah_customer_log = simpleDateFormat.format(new Date());
@@ -333,8 +333,10 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
         Call<Pengadaan_Model> call =
                 apiInterface.editProdukPengadaan(
                         key,
+                        sp_IdPengadaan,
                         String.valueOf(id),     //id_detail
                         jumlah_pengadaan,
+                        subtotal_edit,
                         subtotal_pengadaan);
 
         call.enqueue(new Callback<Pengadaan_Model>() {
@@ -372,10 +374,13 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
         readMode();
 
         apiInterface = API_client.getApiClient().create(Pengadaan_Interface.class);
+        String subtotal_pengadaan = pSubtotalPengadaan.getText().toString().trim();
 
         Call<Pengadaan_Model> call = apiInterface.hapusProdukPengadaan(
                 key,
-                String.valueOf(id)
+                sp_IdPengadaan,
+                String.valueOf(id),     //detail
+                subtotal_pengadaan
         );
 
         call.enqueue(new Callback<Pengadaan_Model>() {
@@ -393,6 +398,9 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
                 } else {
                     Toast.makeText(Detail_ProdukPengadaan.this, message, Toast.LENGTH_SHORT).show();
                 }
+
+                Intent back = new Intent(Detail_ProdukPengadaan.this, Activity_Pengadaan.class);
+                startActivity(back);
             }
 
             @Override

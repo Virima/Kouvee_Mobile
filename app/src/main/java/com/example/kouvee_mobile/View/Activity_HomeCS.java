@@ -40,6 +40,15 @@ public class Activity_HomeCS extends AppCompatActivity  {
             }
         });
 
+        btnPenjualanProduk = findViewById(R.id.btnPenjualanProdukCS);
+        btnPenjualanProduk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent customer = new Intent(Activity_HomeCS.this, Activity_TransaksiProduk.class);
+                startActivity(customer);
+            }
+        });
+
         btnLogoutCS = findViewById(R.id.btnLogoutCS);
         btnLogoutCS.setOnClickListener(new View.OnClickListener() {
             @Override
