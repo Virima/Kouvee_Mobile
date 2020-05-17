@@ -48,6 +48,11 @@
         <activity android:name=".View.Detail_ProdukTransaksiProduk"
             android:theme="@style/AppThemeKu" />
 
+        <activity android:name=".View.Activity_TransaksiLayanan"
+            android:theme="@style/AppThemeKu" />
+        <activity android:name=".View.Detail_TransaksiLayanan"
+            android:theme="@style/AppThemeKu" />
+
         <!-- PENGADAAN -->
         <activity android:name=".View.Activity_Pengadaan"
             android:theme="@style/AppThemeKu" />

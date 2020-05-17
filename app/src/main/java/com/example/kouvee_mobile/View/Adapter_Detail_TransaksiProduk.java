@@ -60,8 +60,8 @@ public class Adapter_Detail_TransaksiProduk extends
 
     @Override
     public int getItemCount() {
-        //return transaksi.size();
-        return transaksi == null ? 0 : transaksi.size();
+        return transaksi.size();
+        //return transaksi == null ? 0 : transaksi.size();
     }
 
     public Filter getFilter() {

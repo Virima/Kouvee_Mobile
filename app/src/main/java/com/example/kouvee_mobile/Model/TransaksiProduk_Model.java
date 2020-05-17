@@ -21,12 +21,18 @@ public class TransaksiProduk_Model {
     private String subtotal_transaksi_produk;
     @SerializedName("total_transaksi_produk")
     private String total_transaksi_produk;
+    @SerializedName("status_transaksi_produk")
+    private String status_transaksi_produk;
     @SerializedName("tanggal_tambah_transaksi_log")
     private String tanggal_tambah_transaksi_log;
     @SerializedName("tanggal_ubah_transaksi_log")
     private String tanggal_ubah_transaksi_log;
-    @SerializedName("user_transaksi_log")
-    private String user_transaksi_log;
+    @SerializedName("user_transaksi_add")
+    private String user_transaksi_add;
+    @SerializedName("user_transaksi_edit")
+    private String user_transaksi_edit;
+    @SerializedName("user_transaksi_delete")
+    private String user_transaksi_delete;
     @SerializedName("value")
     private String value;
     @SerializedName("message")
@@ -104,6 +110,14 @@ public class TransaksiProduk_Model {
         this.total_transaksi_produk = total_transaksi_produk;
     }
 
+    public String getStatus_transaksi_produk() {
+        return status_transaksi_produk;
+    }
+
+    public void setStatus_transaksi_produk(String status_transaksi_produk) {
+        this.status_transaksi_produk = status_transaksi_produk;
+    }
+
     public String getValue() {
         return value;
     }
@@ -137,11 +151,27 @@ public class TransaksiProduk_Model {
         this.tanggal_ubah_transaksi_log = tanggal_ubah_transaksi_log;
     }
 
-    public String getUser_transaksi_log() {
-        return user_transaksi_log;
+    public String getUser_transaksi_add() {
+        return user_transaksi_add;
     }
 
-    public void setUser_transaksi_log(String user_transaksi_log) {
-        this.user_transaksi_log = user_transaksi_log;
+    public void setUser_transaksi_add(String user_transaksi_add) {
+        this.user_transaksi_add = user_transaksi_add;
+    }
+
+    public String getUser_transaksi_edit() {
+        return user_transaksi_edit;
+    }
+
+    public void setUser_transaksi_edit(String user_transaksi_edit) {
+        this.user_transaksi_edit = user_transaksi_edit;
+    }
+
+    public String getUser_transaksi_delete() {
+        return user_transaksi_delete;
+    }
+
+    public void setUser_transaksi_delete(String user_transaksi_delete) {
+        this.user_transaksi_delete = user_transaksi_delete;
     }
 }

@@ -288,7 +288,7 @@ public class Detail_ProdukTransaksiProduk extends AppCompatActivity {
 
         String id_produk = pIdProduk.getText().toString().trim();
         String jumlah_transaksi = pJumlahTransaksi.getText().toString().trim();
-        String subtotal_transaksi = pSubtotalTransaksi.getText().toString().trim();
+        String subtotal_edit = pSubtotalTransaksi.getText().toString().trim();
 
         //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //String tgl_ubah_customer_log = simpleDateFormat.format(new Date());
@@ -298,8 +298,10 @@ public class Detail_ProdukTransaksiProduk extends AppCompatActivity {
         Call<TransaksiProduk_Model> call =
                 apiInterface.editProdukTransaksiProduk(
                         key,
+                        sp_IdTransaksi,
                         String.valueOf(id),     //id_detail
                         jumlah_transaksi,
+                        subtotal_edit,
                         subtotal_transaksi);
 
         call.enqueue(new Callback<TransaksiProduk_Model>() {
@@ -338,10 +340,13 @@ public class Detail_ProdukTransaksiProduk extends AppCompatActivity {
         readMode();
 
         apiInterface = API_client.getApiClient().create(TransaksiProduk_Interface.class);
+        String subtotal_transkasi = pSubtotalTransaksi.getText().toString().trim();
 
         Call<TransaksiProduk_Model> call = apiInterface.hapusProdukTransaksiProduk(
                 key,
-                String.valueOf(id)
+                sp_IdTransaksi,
+                String.valueOf(id),
+                subtotal_transkasi
         );
 
         call.enqueue(new Callback<TransaksiProduk_Model>() {

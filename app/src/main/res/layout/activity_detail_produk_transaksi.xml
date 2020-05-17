@@ -34,7 +34,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_marginLeft="3dp"
                         android:fontFamily="sans-serif-light"
-                        android:text="Tambah Produk Transaksi"
+                        android:text="Detail Produk Transaksi"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 

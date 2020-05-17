@@ -78,18 +78,28 @@
                         android:layout_height="wrap_content">
 
                         <EditText
-                            android:id="@+id/SubtotalPengadaan"
+                            android:id="@+id/SubtotalPenjualan"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-light"
-                            android:hint="Subtotal"
+                            android:hint="Harga Jual"
                             android:textColor="#999999"
                             android:inputType="textPersonName|textCapWords" />
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/SubtotalPengadaan"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:hint="Subtotal Pengadaan"
+                            android:inputType="textPersonName|textCapWords" />
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
-
-
 
             </androidx.cardview.widget.CardView>
 

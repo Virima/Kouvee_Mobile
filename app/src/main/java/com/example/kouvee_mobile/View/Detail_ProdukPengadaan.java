@@ -56,7 +56,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Detail_ProdukPengadaan extends AppCompatActivity {
-    private EditText pIdPengadaan, pIdProduk, pJumlahPengadaan, pSubtotalPengadaan, pKode,pTglDibuat, pTglDiubah, pUserLog;
+    private EditText pIdPengadaan, pIdProduk, pJumlahPengadaan, pSubtotalPenjualan, pSubtotalPengadaan,
+            pKode, pTglDibuat, pTglDiubah, pUserLog;
     private String id_pengadaan, id_produk, kode_pengadaan, jumlah_pengadaan, subtotal_pengadaan, tgl_dibuat, tgl_diubah, user_log;
     private int id;
 
@@ -84,6 +85,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
 
         //pIdPengadaan = findViewById(R.id.KodePengadaan);
         pIdProduk = findViewById(R.id.NamaProdukJoinPengadaan);
+        pSubtotalPenjualan = findViewById(R.id.SubtotalPenjualan);
         pSubtotalPengadaan = findViewById(R.id.SubtotalPengadaan);
         pJumlahPengadaan = findViewById(R.id.JumlahPengadaan);
         pJumlahPengadaan.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -140,6 +142,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
             requestOptions.error(R.drawable.add);
 
             spinnerProduk.setVisibility(View.GONE);
+            pSubtotalPenjualan.setVisibility(View.GONE);
 
         } else {
             getSupportActionBar().setTitle("Tambah Produk");
@@ -190,7 +193,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
                 editMode();
 
                 setUpdateSpinnerProduk();
-
+                pSubtotalPenjualan.setVisibility(View.VISIBLE);
                 setUpdateSubtotal(pJumlahPengadaan);
 
                 pIdProduk.setVisibility(View.GONE);
@@ -212,6 +215,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
                     //setForm();
 
                     if (TextUtils.isEmpty(pJumlahPengadaan.getText().toString()) ||
+                            TextUtils.isEmpty(pSubtotalPengadaan.getText().toString()) ||
                             spinnerProduk.getSelectedItemPosition()==0 ) {
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
                         alertDialog.setMessage("Isilah semua field yang tersedia!");
@@ -476,7 +480,8 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
         //pIdPengadaan.setFocusableInTouchMode(false);
         pIdProduk.setFocusableInTouchMode(true);
         pJumlahPengadaan.setFocusableInTouchMode(true);
-        pSubtotalPengadaan.setFocusableInTouchMode(false);
+        pSubtotalPenjualan.setFocusableInTouchMode(false);
+        pSubtotalPengadaan.setFocusableInTouchMode(true);
         //pTglDibuat.setFocusableInTouchMode(false);
         //pTglDiubah.setFocusableInTouchMode(false);
         //pUserLog.setFocusableInTouchMode(false);
@@ -488,6 +493,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
         //pIdPengadaan.setFocusableInTouchMode(false);
         pIdProduk.setFocusableInTouchMode(false);
         pJumlahPengadaan.setFocusableInTouchMode(false);
+        pSubtotalPenjualan.setFocusableInTouchMode(false);
         pSubtotalPengadaan.setFocusableInTouchMode(false);
         //pTglDibuat.setFocusableInTouchMode(false);
         //pTglDiubah.setFocusableInTouchMode(false);
@@ -495,6 +501,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
 
         alertDisable(pIdProduk);
         alertDisable(pJumlahPengadaan);
+        alertDisable(pSubtotalPenjualan);
         alertDisable(pSubtotalPengadaan);
     }
 
@@ -566,7 +573,49 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (s.toString().length() > 0) {
 
+                    Produk_Interface apiProduk = API_client.getApiClient().create(Produk_Interface.class);
+                    Call<List<Produk_Model>> listCall = apiProduk.getProduk();
+
+                    listCall.enqueue(new Callback<List<Produk_Model>>() {
+                        @Override
+                        public void onResponse(Call<List<Produk_Model>> call, Response<List<Produk_Model>> response) {
+                            List<Produk_Model> produkModels = response.body();
+
+                            String editText = spinnerProduk.getSelectedItem().toString();
+
+                            for(int i=0; i < produkModels.size(); i++ ) {
+                                String nama = produkModels.get(i).getNama_produk();
+
+                                if(editText.equals(nama))
+                                {
+                                    harga = Integer.valueOf(produkModels.get(i).getHarga_produk());
+                                    String et_jumlah = pJumlahPengadaan.getText().toString();
+                                    if (et_jumlah.matches(""))
+                                    {
+                                        jumlah = 0;
+                                    }
+                                    else {
+                                        jumlah = Integer.valueOf(et_jumlah);
+                                    }
+
+                                    int subtotal = harga * jumlah;
+                                    pSubtotalPenjualan.setText(String.valueOf(subtotal));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<Produk_Model>> call, Throwable t) {
+                            Toast.makeText(Detail_ProdukPengadaan.this, "Cek " + t.getMessage().toString(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                } else {
+                    pSubtotalPenjualan.setText("0");
+                }
             }
 
             @Override
@@ -582,7 +631,6 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
                             List<Produk_Model> produkModels = response.body();
 
                             String editText = spinnerProduk.getSelectedItem().toString();
-                            System.out.println("TES SPINNER" + editText);
 
                             for(int i=0; i < produkModels.size(); i++ ) {
                                 String nama = produkModels.get(i).getNama_produk();
@@ -592,7 +640,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
                                     harga = Integer.valueOf(produkModels.get(i).getHarga_produk());
                                     jumlah = Integer.valueOf(pJumlahPengadaan.getText().toString());
                                     int subtotal = harga * jumlah;
-                                    pSubtotalPengadaan.setText(String.valueOf(subtotal));
+                                    pSubtotalPenjualan.setText(String.valueOf(subtotal));
                                 }
                             }
                         }
@@ -605,12 +653,14 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
                     });
 
                 } else {
-                    pSubtotalPengadaan.setText("0");
+                    pSubtotalPenjualan.setText("0");
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+
+            }
         });
     }
 }

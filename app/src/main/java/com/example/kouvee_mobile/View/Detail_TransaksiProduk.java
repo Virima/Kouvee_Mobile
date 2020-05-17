@@ -105,7 +105,7 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
 
         pTglDibuat = findViewById(R.id.tanggal_tambah_trans_prdk);
         pTglDiubah = findViewById(R.id.tanggal_ubah_trans_prdk);
-        pUserLog = findViewById(R.id.user_trans_prdk);
+        //pUserLog = findViewById(R.id.user_trans_prdk);
 
         tambahProdukBtn = findViewById(R.id.btnTambahProdukTransPrdk);
 
@@ -120,7 +120,7 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
         total_transaksi = intent.getStringExtra("total_transaksi_produk");
         tgl_dibuat = intent.getStringExtra("tanggal_tambah_transaksi_log");
         tgl_diubah = intent.getStringExtra("tanggal_ubah_transaksi_log");
-        user_log = intent.getStringExtra("user_transaksi_log");
+        //user_log = intent.getStringExtra("user_transaksi_log");
 
         sp_IdTransaksi = String.valueOf(id);
         savePreferenceIdTransaksi(sp_IdTransaksi);
@@ -164,7 +164,7 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
 
             pTglDibuat.setText(tgl_dibuat);
             pTglDiubah.setText(tgl_diubah);
-            pUserLog.setText(user_log);
+            //pUserLog.setText(user_log);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -185,7 +185,7 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
             pTotalTransaksi.setVisibility(View.GONE);
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
-            pUserLog.setVisibility(View.GONE);
+            //pUserLog.setVisibility(View.GONE);
 
             tambahProdukBtn.setVisibility(View.GONE);
             pTotalTransaksi.setText("0");
@@ -360,7 +360,8 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
                         id_customer,
                         tanggal_transaksi,
                         "0",
-                        sp_NamaPegawai);
+                        sp_NamaPegawai,
+                        "Menunggu Pembayaran");
 
         call.enqueue(new Callback<TransaksiProduk_Model>() {
             public void onResponse(Call<TransaksiProduk_Model> call, Response<TransaksiProduk_Model> response) {
@@ -543,7 +544,7 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
         pTanggalTransaksi.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
-        pUserLog.setFocusableInTouchMode(false);
+        //pUserLog.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
@@ -553,7 +554,7 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
         pTanggalTransaksi.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
-        pUserLog.setFocusableInTouchMode(false);
+        //pUserLog.setFocusableInTouchMode(false);
 
         alertDisable(pIdCustomer);
         alertDisable(pTanggalTransaksi);

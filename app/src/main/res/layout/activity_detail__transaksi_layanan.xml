@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.Detail_TransaksiProduk">
+    tools:context=".View.Detail_TransaksiLayanan">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_marginLeft="3dp"
                         android:fontFamily="sans-serif-light"
-                        android:text="Data Transaksi Produk"
+                        android:text="Data Transaksi Layanan"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -50,11 +50,11 @@
                             android:layout_height="wrap_content">
 
                             <EditText
-                                android:id="@+id/KodeTransPrdk"
+                                android:id="@+id/KodeTransLyn"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-light"
-                                android:hint="Kode Transaksi Produk"
+                                android:hint="Kode Transaksi Layanan"
                                 android:textColor="#999999"
                                 android:inputType="textPersonName|textCapWords" />
                         </com.google.android.material.textfield.TextInputLayout>
@@ -64,7 +64,7 @@
                             android:layout_height="wrap_content">
 
                             <EditText
-                                android:id="@+id/NamaCustomerJoinTransPrdk"
+                                android:id="@+id/NamaCustomerJoinTransLyn"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-light"
@@ -72,11 +72,11 @@
                                 android:inputType="textPersonName|textCapWords" />
 
                             <Spinner
-                                android:id="@+id/spinnerCustomerTransPrdk"
+                                android:id="@+id/spinnerCustomerTransLyn"
                                 android:layout_width="match_parent"
                                 android:layout_height="40dp"
                                 android:fontFamily="sans-serif-light"
-                                android:hint="Pilih Nama Customer"
+                                android:hint="Pilih Nama Supplier"
                                 android:inputType="textPersonName|textCapWords">
                             </Spinner>
                         </com.google.android.material.textfield.TextInputLayout>
@@ -86,7 +86,29 @@
                             android:layout_height="wrap_content">
 
                             <EditText
-                                android:id="@+id/TanggalTransPrdk"
+                                android:id="@+id/NamaHewanJoinTransLyn"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Nama Hewan"
+                                android:inputType="textPersonName|textCapWords" />
+
+                            <Spinner
+                                android:id="@+id/spinnerHewanTransLyn"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Pilih Nama Hewan"
+                                android:inputType="textPersonName|textCapWords">
+                            </Spinner>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <EditText
+                                android:id="@+id/TanggalTransLyn"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-light"
@@ -99,7 +121,7 @@
                             android:layout_height="wrap_content">
 
                             <EditText
-                                android:id="@+id/TotalTransPrdk"
+                                android:id="@+id/TotalTransLyn"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-light"
@@ -113,7 +135,7 @@
                             android:layout_height="wrap_content">
 
                             <EditText
-                                android:id="@+id/tanggal_tambah_trans_prdk"
+                                android:id="@+id/tanggal_tambah_trans_lyn"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-light"
@@ -127,7 +149,7 @@
                             android:layout_height="wrap_content">
 
                             <EditText
-                                android:id="@+id/tanggal_ubah_trans_prdk"
+                                android:id="@+id/tanggal_ubah_trans_lyn"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-light"
@@ -136,21 +158,6 @@
                                 android:inputType="textPersonName|textCapWords" />
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <!--
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <EditText
-                                android:id="@+id/user_trans_prdk"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif-light"
-                                android:hint="Log User"
-                                android:textColor="#999999"
-                                android:inputType="textPersonName|textCapWords" />
-                        </com.google.android.material.textfield.TextInputLayout>
-                        -->
                     </LinearLayout>
 
                     <LinearLayout
@@ -162,7 +169,7 @@
                         android:weightSum="2">
 
                         <Button
-                            android:id="@+id/btnTambahProdukTransPrdk"
+                            android:id="@+id/btnTambahLayananTransLyn"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -172,18 +179,18 @@
                             android:fontFamily="sans-serif-condensed-medium"
                             android:textColor="#FFFFFF"
                             android:textSize="14sp"
-                            android:text="Tambah Pembelian Produk"
+                            android:text="Tambah Pemesanan Layanan"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"/>
 
-                </LinearLayout>
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="sans-serif-light"
-                        android:text="Produk yang Dibeli : "
+                        android:text="Layanan yang Dipesan : "
                         android:textColor="@android:color/black"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -192,9 +199,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
-                        android:id="@+id/placeHolderFragmentTransPrdk"
-                        android:background="@drawable/round_border_warna"
-                        tools:context=".View.Activity_ProdukTransaksiProduk">
+                        android:id="@+id/placeHolderFragmentTransLyn"
+                        android:background="@drawable/round_border_warna">
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recyclerView"
@@ -212,13 +218,10 @@
 
                 </LinearLayout>
 
-
-
             </androidx.cardview.widget.CardView>
 
         </ScrollView>
 
     </RelativeLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

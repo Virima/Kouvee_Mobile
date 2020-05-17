@@ -32,7 +32,7 @@ public class Adapter_TransaksiProduk extends RecyclerView.Adapter<Adapter_Transa
     public Adapter_TransaksiProduk(List<TransaksiProduk_Model> transaksi,
                              Adapter_TransaksiProduk.RecyclerViewTransaksiProdukClickListener listener) {
         this.transaksi = transaksi;
-        this.transaksiFilter = transaksiFilter;
+        this.transaksiFilter = transaksi;
         //this.context = context;
         this.mListener = listener;
     }
