@@ -64,28 +64,6 @@
                             android:layout_height="wrap_content">
 
                             <EditText
-                                android:id="@+id/NamaCustomerJoinTransLyn"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="sans-serif-light"
-                                android:hint="Nama Customer"
-                                android:inputType="textPersonName|textCapWords" />
-
-                            <Spinner
-                                android:id="@+id/spinnerCustomerTransLyn"
-                                android:layout_width="match_parent"
-                                android:layout_height="40dp"
-                                android:fontFamily="sans-serif-light"
-                                android:hint="Pilih Nama Supplier"
-                                android:inputType="textPersonName|textCapWords">
-                            </Spinner>
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <EditText
                                 android:id="@+id/NamaHewanJoinTransLyn"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -101,6 +79,19 @@
                                 android:hint="Pilih Nama Hewan"
                                 android:inputType="textPersonName|textCapWords">
                             </Spinner>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <EditText
+                                android:id="@+id/NamaCustomerJoinTransLyn"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Nama Customer"
+                                android:inputType="textPersonName|textCapWords" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout

@@ -7,8 +7,16 @@ public class TransaksiLayanan_Model {
     private int id_transaksi_layanan;
     @SerializedName("id_detail_transaksi")
     private int id_detail_transaksi;
+
     @SerializedName("id_hewan")
     private String id_hewan;
+    @SerializedName("id_layanan")
+    private String id_layanan;
+    @SerializedName("id_jenis")
+    private String id_jenis;
+    @SerializedName("id_ukuran")
+    private String id_ukuran;
+
     @SerializedName("kode_transaksi_layanan")
     private String kode_transaksi_layanan;
     @SerializedName("tanggal_transaksi_layanan")
@@ -17,8 +25,6 @@ public class TransaksiLayanan_Model {
     private String total_transaksi_layanan;
     @SerializedName("status_transaksi_layanan")
     private String status_transaksi_layanan;
-    @SerializedName("id_layanan")
-    private String id_layanan;
     @SerializedName("jumlah_detail_layanan")
     private String jumlah_transaksi_layanan;
     @SerializedName("subtotal_detail_produk")
@@ -101,6 +107,22 @@ public class TransaksiLayanan_Model {
 
     public void setId_layanan(String id_layanan) {
         this.id_layanan = id_layanan;
+    }
+
+    public String getId_jenis() {
+        return id_jenis;
+    }
+
+    public void setId_jenis(String id_jenis) {
+        this.id_jenis = id_jenis;
+    }
+
+    public String getId_ukuran() {
+        return id_ukuran;
+    }
+
+    public void setId_ukuran(String id_ukuran) {
+        this.id_ukuran = id_ukuran;
     }
 
     public String getJumlah_transaksi_layanan() {

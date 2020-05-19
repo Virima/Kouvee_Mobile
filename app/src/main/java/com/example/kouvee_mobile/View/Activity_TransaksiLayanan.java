@@ -59,10 +59,11 @@ public class Activity_TransaksiLayanan extends AppCompatActivity {
                 Intent intent = new Intent(Activity_TransaksiLayanan.this, Detail_TransaksiLayanan.class);
                 intent.putExtra("id_transaksi_layanan", transaksiList.get(position).getId_transaksi_layanan());
                 intent.putExtra("id_hewan", transaksiList.get(position).getId_hewan());
-                intent.putExtra("id_layanan", transaksiList.get(position).getId_layanan());
+                //intent.putExtra("id_layanan", transaksiList.get(position).getId_layanan());
                 intent.putExtra("kode_transaksi_layanan", transaksiList.get(position).getKode_transaksi_layanan());
                 intent.putExtra("tanggal_transaksi_layanan", transaksiList.get(position).getTanggal_transaksi_layanan());
                 intent.putExtra("total_transaksi_layanan", transaksiList.get(position).getTotal_transaksi_layanan());
+                intent.putExtra("status_transaksi_layanan", transaksiList.get(position).getStatus_transaksi_layanan());
                 intent.putExtra("tanggal_tambah_transaksi_log", transaksiList.get(position).getTanggalTambah());
                 intent.putExtra("tanggal_ubah_transaksi_log", transaksiList.get(position).getTanggalUbah());
                 startActivity(intent);

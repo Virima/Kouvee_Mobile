@@ -41,6 +41,7 @@
         <activity android:name=".View.Activity_About_Us" />
 
         <!-- MENU PEGAWAI [CS] -->
+            <!-- Transaksi Produk -->
         <activity android:name=".View.Activity_TransaksiProduk"
         android:theme="@style/AppThemeKu" />
         <activity android:name=".View.Detail_TransaksiProduk"
@@ -48,9 +49,12 @@
         <activity android:name=".View.Detail_ProdukTransaksiProduk"
             android:theme="@style/AppThemeKu" />
 
+            <!-- Transaksi Layanan -->
         <activity android:name=".View.Activity_TransaksiLayanan"
             android:theme="@style/AppThemeKu" />
         <activity android:name=".View.Detail_TransaksiLayanan"
+            android:theme="@style/AppThemeKu" />
+        <activity android:name=".View.Detail_Layanan_TransaksiLayanan"
             android:theme="@style/AppThemeKu" />
 
         <!-- PENGADAAN -->
@@ -120,6 +124,5 @@
             android:name=".View.ActivityCust_Produk"
             android:theme="@style/AppThemeKu"/>
     </application>
-
 
 </manifest>

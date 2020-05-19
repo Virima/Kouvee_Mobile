@@ -44,8 +44,17 @@ public class Activity_HomeCS extends AppCompatActivity  {
         btnPenjualanProduk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent customer = new Intent(Activity_HomeCS.this, Activity_TransaksiProduk.class);
-                startActivity(customer);
+                Intent produk = new Intent(Activity_HomeCS.this, Activity_TransaksiProduk.class);
+                startActivity(produk);
+            }
+        });
+
+        btnPenjualanLayanan = findViewById(R.id.btnPenjualanProdukCS);
+        btnPenjualanLayanan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent layanan = new Intent(Activity_HomeCS.this, Activity_TransaksiLayanan.class);
+                startActivity(layanan);
             }
         });
 
