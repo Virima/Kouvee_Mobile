@@ -60,9 +60,10 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
 
     TransaksiProduk_Interface apiInterface;
 
-    private EditText pIdTransaksi, pIdProduk, pIdCustomer, pTanggalTransaksi, pTotalTransaksi, pTglDibuat,
-            pTglDiubah, pUserLog;
-    private String id_customer, kode_transaksi, tanggal_transaksi, total_transaksi, tgl_dibuat, tgl_diubah, user_log;
+    private EditText pIdTransaksi, pIdCustomer, pTanggalTransaksi, pTotalTransaksi, pTglDibuat,
+            pTglDiubah, pUserCreate, pUserEdit;
+    private String id_customer, kode_transaksi, tanggal_transaksi, total_transaksi, tgl_dibuat,
+            tgl_diubah, user_create, user_edit;
     private int id;
 
     private Button tambahProdukBtn;
@@ -105,7 +106,8 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
 
         pTglDibuat = findViewById(R.id.tanggal_tambah_trans_prdk);
         pTglDiubah = findViewById(R.id.tanggal_ubah_trans_prdk);
-        //pUserLog = findViewById(R.id.user_trans_prdk);
+        pUserCreate = findViewById(R.id.user_create_trans_prd);
+        pUserEdit = findViewById(R.id.user_edit_trans_prd);
 
         tambahProdukBtn = findViewById(R.id.btnTambahProdukTransPrdk);
 
@@ -120,7 +122,8 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
         total_transaksi = intent.getStringExtra("total_transaksi_produk");
         tgl_dibuat = intent.getStringExtra("tanggal_tambah_transaksi_log");
         tgl_diubah = intent.getStringExtra("tanggal_ubah_transaksi_log");
-        //user_log = intent.getStringExtra("user_transaksi_log");
+        user_create = intent.getStringExtra("user_transaksi_add");
+        user_edit = intent.getStringExtra("user_transaksi_edit");
 
         sp_IdTransaksi = String.valueOf(id);
         savePreferenceIdTransaksi(sp_IdTransaksi);
@@ -164,7 +167,8 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
 
             pTglDibuat.setText(tgl_dibuat);
             pTglDiubah.setText(tgl_diubah);
-            //pUserLog.setText(user_log);
+            pUserCreate.setText(user_create);
+            pUserEdit.setText(user_edit);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -185,7 +189,8 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
             pTotalTransaksi.setVisibility(View.GONE);
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
-            //pUserLog.setVisibility(View.GONE);
+            pUserCreate.setVisibility(View.GONE);
+            pUserEdit.setVisibility(View.GONE);
 
             tambahProdukBtn.setVisibility(View.GONE);
             pTotalTransaksi.setText("0");
@@ -544,7 +549,8 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
         pTanggalTransaksi.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
-        //pUserLog.setFocusableInTouchMode(false);
+        pUserCreate.setFocusableInTouchMode(false);
+        pUserEdit.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
@@ -554,7 +560,8 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
         pTanggalTransaksi.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
-        //pUserLog.setFocusableInTouchMode(false);
+        pUserCreate.setFocusableInTouchMode(false);
+        pUserEdit.setFocusableInTouchMode(false);
 
         alertDisable(pIdCustomer);
         alertDisable(pTanggalTransaksi);

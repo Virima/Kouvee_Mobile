@@ -16,6 +16,8 @@ public class TransaksiLayanan_Model {
     private String id_jenis;
     @SerializedName("id_ukuran")
     private String id_ukuran;
+    @SerializedName("id_customer")
+    private String id_customer;
 
     @SerializedName("kode_transaksi_layanan")
     private String kode_transaksi_layanan;
@@ -27,7 +29,7 @@ public class TransaksiLayanan_Model {
     private String status_transaksi_layanan;
     @SerializedName("jumlah_detail_layanan")
     private String jumlah_transaksi_layanan;
-    @SerializedName("subtotal_detail_produk")
+    @SerializedName("subtotal_detail_layanan")
     private String subtotal_transaksi_layanan;
 
     @SerializedName("tanggal_tambah_transaksi_log")
@@ -119,6 +121,14 @@ public class TransaksiLayanan_Model {
 
     public String getId_ukuran() {
         return id_ukuran;
+    }
+
+    public void setId_customer(String id_customer) {
+        this.id_customer = id_customer;
+    }
+
+    public String getId_customer() {
+        return id_customer;
     }
 
     public void setId_ukuran(String id_ukuran) {

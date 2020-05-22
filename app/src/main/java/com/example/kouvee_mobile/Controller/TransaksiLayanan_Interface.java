@@ -15,6 +15,9 @@ public interface TransaksiLayanan_Interface {
     @GET("tampiltransaksilayanan.php")
     Call<List<TransaksiLayanan_Model>> getTransaksiLayanan();
 
+    @GET("tampiltransaksilayananbelumselesai.php")
+    Call<List<TransaksiLayanan_Model>> getTransaksiLayananBelumSelesai();
+
     @GET("tampillayanantransaksilayanan.php")
     Call<List<TransaksiLayanan_Model>> getLayananTransaksiLayanan(
             @Query("id_transaksi_layanan") String id_transaksi_layanan
@@ -68,7 +71,7 @@ public interface TransaksiLayanan_Interface {
     @POST("hapustransaksilayanan.php")
     Call<TransaksiLayanan_Model> hapusTransaksiLayanan(
             @Field("key") String key,
-            @Field("id_transaksi_Layanan") String id_transaksi_layanan,
+            @Field("id_transaksi_layanan") String id_transaksi_layanan,
             @Field("user_transaksi_delete") String user_transaksi_delete
     );
 

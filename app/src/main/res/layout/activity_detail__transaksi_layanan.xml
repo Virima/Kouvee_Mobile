@@ -91,6 +91,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-light"
                                 android:hint="Nama Customer"
+                                android:textColor="#999999"
                                 android:inputType="textPersonName|textCapWords" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -149,6 +150,33 @@
                                 android:inputType="textPersonName|textCapWords" />
                         </com.google.android.material.textfield.TextInputLayout>
 
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <EditText
+                                android:id="@+id/user_create_trans_lyn"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Dibuat Oleh"
+                                android:textColor="#999999"
+                                android:inputType="textPersonName|textCapWords" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <EditText
+                                android:id="@+id/user_edit_trans_lyn"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Terakhir Diubah Oleh"
+                                android:textColor="#999999"
+                                android:inputType="textPersonName|textCapWords" />
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
                     <LinearLayout
@@ -174,6 +202,20 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"/>
 
+                        <Button
+                            android:id="@+id/btnVerifikasiTransLyn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/my_button_bg3"
+                            android:fontFamily="sans-serif-condensed-medium"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"
+                            android:text="Verifikasi"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"/>
                     </LinearLayout>
 
                     <TextView

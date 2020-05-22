@@ -49,14 +49,13 @@ public class Adapter_TransaksiLayanan extends RecyclerView.Adapter<Adapter_Trans
 
         holder.pKodeTransaksi.setText(sup.getKode_transaksi_layanan());
         holder.pIdHewan.setText(sup.getId_hewan());
-        holder.pIdLayanan.setText(sup.getId_layanan());
+        holder.pIdCustomer.setText(sup.getId_customer());
 
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.skipMemoryCache(true);
         requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
         requestOptions.placeholder(R.drawable.add);
         requestOptions.error(R.drawable.add);
-
     }
 
     @Override
@@ -75,7 +74,7 @@ public class Adapter_TransaksiLayanan extends RecyclerView.Adapter<Adapter_Trans
 
     public class TransaksiLayananViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView pKodeTransaksi, pIdHewan, pIdLayanan;
+        private TextView pKodeTransaksi, pIdHewan, pIdCustomer;
         private Adapter_TransaksiLayanan.RecyclerViewTransaksiLayananClickListener mListener;
         private RelativeLayout mRowContainer;
 
@@ -84,7 +83,7 @@ public class Adapter_TransaksiLayanan extends RecyclerView.Adapter<Adapter_Trans
             super(itemView);
             pKodeTransaksi = itemView.findViewById(R.id.KodeTransaksiLayanan);
             pIdHewan = itemView.findViewById(R.id.IdHewanJoinTransLyn);
-            pIdLayanan = itemView.findViewById(R.id.IdLayananJoinTransLyn);
+            pIdCustomer = itemView.findViewById(R.id.IdCustomerJoinTransLyn);
 
             mRowContainer = itemView.findViewById(R.id.row_container);
             mListener = listener;

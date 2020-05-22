@@ -4,6 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
+        android:id="@+id/action_filter"
+        android:orderInCategory="100"
+        android:title="Filter Transaksi  Belum Selesai"
+        android:icon="@drawable/filter"
+        app:showAsAction="collapseActionView|always"
+        android:theme="@android:style/Theme.Holo.Light"/>
+
+    <item
+        android:id="@+id/action_all"
+        android:orderInCategory="100"
+        android:title="Tampil Semua Transaksi"
+        android:icon="@drawable/filter"
+        app:showAsAction="collapseActionView|always"
+        android:theme="@android:style/Theme.Holo.Light"/>
+
+    <item
         android:id="@+id/action_search"
         android:orderInCategory="100"
         android:title="Search"

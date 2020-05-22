@@ -49,7 +49,7 @@ public class Activity_HomeCS extends AppCompatActivity  {
             }
         });
 
-        btnPenjualanLayanan = findViewById(R.id.btnPenjualanProdukCS);
+        btnPenjualanLayanan = findViewById(R.id.btnPenjualanLayananCS);
         btnPenjualanLayanan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

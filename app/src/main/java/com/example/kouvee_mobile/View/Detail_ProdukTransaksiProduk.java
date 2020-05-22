@@ -360,6 +360,9 @@ public class Detail_ProdukTransaksiProduk extends AppCompatActivity {
 
                 if (value.equals("1")) {
                     Toast.makeText(Detail_ProdukTransaksiProduk.this, message, Toast.LENGTH_SHORT).show();
+                    Intent back = new Intent(Detail_ProdukTransaksiProduk.this,
+                            Activity_TransaksiProduk.class);
+                    startActivity(back);
                     finish();
                 } else {
                     Toast.makeText(Detail_ProdukTransaksiProduk.this, message, Toast.LENGTH_SHORT).show();

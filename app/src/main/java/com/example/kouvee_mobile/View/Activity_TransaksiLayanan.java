@@ -39,6 +39,8 @@ public class Activity_TransaksiLayanan extends AppCompatActivity {
     TransaksiLayanan_Interface apiInterface;
     ProgressBar progressBar;
 
+    private Menu action;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,13 +61,15 @@ public class Activity_TransaksiLayanan extends AppCompatActivity {
                 Intent intent = new Intent(Activity_TransaksiLayanan.this, Detail_TransaksiLayanan.class);
                 intent.putExtra("id_transaksi_layanan", transaksiList.get(position).getId_transaksi_layanan());
                 intent.putExtra("id_hewan", transaksiList.get(position).getId_hewan());
-                //intent.putExtra("id_layanan", transaksiList.get(position).getId_layanan());
+                intent.putExtra("id_customer", transaksiList.get(position).getId_customer());
                 intent.putExtra("kode_transaksi_layanan", transaksiList.get(position).getKode_transaksi_layanan());
                 intent.putExtra("tanggal_transaksi_layanan", transaksiList.get(position).getTanggal_transaksi_layanan());
                 intent.putExtra("total_transaksi_layanan", transaksiList.get(position).getTotal_transaksi_layanan());
                 intent.putExtra("status_transaksi_layanan", transaksiList.get(position).getStatus_transaksi_layanan());
                 intent.putExtra("tanggal_tambah_transaksi_log", transaksiList.get(position).getTanggalTambah());
                 intent.putExtra("tanggal_ubah_transaksi_log", transaksiList.get(position).getTanggalUbah());
+                intent.putExtra("user_transaksi_add", transaksiList.get(position).getUser_transaksi_add());
+                intent.putExtra("user_transaksi_edit", transaksiList.get(position).getUser_transaksi_edit());
                 startActivity(intent);
             }
         };
@@ -82,10 +86,16 @@ public class Activity_TransaksiLayanan extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.transaksi_layanan_main_menu, menu);
+        action = menu;
+
+        action.findItem(R.id.action_all).setVisible(false);
+        action.findItem(R.id.action_filter).setVisible(true);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         final SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+        MenuItem filterMenuItem = menu.findItem(R.id.action_filter);
+        MenuItem ShowAllMenuItem = menu.findItem(R.id.action_all);
 
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName())
@@ -107,21 +117,65 @@ public class Activity_TransaksiLayanan extends AppCompatActivity {
             }
         });
         searchMenuItem.getIcon().setVisible(false, false);
+        filterMenuItem.getIcon().setVisible(false, false);
+        ShowAllMenuItem.getIcon().setVisible(false, false);
+
         return true;
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
             return true;
+        }
+        else if (id == R.id.action_filter)
+        {
+            action.findItem(R.id.action_all).setVisible(true);
+            action.findItem(R.id.action_filter).setVisible(false);
+
+            Toast.makeText(Activity_TransaksiLayanan.this, "Menampilkan Filter Transaksi Belum Selesai",
+                    Toast.LENGTH_SHORT).show();
+
+
+            getTransaksiLayananBelumSelesai();
+        }
+        else if (id == R.id.action_all)
+        {
+            action.findItem(R.id.action_all).setVisible(false);
+            action.findItem(R.id.action_filter).setVisible(true);
+
+            Toast.makeText(Activity_TransaksiLayanan.this, "Menampilkan Semua Transaksi Layanan",
+                    Toast.LENGTH_SHORT).show();
+
+            getTransaksiLayanan();
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void getTransaksiLayanan() {
         Call<List<TransaksiLayanan_Model>> call = apiInterface.getTransaksiLayanan();
+        call.enqueue(new Callback<List<TransaksiLayanan_Model>>() {
+            @Override
+            public void onResponse(Call<List<TransaksiLayanan_Model>> call, Response<List<TransaksiLayanan_Model>> response) {
+                progressBar.setVisibility(View.GONE);
+                transaksiList = response.body();
+                Log.i(Activity_TransaksiLayanan.class.getSimpleName(), response.body().toString());
+                transaksiadapter = new Adapter_TransaksiLayanan(transaksiList,  listener);
+                recyclerView.setAdapter(transaksiadapter);
+                transaksiadapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<TransaksiLayanan_Model>> call, Throwable t) {
+                Toast.makeText(Activity_TransaksiLayanan.this, "Rp " + t.getMessage().toString(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void getTransaksiLayananBelumSelesai() {
+        Call<List<TransaksiLayanan_Model>> call = apiInterface.getTransaksiLayananBelumSelesai();
         call.enqueue(new Callback<List<TransaksiLayanan_Model>>() {
             @Override
             public void onResponse(Call<List<TransaksiLayanan_Model>> call, Response<List<TransaksiLayanan_Model>> response) {

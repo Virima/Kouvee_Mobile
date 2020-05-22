@@ -1,5 +1,6 @@
 package com.example.kouvee_mobile.View;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -7,10 +8,12 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +31,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -55,21 +60,23 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
     TransaksiLayanan_Interface apiInterface;
 
     private EditText pIdTransaksi, pIdHewan, pTanggalTransaksi, pTotalTransaksi, pTglDibuat, pStatusTransaksi,
-            pTglDiubah, pIdCustomer;
-    private String id_hewan, kode_transaksi, tanggal_transaksi, total_transaksi, status_transaksi,
-            tgl_dibuat, tgl_diubah;
+            pTglDiubah, pIdCustomer, pUserCreate, pUserEdit;
+    private String id_hewan, id_customer ,kode_transaksi, tanggal_transaksi, total_transaksi, status_transaksi,
+            tgl_dibuat, tgl_diubah, user_create, user_edit;
     private int id;
 
-    private Button tambahLayananBtn;
+    private Button tambahLayananBtn, verifikasiBtn;
 
     public String sp_NamaPegawai="";
     public String sp_IdTransaksi="";
 
     private Spinner spinnerHewan;
-
     private List<String> listSpinnerHewan;
 
     private Menu action;
+
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
+    String phoneNo, message;
 
     private final static String TAG = "Detail_Transaksi";
     private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -96,13 +103,14 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
         pIdTransaksi = findViewById(R.id.KodeTransLyn);
         pIdHewan = findViewById(R.id.NamaHewanJoinTransLyn);
         pIdCustomer = findViewById(R.id.NamaCustomerJoinTransLyn);
-        pTanggalTransaksi = findViewById(R.id.TanggalTransPrdk);
-        pTotalTransaksi = findViewById(R.id.TotalTransPrdk);
+        pTanggalTransaksi = findViewById(R.id.TanggalTransLyn);
+        pTotalTransaksi = findViewById(R.id.TotalTransLyn);
         //pStatusTransaksi = findViewById(R.id.)
 
-        pTglDibuat = findViewById(R.id.tanggal_tambah_trans_prdk);
-        pTglDiubah = findViewById(R.id.tanggal_ubah_trans_prdk);
-        //pUserLog = findViewById(R.id.user_trans_prdk);
+        pTglDibuat = findViewById(R.id.tanggal_tambah_trans_lyn);
+        pTglDiubah = findViewById(R.id.tanggal_ubah_trans_lyn);
+        pUserCreate = findViewById(R.id.user_create_trans_lyn);
+        pUserEdit = findViewById(R.id.user_edit_trans_lyn);
 
         tambahLayananBtn = findViewById(R.id.btnTambahLayananTransLyn);
 
@@ -112,13 +120,15 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
         Intent intent = getIntent();
         id = intent.getIntExtra("id_transaksi_layanan", 0);
         id_hewan = intent.getStringExtra("id_hewan");
+        id_customer = intent.getStringExtra("id_customer");
         kode_transaksi = intent.getStringExtra("kode_transaksi_layanan");
         tanggal_transaksi = intent.getStringExtra("tanggal_transaksi_layanan");
         total_transaksi = intent.getStringExtra("total_transaksi_layanan");
         status_transaksi = intent.getStringExtra("status_transaksi_layanan");
         tgl_dibuat = intent.getStringExtra("tanggal_tambah_transaksi_log");
         tgl_diubah = intent.getStringExtra("tanggal_ubah_transaksi_log");
-        //user_log = intent.getStringExtra("user_transaksi_log");
+        user_create = intent.getStringExtra("user_transaksi_add");
+        user_edit = intent.getStringExtra("user_transaksi_edit");
 
         sp_IdTransaksi = String.valueOf(id);
         savePreferenceIdTransaksi(sp_IdTransaksi);
@@ -157,12 +167,14 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
             pIdTransaksi.setText(kode_transaksi);
             pIdHewan.setText(id_hewan);
+            pIdCustomer.setText(id_customer);
             pTanggalTransaksi.setText(tanggal_transaksi);
             pTotalTransaksi.setText(total_transaksi);
 
             pTglDibuat.setText(tgl_dibuat);
             pTglDiubah.setText(tgl_diubah);
-            //pUserLog.setText(user_log);
+            pUserCreate.setText(user_create);
+            pUserEdit.setText(user_edit);
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -184,7 +196,8 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
             pTotalTransaksi.setVisibility(View.GONE);
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
-            //pUserLog.setVisibility(View.GONE);
+            pUserCreate.setVisibility(View.GONE);
+            pUserEdit.setVisibility(View.GONE);
 
             tambahLayananBtn.setVisibility(View.GONE);
             pTotalTransaksi.setText("0");
@@ -199,7 +212,7 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
         if (id == 0) {
             editMode();
-            pTanggalTransaksi = (EditText) findViewById(R.id.TanggalTransPrdk);
+            pTanggalTransaksi = (EditText) findViewById(R.id.TanggalTransLyn);
             pTanggalTransaksi.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -248,7 +261,7 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
                 pIdHewan.setVisibility(View.GONE);
                 spinnerHewan.setVisibility(View.VISIBLE);
 
-                pTanggalTransaksi = (EditText) findViewById(R.id.TanggalTransPrdk); //date
+                pTanggalTransaksi = (EditText) findViewById(R.id.TanggalTransLyn); //date
                 pTanggalTransaksi.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -359,7 +372,7 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
                         id_hewan,
                         tanggal_transaksi,
                         "0",
-                        "Menunggu Pembayaran",
+                        "Belum Selesai",
                         sp_NamaPegawai);
 
         call.enqueue(new Callback<TransaksiLayanan_Model>() {
@@ -458,7 +471,7 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
             public void onResponse(Call<TransaksiLayanan_Model> call, Response<TransaksiLayanan_Model> response) {
                 progressDialog.dismiss();
 
-                Log.i(Detail_TransaksiProduk.class.getSimpleName(), response.toString());
+                Log.i(Detail_TransaksiLayanan.class.getSimpleName(), response.toString());
                 String value = response.body().getValue();
                 String message = response.body().getMessage();
 
@@ -538,13 +551,14 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
     private void editMode() {
         pIdTransaksi.setFocusableInTouchMode(false);
-        pIdCustomer.setFocusableInTouchMode(true);
+        pIdCustomer.setFocusableInTouchMode(false);
         pIdHewan.setFocusableInTouchMode(false);
         pTotalTransaksi.setFocusableInTouchMode(false);
         pTanggalTransaksi.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
-        //pUserLog.setFocusableInTouchMode(false);
+        pUserCreate.setFocusableInTouchMode(false);
+        pUserEdit.setFocusableInTouchMode(false);
     }
 
     private void readMode() {
@@ -555,7 +569,8 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
         pTanggalTransaksi.setFocusableInTouchMode(false);
         pTglDibuat.setFocusableInTouchMode(false);
         pTglDiubah.setFocusableInTouchMode(false);
-        //pUserLog.setFocusableInTouchMode(false);
+        pUserCreate.setFocusableInTouchMode(false);
+        pUserEdit.setFocusableInTouchMode(false);
 
         alertDisable(pIdHewan);
         alertDisable(pTanggalTransaksi);
@@ -620,4 +635,44 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
         fragmentTransaction.commit();
         //
     }
+
+    //// SMS ////
+    protected void sendSMSMessage() {
+        phoneNo = "081227069255";
+        message = "Transaksi Layanan Anda Telah Selesai. Anda dapat mengunjungi Toko untuk mengambil" +
+                "Hewan Peliharaan Anda.";
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.SEND_SMS)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.SEND_SMS},
+                        MY_PERMISSIONS_REQUEST_SEND_SMS);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_SEND_SMS: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(phoneNo, null, message, null, null);
+                    Toast.makeText(getApplicationContext(), "SMS berhasil terkirim.",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "SMS gagal terkirim, mohon coba Lagi.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+        }
+
+    }
+    ////////////
 }

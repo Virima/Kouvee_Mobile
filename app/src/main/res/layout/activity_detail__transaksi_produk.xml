@@ -136,21 +136,33 @@
                                 android:inputType="textPersonName|textCapWords" />
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <!--
                         <com.google.android.material.textfield.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
                             <EditText
-                                android:id="@+id/user_trans_prdk"
+                                android:id="@+id/user_create_trans_prd"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif-light"
-                                android:hint="Log User"
+                                android:hint="Dibuat Oleh"
                                 android:textColor="#999999"
                                 android:inputType="textPersonName|textCapWords" />
                         </com.google.android.material.textfield.TextInputLayout>
-                        -->
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <EditText
+                                android:id="@+id/user_edit_trans_prd"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-light"
+                                android:hint="Terakhir Diubah Oleh"
+                                android:textColor="#999999"
+                                android:inputType="textPersonName|textCapWords" />
+                        </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
 
                     <LinearLayout

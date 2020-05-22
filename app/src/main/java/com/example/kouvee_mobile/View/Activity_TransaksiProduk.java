@@ -65,7 +65,8 @@ public class Activity_TransaksiProduk extends AppCompatActivity {
                 intent.putExtra("total_transaksi_produk", transaksiList.get(position).getTotal_transaksi_produk());
                 intent.putExtra("tanggal_tambah_transaksi_log", transaksiList.get(position).getTanggal_transaksi_produk());
                 intent.putExtra("tanggal_ubah_transaksi_log", transaksiList.get(position).getTanggalUbah());
-                //intent.putExtra("user_transaksi_log", transaksiList.get(position).getUser_transaksi_log());
+                intent.putExtra("user_transaksi_add", transaksiList.get(position).getUser_transaksi_add());
+                intent.putExtra("user_transaksi_edit", transaksiList.get(position).getUser_transaksi_edit());
                 startActivity(intent);
             }
         };

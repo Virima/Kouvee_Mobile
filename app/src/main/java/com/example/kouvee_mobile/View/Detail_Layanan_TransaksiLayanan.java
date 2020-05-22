@@ -206,7 +206,7 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
 
             case R.id.menu_delete:
                 AlertDialog.Builder dialog = new AlertDialog.Builder(Detail_Layanan_TransaksiLayanan.this);
-                dialog.setMessage("Menghapus Produk?");
+                dialog.setMessage("Menghapus Layanan?");
 
                 dialog.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                     @Override
@@ -236,7 +236,7 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
 
         readMode();
 
-        String id_produk = pIdLayanan.getText().toString().trim();
+        String id_layanan = pIdLayanan.getText().toString().trim();
         String jumlah_transaksi = pJumlahTransaksi.getText().toString().trim();
         String subtotal_transaksi = pSubtotalTransaksi.getText().toString().trim();
 
@@ -245,7 +245,7 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
                 apiInterface.createLayananTransaksiLayanan(
                         key,
                         sp_IdTransaksi,
-                        id_produk,
+                        id_layanan,
                         jumlah_transaksi,
                         subtotal_transaksi);
 
@@ -253,7 +253,7 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
             public void onResponse(Call<TransaksiLayanan_Model> call, Response<TransaksiLayanan_Model> response) {
                 progressDialog.dismiss();
 
-                Log.i(Detail_TransaksiProduk.class.getSimpleName(), response.toString());
+                Log.i(Detail_TransaksiLayanan.class.getSimpleName(), response.toString());
 
                 String value = response.body().getValue();
                 String message = response.body().getMessage();
@@ -265,7 +265,7 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
                     Toast.makeText(Detail_Layanan_TransaksiLayanan.this, message, Toast.LENGTH_SHORT).show();
                 }
                 Intent back = new Intent(Detail_Layanan_TransaksiLayanan.this,
-                        Activity_TransaksiProduk.class);
+                        Activity_TransaksiLayanan.class);
                 startActivity(back);
             }
 
@@ -285,7 +285,7 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
 
         readMode();
 
-        String id_produk = pIdLayanan.getText().toString().trim();
+        String id_layanan = pIdLayanan.getText().toString().trim();
         String jumlah_transaksi = pJumlahTransaksi.getText().toString().trim();
         String subtotal_edit = pSubtotalTransaksi.getText().toString().trim();
 
@@ -307,7 +307,7 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
             public void onResponse(Call<TransaksiLayanan_Model> call, Response<TransaksiLayanan_Model> response) {
                 progressDialog.dismiss();
 
-                Log.i(Detail_TransaksiProduk.class.getSimpleName(), response.toString());
+                Log.i(Detail_TransaksiLayanan.class.getSimpleName(), response.toString());
 
                 String value = response.body().getValue();
                 String message = response.body().getMessage();
@@ -319,7 +319,7 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
                 }
 
                 Intent back = new Intent(Detail_Layanan_TransaksiLayanan.this,
-                        Activity_TransaksiProduk.class);
+                        Activity_TransaksiLayanan.class);
                 startActivity(back);
             }
 
@@ -353,12 +353,15 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
             public void onResponse(Call<TransaksiLayanan_Model> call, Response<TransaksiLayanan_Model> response) {
                 progressDialog.dismiss();
 
-                Log.i(Detail_TransaksiProduk.class.getSimpleName(), response.toString());
+                Log.i(Detail_TransaksiLayanan.class.getSimpleName(), response.toString());
                 String value = response.body().getValue();
                 String message = response.body().getMessage();
 
                 if (value.equals("1")) {
                     Toast.makeText(Detail_Layanan_TransaksiLayanan.this, message, Toast.LENGTH_SHORT).show();
+                    Intent back = new Intent(Detail_Layanan_TransaksiLayanan.this,
+                            Activity_TransaksiLayanan.class);
+                    startActivity(back);
                     finish();
                 } else {
                     Toast.makeText(Detail_Layanan_TransaksiLayanan.this, message, Toast.LENGTH_SHORT).show();
@@ -383,9 +386,9 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
         listCall.enqueue(new Callback<List<Layanan_Model>>() {
             @Override
             public void onResponse(Call<List<Layanan_Model>> call, Response<List<Layanan_Model>> response) {
-                List<Layanan_Model> produkModels = response.body();
-                for(int i=0; i < produkModels.size(); i++ ){
-                    String name = produkModels.get(i).getNama_layanan();
+                List<Layanan_Model> layananModels = response.body();
+                for(int i=0; i < layananModels.size(); i++ ){
+                    String name = layananModels.get(i).getNama_layanan();
                     listSpinnerLayanan.add(name);
                 }
                 listSpinnerLayanan.add(0,"- PILIH LAYANAN -");
@@ -411,17 +414,17 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
         listCall.enqueue(new Callback<List<Layanan_Model>>() {
             @Override
             public void onResponse(Call<List<Layanan_Model>> call, Response<List<Layanan_Model>> response) {
-                List<Layanan_Model> produkModels = response.body();
-                for(int i=0; i < produkModels.size(); i++ ) {
-                    String nama = produkModels.get(i).getNama_layanan();
+                List<Layanan_Model> layananModels = response.body();
+                for(int i=0; i < layananModels.size(); i++ ) {
+                    String nama = layananModels.get(i).getNama_layanan();
                     String temp = spinnerLayanan.getSelectedItem().toString();
 
-                    String list_id = String.valueOf(produkModels.get(i).getId_layanan());
+                    String list_id = String.valueOf(layananModels.get(i).getId_layanan());
                     //tempIdJenis.add(list_id);
 
                     if(temp.equals(nama))
                     {
-                        pIdLayanan.setText(String.valueOf(produkModels.get(i).getId_layanan()));
+                        pIdLayanan.setText(String.valueOf(layananModels.get(i).getId_layanan()));
                     }
                 }
             }
@@ -440,7 +443,7 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
         pJumlahTransaksi.setFocusableInTouchMode(true);
         pSubtotalTransaksi.setFocusableInTouchMode(false);
 
-        alertIsiNamaProdukDulu(pJumlahTransaksi);
+        alertIsiNamaLayananDulu(pJumlahTransaksi);
     }
 
     private void readMode() {
@@ -464,7 +467,7 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
         });
     }
 
-    private void alertIsiNamaProdukDulu(final EditText editText) {
+    private void alertIsiNamaLayananDulu(final EditText editText) {
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -472,7 +475,7 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
                 {
                     editText.setFocusableInTouchMode(false);
                     Toast.makeText(Detail_Layanan_TransaksiLayanan.this,
-                            "Isi Nama Produk terlebih dahulu untuk menentukan Jumlah dan Subtotal!",
+                            "Isi Nama Layanan terlebih dahulu untuk menentukan Jumlah dan Subtotal!",
                             Toast.LENGTH_SHORT).show();
                 }
                 else
@@ -492,12 +495,12 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
         listCall.enqueue(new Callback<List<Layanan_Model>>() {
             @Override
             public void onResponse(Call<List<Layanan_Model>> call, Response<List<Layanan_Model>> response) {
-                List<Layanan_Model> produkModels = response.body();
+                List<Layanan_Model> layananModels = response.body();
 
                 String editText = pIdLayanan.getText().toString();
 
-                for(int i=0; i < produkModels.size(); i++ ) {
-                    String nama = produkModels.get(i).getNama_layanan();
+                for(int i=0; i < layananModels.size(); i++ ) {
+                    String nama = layananModels.get(i).getNama_layanan();
 
                     if(editText.equals(nama))
                     {
@@ -534,17 +537,17 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
                     listCall.enqueue(new Callback<List<Layanan_Model>>() {
                         @Override
                         public void onResponse(Call<List<Layanan_Model>> call, Response<List<Layanan_Model>> response) {
-                            List<Layanan_Model> produkModels = response.body();
+                            List<Layanan_Model> layananModels = response.body();
 
                             String editText = spinnerLayanan.getSelectedItem().toString();
                             System.out.println("TES SPINNER" + editText);
 
-                            for(int i=0; i < produkModels.size(); i++ ) {
-                                String nama = produkModels.get(i).getNama_layanan();
+                            for(int i=0; i < layananModels.size(); i++ ) {
+                                String nama = layananModels.get(i).getNama_layanan();
 
                                 if(editText.equals(nama))
                                 {
-                                    harga = Integer.valueOf(produkModels.get(i).getHarga_layanan());
+                                    harga = Integer.valueOf(layananModels.get(i).getHarga_layanan());
                                     jumlah = Integer.valueOf(pJumlahTransaksi.getText().toString());
                                     int subtotal = harga * jumlah;
                                     pSubtotalTransaksi.setText(String.valueOf(subtotal));
