@@ -61,8 +61,8 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
     private EditText pIdTransaksi, pIdHewan, pTanggalTransaksi, pTotalTransaksi, pTglDibuat, pStatusTransaksi,
             pTglDiubah, pIdCustomer, pUserCreate, pUserEdit;
-    private String id_hewan, id_customer ,kode_transaksi, tanggal_transaksi, total_transaksi, status_transaksi,
-            tgl_dibuat, tgl_diubah, user_create, user_edit;
+    private String id_hewan, id_customer, id_ukuran, id_jenis, kode_transaksi, tanggal_transaksi, total_transaksi,
+            status_transaksi, tgl_dibuat, tgl_diubah, user_create, user_edit;
     private int id;
 
     private Button tambahLayananBtn, verifikasiBtn;
@@ -72,6 +72,7 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
     private Spinner spinnerHewan;
     private List<String> listSpinnerHewan;
+    private List<String> listNamaLayanan, listJumlahLayanan;
 
     private Menu action;
 
@@ -113,14 +114,19 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
         pUserEdit = findViewById(R.id.user_edit_trans_lyn);
 
         tambahLayananBtn = findViewById(R.id.btnTambahLayananTransLyn);
+        verifikasiBtn = findViewById(R.id.btnVerifikasiTransLyn);
 
         listSpinnerHewan = new ArrayList<>();
+        listNamaLayanan = new ArrayList<>();
+        listJumlahLayanan = new ArrayList<>();
         spinnerHewan = findViewById(R.id.spinnerHewanTransLyn);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("id_transaksi_layanan", 0);
         id_hewan = intent.getStringExtra("id_hewan");
         id_customer = intent.getStringExtra("id_customer");
+        id_ukuran = intent.getStringExtra("id_ukuran");
+        id_jenis = intent.getStringExtra("id_jenis");
         kode_transaksi = intent.getStringExtra("kode_transaksi_layanan");
         tanggal_transaksi = intent.getStringExtra("tanggal_transaksi_layanan");
         total_transaksi = intent.getStringExtra("total_transaksi_layanan");
@@ -150,9 +156,34 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
         tambahLayananBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent tambahLayanan = new Intent(Detail_TransaksiLayanan.this,
-                        Detail_Layanan_TransaksiLayanan.class);
-                startActivity(tambahLayanan);
+                if(status_transaksi.equals("Menunggu Pembayaran"))
+                {
+                    Toast.makeText(Detail_TransaksiLayanan.this,
+                            "Transaksi ini sudah terverifikasi!",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else if(status_transaksi.equals("Belum Selesai"))
+                {
+                    Intent tambahLayanan = new Intent(Detail_TransaksiLayanan.this,
+                            Detail_Layanan_TransaksiLayanan.class);
+                    startActivity(tambahLayanan);
+                }
+            }
+        });
+
+        verifikasiBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(status_transaksi.equals("Menunggu Pembayaran"))
+                {
+                    Toast.makeText(Detail_TransaksiLayanan.this,
+                            "Transaksi ini sudah terverifikasi!",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else if(status_transaksi.equals("Belum Selesai"))
+                {
+                    verifikasiTransaksiLayanan();
+                }
             }
         });
 
@@ -199,6 +230,7 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
             pUserCreate.setVisibility(View.GONE);
             pUserEdit.setVisibility(View.GONE);
 
+            verifikasiBtn.setVisibility(View.GONE);
             tambahLayananBtn.setVisibility(View.GONE);
             pTotalTransaksi.setText("0");
         }
@@ -624,6 +656,104 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
         editor.apply();
     }
 
+    public void verifikasiTransaksiLayanan()
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle(kode_transaksi);
+        alert.setMessage("Verifikasi Transaksi berarti Layanan telah Selesai dan akan dilanjutkan ke" +
+                " Proses Pembayaran oleh Kasir.");
+
+        alert.setPositiveButton("Verifikasi", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                readMode();
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String tgl_ubah_transaksi_log = simpleDateFormat.format(new Date());
+
+                apiInterface = API_client.getApiClient().create(TransaksiLayanan_Interface.class);
+
+                Call<TransaksiLayanan_Model> call =
+                        apiInterface.verifikasiTransaksiLayanan(
+                                String.valueOf(id),
+                                "Menunggu Pembayaran",
+                                tgl_ubah_transaksi_log,
+                                sp_NamaPegawai);
+
+                call.enqueue(new Callback<TransaksiLayanan_Model>() {
+                    public void onResponse(Call<TransaksiLayanan_Model> call, Response<TransaksiLayanan_Model> response) {
+                        //progressDialog.dismiss();
+
+                        Log.i(Detail_TransaksiLayanan.class.getSimpleName(), response.toString());
+
+                        String value = response.body().getValue();
+                        String message = response.body().getMessage();
+
+                        if (value.equals("1")) {
+                            Toast.makeText(Detail_TransaksiLayanan.this, message, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(Detail_TransaksiLayanan.this, message, Toast.LENGTH_SHORT).show();
+                        }
+
+                        isGrooming(sp_IdTransaksi);     //// Kirim SMS jika Transaksi terdapat Layanan Grooming
+
+                        Intent back = new Intent(Detail_TransaksiLayanan.this, Activity_TransaksiLayanan.class);
+                        startActivity(back);
+                    }
+
+                    public void onFailure(Call<TransaksiLayanan_Model> call, Throwable t) {
+                        //progressDialog.dismiss();
+                        Toast.makeText(Detail_TransaksiLayanan.this, t.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
+
+        alert.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+    }
+
+    public void isGrooming(String id_transaksi)
+    {
+        TransaksiLayanan_Interface api = API_client.getApiClient().create(TransaksiLayanan_Interface.class);
+        Call<List<TransaksiLayanan_Model>> listCall = api.getLayananTransaksiLayanan(id_transaksi);
+
+        listCall.enqueue(new Callback<List<TransaksiLayanan_Model>>() {
+            @Override
+            public void onResponse(Call<List<TransaksiLayanan_Model>> call, Response<List<TransaksiLayanan_Model>> response) {
+                List<TransaksiLayanan_Model> transaksiModels = response.body();
+
+                for(int i=0; i < transaksiModels.size(); i++ ) {
+                    String namaLayanan = transaksiModels.get(i).getId_layanan();
+                    String jumlahLayanan = transaksiModels.get(i).getJumlah_transaksi_layanan();
+                    listNamaLayanan.add(namaLayanan);
+                    listJumlahLayanan.add(jumlahLayanan);
+                }
+
+                for(int i=0; i < transaksiModels.size(); i++ ) {
+                    String nama = transaksiModels.get(i).getId_layanan();
+                    if(nama.equals("Grooming"))
+                    {
+                        sendSMSMessage();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<TransaksiLayanan_Model>> call, Throwable t) {
+                Toast.makeText(Detail_TransaksiLayanan.this, "Cek " + t.getMessage().toString(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     protected void onResume() {
         super.onResume();
 
@@ -638,9 +768,22 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
     //// SMS ////
     protected void sendSMSMessage() {
-        phoneNo = "081227069255";
-        message = "Transaksi Layanan Anda Telah Selesai. Anda dapat mengunjungi Toko untuk mengambil" +
-                "Hewan Peliharaan Anda.";
+        StringBuilder List = new StringBuilder();
+
+        List.append("\n");
+        for(int i=0 ; i<listNamaLayanan.size() ; i++)
+        {
+            String nama = listNamaLayanan.get(i).toString();
+            String jumlah = listJumlahLayanan.get(i).toString();
+
+            List.append(nama);
+            List.append(" ");
+            List.append(jumlah + "x");
+            List.append("\n");
+        }
+
+        phoneNo = "+6281227069255";
+        message = "Transaksi Layanan Anda telah Selesai. ";
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.SEND_SMS)
@@ -657,6 +800,7 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_SEND_SMS: {
                 if (grantResults.length > 0
@@ -664,15 +808,15 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
                     SmsManager smsManager = SmsManager.getDefault();
                     smsManager.sendTextMessage(phoneNo, null, message, null, null);
                     Toast.makeText(getApplicationContext(), "SMS berhasil terkirim.",
-                            Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_LONG).show();
+
                 } else {
                     Toast.makeText(getApplicationContext(),
-                            "SMS gagal terkirim, mohon coba Lagi.", Toast.LENGTH_SHORT).show();
+                            "SMS gagal terkirim. Mohon coba lagi.", Toast.LENGTH_LONG).show();
                     return;
                 }
             }
         }
-
     }
-    ////////////
 }
+

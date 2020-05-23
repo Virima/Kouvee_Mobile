@@ -83,4 +83,13 @@ public interface TransaksiLayanan_Interface {
             @Field("id_detail_layanan") String id_detail_layanan,
             @Field("subtotal_transaksi_layanan") String subtotal_transaksi_layanan
     );
+
+    @FormUrlEncoded
+    @POST("verifikasitransaksilayanan.php")
+    Call<TransaksiLayanan_Model> verifikasiTransaksiLayanan(
+            @Field("id_transaksi_layanan") String id_transaksi_layanan,
+            @Field("status_transaksi_layanan") String status_transaksi_layanan,
+            @Field("tgl_ubah_transaksi_log") String tgl_ubah_transaksi_log,
+            @Field("user_transaksi_edit") String user_transaksi_edit
+    );
 }

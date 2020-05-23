@@ -62,6 +62,8 @@ public class Activity_TransaksiLayanan extends AppCompatActivity {
                 intent.putExtra("id_transaksi_layanan", transaksiList.get(position).getId_transaksi_layanan());
                 intent.putExtra("id_hewan", transaksiList.get(position).getId_hewan());
                 intent.putExtra("id_customer", transaksiList.get(position).getId_customer());
+                intent.putExtra("id_ukuran", transaksiList.get(position).getId_ukuran());
+                intent.putExtra("id_jenis", transaksiList.get(position).getId_jenis());
                 intent.putExtra("kode_transaksi_layanan", transaksiList.get(position).getKode_transaksi_layanan());
                 intent.putExtra("tanggal_transaksi_layanan", transaksiList.get(position).getTanggal_transaksi_layanan());
                 intent.putExtra("total_transaksi_layanan", transaksiList.get(position).getTotal_transaksi_layanan());

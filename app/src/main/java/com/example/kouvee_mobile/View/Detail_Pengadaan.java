@@ -2,6 +2,7 @@ package com.example.kouvee_mobile.View;
 
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -10,12 +11,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintManager;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
@@ -42,6 +46,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -57,8 +63,29 @@ import com.example.kouvee_mobile.Model.Pengadaan_Model;
 import com.example.kouvee_mobile.Model.Produk_Model;
 import com.example.kouvee_mobile.Model.Supplier_Model;
 import com.example.kouvee_mobile.R;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.LineSeparator;
+import com.itextpdf.text.pdf.draw.VerticalPositionMark;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.uttampanchasara.pdfgenerator.CreatePdf;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -87,6 +114,8 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
     private Button tambahProdukPengadaanBtn, verifikasiBtn;
 
+    private static final int MY_PERMISSIONS_REQUEST_STORAGE = 0;
+
     private int total=0;
 
     public String sp_NamaPegawai="";
@@ -98,6 +127,9 @@ public class Detail_Pengadaan extends AppCompatActivity {
     private List<String> listSpinnerProduk;
     private List<String> listSpinnerSupplier;
     private List<String> listSpinnerStatusPengadaan;
+
+    private List<String> listNamaProduk, listJumlahProduk;
+
     private Menu action;
 
     private final static String TAG = "Detail_Pengadaan";
@@ -122,27 +154,6 @@ public class Detail_Pengadaan extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        /*
-        progressBar = findViewById(R.id.progress);
-        recyclerView = findViewById(R.id.recyclerView);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-
-        //parsing
-        listener = new Adapter_Detail_Pengadaan.RecyclerViewDetailPengadaanClickListener(){
-            @Override
-            public void onRowClick(View view, int position) {
-                Intent intent = new Intent(Detail_Pengadaan.this, Detail_Pengadaan.class);
-                intent.putExtra("id_detail_pengadaan", pengadaanList.get(position).getId_detail_pengadaan());
-                //intent.putExtra("id_pengadaan", pengadaanList.get(position).getId_pengadaan());
-                intent.putExtra("id_produk", pengadaanList.get(position).getId_produk());
-                intent.putExtra("jumlah_pengadaan", pengadaanList.get(position).getJumlah_pengadaan());
-                intent.putExtra("subtotal_pengadaan", pengadaanList.get(position).getSubtotal_pengadaan());
-                startActivity(intent);
-            }
-        };
-        */
-
         pIdPengadaan = findViewById(R.id.KodePengadaan);
         //pIdProduk = findViewById(R.id.NamaProdukJoinPengadaan);
         pIdSupplier = findViewById(R.id.NamaSupplierJoinPengadaan);
@@ -162,6 +173,8 @@ public class Detail_Pengadaan extends AppCompatActivity {
         listSpinnerProduk = new ArrayList<>();
         listSpinnerSupplier = new ArrayList<>();
         listSpinnerStatusPengadaan = new ArrayList<>();
+        listNamaProduk = new ArrayList<>();
+        listJumlahProduk = new ArrayList<>();
 
         spinnerProduk = findViewById(R.id.spinnerProdukPengadaan);
         spinnerSupplier = findViewById(R.id.spinnerSupplierPengadaan);
@@ -227,8 +240,18 @@ public class Detail_Pengadaan extends AppCompatActivity {
         tambahProdukPengadaanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent tambahProduk = new Intent(Detail_Pengadaan.this, Detail_ProdukPengadaan.class);
-                startActivity(tambahProduk);
+                String cekStatus = pStatusPengadaan.getText().toString();
+
+                if(cekStatus.equals("Belum Selesai"))
+                {
+                    Intent tambahProduk = new Intent(Detail_Pengadaan.this, Detail_ProdukPengadaan.class);
+                    startActivity(tambahProduk);
+                }
+                else if(cekStatus.equals("Selesai"))
+                {
+                    Toast.makeText(Detail_Pengadaan.this, "Pengadaan ini sudah terverifikasi!",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -474,11 +497,42 @@ public class Detail_Pengadaan extends AppCompatActivity {
                 return true;
 
             case R.id.menu_print:
-                /////
-                // get our html content
+                if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    } else {
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.SEND_SMS},
+                                MY_PERMISSIONS_REQUEST_STORAGE);
+                    }
+                }
+
+
+                isiListSuratPengadaan(sp_IdPengadaan);
                 String html_header = getString(R.string.html_header);
                 String html_content = getString(R.string.html_content);
 
+                Dexter.withActivity(this)
+                        .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .withListener(new PermissionListener() {
+                            @Override
+                            public void onPermissionGranted(PermissionGrantedResponse response) {
+                                createPDFFile(Common.getAppPath(Detail_Pengadaan.this) + "Test_PDF.pdf");
+                            }
+
+                            @Override
+                            public void onPermissionDenied(PermissionDeniedResponse response) {
+
+                            }
+
+                            @Override
+                            public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+
+                            }
+                        });
+                /*
                 new CreatePdf(this)
                         .setPdfName(pIdPengadaan.getText().toString())
                         .openPrintDialog(true)
@@ -500,7 +554,8 @@ public class Detail_Pengadaan extends AppCompatActivity {
                             }
                         })
                         .create();
-                /////
+                */
+
                 return true;
 
             default:
@@ -1050,6 +1105,177 @@ public class Detail_Pengadaan extends AppCompatActivity {
         fragmentTransaction.add(R.id.placeHolderFragmentPengadaan, fragment);
         fragmentTransaction.commit();
         //
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(), "PDF berhasil dibuat.",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "PDF gagal dibuat. Mohon coba lagi.", Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
+    public void isiListSuratPengadaan(String id_transaksi)
+    {
+        Pengadaan_Interface api = API_client.getApiClient().create(Pengadaan_Interface.class);
+        Call<List<Pengadaan_Model>> listCall = api.getProdukPengadaan(id_transaksi);
+
+        listCall.enqueue(new Callback<List<Pengadaan_Model>>() {
+            @Override
+            public void onResponse(Call<List<Pengadaan_Model>> call, Response<List<Pengadaan_Model>> response) {
+                List<Pengadaan_Model> pengadaanModels = response.body();
+
+                for(int i=0; i < pengadaanModels.size(); i++ ) {
+                    String nama = pengadaanModels.get(i).getId_produk();
+                    String jumlah = pengadaanModels.get(i).getJumlah_pengadaan();
+                    listNamaProduk.add(nama);
+                    listJumlahProduk.add(jumlah);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Pengadaan_Model>> call, Throwable t) {
+                Toast.makeText(Detail_Pengadaan.this, "Cek " + t.getMessage().toString(),
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void createPDFFile(String path)
+    {
+
+        try {
+            Document document = new Document();
+            //Save
+            PdfWriter.getInstance(document, new FileOutputStream(path));
+            //Open to write
+            document.open();
+
+            //Setting
+            document.setPageSize(PageSize.A4);
+            document.addCreationDate();
+            document.addAuthor("Kouvee Pet Shop");
+            document.addCreator(sp_NamaPegawai);
+
+            //Font Setting
+            BaseColor colorAccent = new BaseColor(0, 153, 204, 255);
+            float fontSize = 20.0f;
+            float valueFontSize = 26.0f;
+
+            //Custom Font
+            BaseFont fontName = BaseFont.createFont("assets/fonts/brandon_medium.otf", "UTF-8", BaseFont.EMBEDDED);
+
+            //Create Title of Document
+            Font titleFont = new Font(fontName, 36.0f, Font.NORMAL, BaseColor.BLACK);
+            addNewItem(document, "Order Details", Element.ALIGN_CENTER, titleFont);
+
+            //Add More
+            Font orderNumberFont = new Font(fontName, fontSize, Font.NORMAL, colorAccent);
+            addNewItem(document, "Order No:", Element.ALIGN_LEFT, orderNumberFont);
+
+            Font orderNumberValueFont = new Font(fontName, valueFontSize, Font.NORMAL, BaseColor.BLACK);
+            addNewItem(document, "#717171", Element.ALIGN_LEFT, orderNumberValueFont);
+
+            addLineSeparator(document);
+
+            addNewItem(document, "Order Date", Element.ALIGN_LEFT, orderNumberFont);
+            addNewItem(document, "23/05/2020", Element.ALIGN_LEFT, orderNumberValueFont);
+
+            addNewItem(document, "Account Name:", Element.ALIGN_LEFT, orderNumberFont);
+            addNewItem(document, "Pak Supplier", Element.ALIGN_LEFT, orderNumberValueFont);
+
+            addLineSeparator(document);
+
+            //Add Product Order Detail\
+            addLineSpace(document);
+            addNewItem(document, "Product Detail:", Element.ALIGN_CENTER, titleFont);
+            addLineSeparator(document);
+
+            //item 1
+            addNewItemWithLeftAndRight(document, "Pizza 25", "(0.0%)", titleFont, orderNumberValueFont);
+            addNewItemWithLeftAndRight(document, "12.0*1000", "12000.0", titleFont, orderNumberValueFont);
+
+            addLineSeparator(document);
+
+            //item 2
+            addNewItemWithLeftAndRight(document, "Pizza 26", "(0.0%)", titleFont, orderNumberValueFont);
+            addNewItemWithLeftAndRight(document, "12.0*1000", "12000.0", titleFont, orderNumberValueFont);
+
+            addLineSeparator(document);
+
+            //Total
+            addLineSpace(document);
+            addLineSpace(document);
+
+            addNewItemWithLeftAndRight(document, "Total", "24000.0", titleFont, orderNumberValueFont);
+
+            document.close();
+
+            Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+
+            printPDF();
+
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void printPDF() {
+        PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+        try {
+            PrintDocumentAdapter printDocumentAdapter = new PdfDocumentAdapter(Detail_Pengadaan.this,
+                    Common.getAppPath(Detail_Pengadaan.this) + "Test_PDF.pdf");
+            printManager.print("Document", printDocumentAdapter, new PrintAttributes.Builder().build());
+        } catch (Exception ex) {
+            Log.e("Kouvee", "" + ex.getMessage());
+        }
+    }
+
+    private void addNewItemWithLeftAndRight(Document document, String textLeft, String textRight,
+                                            Font textLeftFont, Font textRightFont) throws DocumentException {
+        Chunk chunkTextLeft = new Chunk(textLeft, textLeftFont);
+        Chunk chunkTextRight = new Chunk(textRight, textRightFont);
+        Paragraph p = new Paragraph(chunkTextLeft);
+        p.add(new Chunk(new VerticalPositionMark()));
+        p.add(chunkTextRight);
+        document.add(p);
+    }
+
+    private void addLineSeparator(Document document) throws DocumentException {
+        LineSeparator lineSeparator = new LineSeparator();
+        lineSeparator.setLineColor(new BaseColor(0, 0, 0, 68));
+        addLineSpace(document);
+        document.add(new Chunk(lineSeparator));
+        addLineSpace(document);
+    }
+
+    private void addLineSpace(Document document) throws DocumentException {
+        document.add(new Paragraph(""));
+    }
+
+    private void addNewItem(Document document, String text, int align, Font font) throws DocumentException {
+        Chunk chunk = new Chunk(text, font);
+        Paragraph paragraph = new Paragraph(chunk);
+        paragraph.setAlignment(align);
+        document.add(paragraph);
     }
 
 }
