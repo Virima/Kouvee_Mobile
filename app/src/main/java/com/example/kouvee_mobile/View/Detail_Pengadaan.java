@@ -16,6 +16,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
@@ -83,6 +84,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.uttampanchasara.pdfgenerator.CreatePdf;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -98,18 +100,13 @@ import retrofit2.Response;
 
 public class Detail_Pengadaan extends AppCompatActivity {
 
-    //private RecyclerView recyclerView;
-    //private RecyclerView.LayoutManager layoutManager;
-    //private Adapter_Detail_Pengadaan pengadaanadapter;
-    //private List<Pengadaan_Model> pengadaanList;
-    //Adapter_Detail_Pengadaan.RecyclerViewDetailPengadaanClickListener listener;
-    //ProgressBar progressBar;
     Pengadaan_Interface apiInterface;
 
     private EditText pIdPengadaan, pIdProduk, pIdSupplier, pTanggalPengadaan, pJumlahPengadaan, pSubtotalPengadaan,
             pStatusPengadaan, pTotalPengadaan, pTglDibuat, pTglDiubah, pUserLog;
     private String id_pengadaan, id_produk, id_supplier, kode_pengadaan, tanggal_pengadaan, jumlah_pengadaan,
             subtotal_pengadaan, status_pengadaan, total_pengadaan, tgl_dibuat, tgl_diubah, user_log;
+    private String alamat_supplier, telepon_supplier;
     private int id;
 
     private Button tambahProdukPengadaanBtn, verifikasiBtn;
@@ -128,7 +125,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
     private List<String> listSpinnerSupplier;
     private List<String> listSpinnerStatusPengadaan;
 
-    private List<String> listNamaProduk, listJumlahProduk;
+    private List<String> listNamaProduk, listJumlahProduk, listSatuanProduk;
 
     private Menu action;
 
@@ -154,6 +151,10 @@ public class Detail_Pengadaan extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        ActivityCompat.requestPermissions(Detail_Pengadaan.this, new String[]
+                {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                PackageManager.PERMISSION_GRANTED);
+
         pIdPengadaan = findViewById(R.id.KodePengadaan);
         //pIdProduk = findViewById(R.id.NamaProdukJoinPengadaan);
         pIdSupplier = findViewById(R.id.NamaSupplierJoinPengadaan);
@@ -175,6 +176,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
         listSpinnerStatusPengadaan = new ArrayList<>();
         listNamaProduk = new ArrayList<>();
         listJumlahProduk = new ArrayList<>();
+        listSatuanProduk = new ArrayList<>();
 
         spinnerProduk = findViewById(R.id.spinnerProdukPengadaan);
         spinnerSupplier = findViewById(R.id.spinnerSupplierPengadaan);
@@ -184,6 +186,8 @@ public class Detail_Pengadaan extends AppCompatActivity {
         id = intent.getIntExtra("id_pengadaan", 0);
         //id_produk = intent.getStringExtra("id_produk");
         id_supplier = intent.getStringExtra("id_supplier");
+        alamat_supplier = intent.getStringExtra("alamat_supplier");
+        telepon_supplier = intent.getStringExtra("telepon_supplier");
         kode_pengadaan = intent.getStringExtra("kode_pengadaan");
         tanggal_pengadaan = intent.getStringExtra("tanggal_pengadaan");
         //jumlah_pengadaan = intent.getStringExtra("jumlah_pengadaan");
@@ -201,6 +205,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
         //loadSpinnerProduk();
         loadSpinnerSupplier();
+        isiListSuratPengadaan(sp_IdPengadaan);
         //loadSpinnerStatus();
 
         /*
@@ -271,6 +276,27 @@ public class Detail_Pengadaan extends AppCompatActivity {
                 }
             }
         });
+
+        /*
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        Toast.makeText(Detail_Pengadaan.this, "Permission ditolak.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                        Toast.makeText(Detail_Pengadaan.this, "PDF gagal dibuat.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+         */
     }
 
     private void setDataFromIntentExtra() {
@@ -287,7 +313,38 @@ public class Detail_Pengadaan extends AppCompatActivity {
             //pJumlahPengadaan.setText(jumlah_pengadaan);
             //pSubtotalPengadaan.setText(subtotal_pengadaan);
             pStatusPengadaan.setText(status_pengadaan);
-            pTotalPengadaan.setText(total_pengadaan);
+            //pTotalPengadaan.setText(total_pengadaan);
+            pTotalPengadaan.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    Pengadaan_Interface apiPengadaan = API_client.getApiClient().create(Pengadaan_Interface.class);
+                    Call<List<Pengadaan_Model>> listCall = apiPengadaan.getPengadaan();
+
+                    listCall.enqueue(new Callback<List<Pengadaan_Model>>() {
+                        @Override
+                        public void onResponse(Call<List<Pengadaan_Model>> call, Response<List<Pengadaan_Model>> response) {
+                            List<Pengadaan_Model> pengadaanModels = response.body();
+                            for(int i=0; i < pengadaanModels.size(); i++ ){
+                                int id_temp = pengadaanModels.get(i).getId_pengadaan();
+                                if(id_temp==id) {
+                                    pTotalPengadaan.setText(pengadaanModels.get(i).getTotal_pengadaan());
+                                }
+                            }
+
+                        }
+                        @Override
+                        public void onFailure(Call<List<Pengadaan_Model>> call, Throwable t) {
+                            Toast.makeText(Detail_Pengadaan.this, "Cek " + t.getMessage().toString(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                @Override
+                public void afterTextChanged(Editable editable) {}
+            });
 
             pTglDibuat.setText(tgl_dibuat);
             pTglDiubah.setText(tgl_diubah);
@@ -336,31 +393,15 @@ public class Detail_Pengadaan extends AppCompatActivity {
             editMode();
 
             pTanggalPengadaan = (EditText) findViewById(R.id.TanggalPengadaan); //date
-            pTanggalPengadaan.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Calendar cal = Calendar.getInstance();
-                    int year = cal.get(Calendar.YEAR);
-                    int month = cal.get(Calendar.MONTH);
-                    int day = cal.get(Calendar.DAY_OF_MONTH);
 
-                    DatePickerDialog dialog = new DatePickerDialog(Detail_Pengadaan.this,
-                            android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                            mDateSetListener, year, month, day);
+            Calendar cal = Calendar.getInstance();
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
 
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
-                }
-            });
-
-            mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                    month = month + 1;
-                    String date = year + "/" + month + "/" + day;
-                    pTanggalPengadaan.setText(date);
-                }
-            };
+            month = month + 1;
+            String date = year + "/" + month + "/" + day;
+            pTanggalPengadaan.setText(date);
 
             action.findItem(R.id.menu_edit).setVisible(false);
             action.findItem(R.id.menu_delete).setVisible(false);
@@ -380,57 +421,68 @@ public class Detail_Pengadaan extends AppCompatActivity {
                 return true;
 
             case R.id.menu_edit:
-                //Edit
-                editMode();
+                String cekStatus = pStatusPengadaan.getText().toString();
 
-                //setUpdateSpinnerProduk();
-                setUpdateSpinnerSupplier();
-                //setUpdateSpinnerStatusPengadaan();
+                if(cekStatus.equals("Selesai"))
+                {
+                    Toast.makeText(Detail_Pengadaan.this, "Pengadaan terverifikasi tidak bisa diubah!",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else if(cekStatus.equals("Belum Selesai"))
+                {
+                    editMode();
 
-                //setUpdateSubtotal(pJumlahPengadaan);
+                    //setUpdateSpinnerProduk();
+                    setUpdateSpinnerSupplier();
+                    //setUpdateSpinnerStatusPengadaan();
 
-                //pIdProduk.setVisibility(View.GONE);
-                pIdSupplier.setVisibility(View.GONE);
-                pStatusPengadaan.setVisibility(View.VISIBLE);
+                    //setUpdateSubtotal(pJumlahPengadaan);
 
-                //spinnerProduk.setVisibility(View.VISIBLE);
-                spinnerSupplier.setVisibility(View.VISIBLE);
-                //spinnerStatusPengadaan.setVisibility(View.VISIBLE);
+                    //pIdProduk.setVisibility(View.GONE);
+                    pIdSupplier.setVisibility(View.GONE);
+                    pStatusPengadaan.setVisibility(View.VISIBLE);
 
-                pTanggalPengadaan = (EditText) findViewById(R.id.TanggalPengadaan); //date
-                pTanggalPengadaan.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Calendar cal = Calendar.getInstance();
-                        int year = cal.get(Calendar.YEAR);
-                        int month = cal.get(Calendar.MONTH);
-                        int day = cal.get(Calendar.DAY_OF_MONTH);
+                    //spinnerProduk.setVisibility(View.VISIBLE);
+                    spinnerSupplier.setVisibility(View.VISIBLE);
+                    //spinnerStatusPengadaan.setVisibility(View.VISIBLE);
 
-                        DatePickerDialog dialog = new DatePickerDialog(Detail_Pengadaan.this,
-                                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                                mDateSetListener, year, month, day);
+                    /*
+                    pTanggalPengadaan = (EditText) findViewById(R.id.TanggalPengadaan); //date
+                    pTanggalPengadaan.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Calendar cal = Calendar.getInstance();
+                            int year = cal.get(Calendar.YEAR);
+                            int month = cal.get(Calendar.MONTH);
+                            int day = cal.get(Calendar.DAY_OF_MONTH);
 
-                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        dialog.show();
-                    }
-                });
+                            DatePickerDialog dialog = new DatePickerDialog(Detail_Pengadaan.this,
+                                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                                    mDateSetListener, year, month, day);
 
-                mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                        month = month + 1;
-                        String date = year + "/" + month + "/" + day;
-                        pTanggalPengadaan.setText(date);
-                    }
-                };
+                            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                            dialog.show();
+                        }
+                    });
 
-                //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                //imm.showSoftInput(pNamaHewan, InputMethodManager.SHOW_IMPLICIT);
+                    mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                            month = month + 1;
+                            String date = year + "/" + month + "/" + day;
+                            pTanggalPengadaan.setText(date);
+                        }
+                    };
+                     */
 
-                action.findItem(R.id.menu_edit).setVisible(false);
-                action.findItem(R.id.menu_delete).setVisible(false);
-                action.findItem(R.id.menu_print).setVisible(false);
-                action.findItem(R.id.menu_save).setVisible(true);
+                    //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    //imm.showSoftInput(pNamaHewan, InputMethodManager.SHOW_IMPLICIT);
+
+                    action.findItem(R.id.menu_edit).setVisible(false);
+                    action.findItem(R.id.menu_delete).setVisible(false);
+                    action.findItem(R.id.menu_print).setVisible(false);
+                    action.findItem(R.id.menu_save).setVisible(true);
+                }
 
                 return true;
 
@@ -483,7 +535,17 @@ public class Detail_Pengadaan extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        deleteData("delete", id);
+                        String cekStatus = pStatusPengadaan.getText().toString();
+
+                        if(cekStatus.equals("Selesai"))
+                        {
+                            Toast.makeText(Detail_Pengadaan.this, "Pengadaan terverifikasi tidak bisa dihapus!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        else if(cekStatus.equals("Belum Selesai"))
+                        {
+                            deleteData("delete", id);
+                        }
                     }
                 });
                 dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -497,64 +559,30 @@ public class Detail_Pengadaan extends AppCompatActivity {
                 return true;
 
             case R.id.menu_print:
-                if (ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    } else {
-                        ActivityCompat.requestPermissions(this,
-                                new String[]{Manifest.permission.SEND_SMS},
-                                MY_PERMISSIONS_REQUEST_STORAGE);
+                String cekStatus2 = pStatusPengadaan.getText().toString();
+
+                if(cekStatus2.equals("Selesai"))
+                {
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        } else {
+                            ActivityCompat.requestPermissions(this,
+                                    new String[]{Manifest.permission.SEND_SMS},
+                                    MY_PERMISSIONS_REQUEST_STORAGE);
+                        }
                     }
+
+                    createPDFFile(Common.getAppPath(Detail_Pengadaan.this) + "Test_PDF.pdf");
                 }
 
-
-                isiListSuratPengadaan(sp_IdPengadaan);
-                String html_header = getString(R.string.html_header);
-                String html_content = getString(R.string.html_content);
-
-                Dexter.withActivity(this)
-                        .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        .withListener(new PermissionListener() {
-                            @Override
-                            public void onPermissionGranted(PermissionGrantedResponse response) {
-                                createPDFFile(Common.getAppPath(Detail_Pengadaan.this) + "Test_PDF.pdf");
-                            }
-
-                            @Override
-                            public void onPermissionDenied(PermissionDeniedResponse response) {
-
-                            }
-
-                            @Override
-                            public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-
-                            }
-                        });
-                /*
-                new CreatePdf(this)
-                        .setPdfName(pIdPengadaan.getText().toString())
-                        .openPrintDialog(true)
-                        .setContentBaseUrl(null)
-                        .setPageSize(PrintAttributes.MediaSize.ISO_A4)
-                        .setContent(html_header + html_content)
-                        .setFilePath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/KouveePDF")
-                        .setCallbackListener(new CreatePdf.PdfCallbackListener() {
-                            @Override
-                            public void onFailure(String s) {
-                                Toast.makeText(Detail_Pengadaan.this, "Cetak Surat Pengadaan " +
-                                        pIdPengadaan.getText().toString() + " Gagal", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onSuccess(String s) {
-                                Toast.makeText(Detail_Pengadaan.this, "Cetak Surat Pengadaan " +
-                                        pIdPengadaan.getText().toString() + " Berhasil", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .create();
-                */
+                else if(cekStatus2.equals("Belum Selesai"))
+                {
+                    Toast.makeText(Detail_Pengadaan.this, "Cetak Surat Pengadaan bisa dilakukan" +
+                                    " jika Pengadaan sudah terverifikasi!", Toast.LENGTH_SHORT).show();
+                }
 
                 return true;
 
@@ -886,7 +914,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
         alertDisable(pIdSupplier);
         //alertDisable(pStatusPengadaan);
         //alertDisable(pTotalPengadaan);
-        alertDisable(pTanggalPengadaan);
+        //alertDisable(pTanggalPengadaan);
         //alertDisable(pJumlahPengadaan);
         //alertDisable(pSubtotalPengadaan);
     }
@@ -1098,6 +1126,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        pTotalPengadaan.setText(total_pengadaan);
         //
         Fragment_Pengadaan fragment = new Fragment_Pengadaan();
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -1107,6 +1136,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
         //
     }
 
+    /*
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
@@ -1127,12 +1157,12 @@ public class Detail_Pengadaan extends AppCompatActivity {
             // other 'case' lines to check for other
             // permissions this app might request.
         }
-    }
+    } */
 
-    public void isiListSuratPengadaan(String id_transaksi)
+    public void isiListSuratPengadaan(String string)
     {
         Pengadaan_Interface api = API_client.getApiClient().create(Pengadaan_Interface.class);
-        Call<List<Pengadaan_Model>> listCall = api.getProdukPengadaan(id_transaksi);
+        Call<List<Pengadaan_Model>> listCall = api.getProdukPengadaan(string);
 
         listCall.enqueue(new Callback<List<Pengadaan_Model>>() {
             @Override
@@ -1142,8 +1172,11 @@ public class Detail_Pengadaan extends AppCompatActivity {
                 for(int i=0; i < pengadaanModels.size(); i++ ) {
                     String nama = pengadaanModels.get(i).getId_produk();
                     String jumlah = pengadaanModels.get(i).getJumlah_pengadaan();
-                    listNamaProduk.add(nama);
-                    listJumlahProduk.add(jumlah);
+                    String satuan = pengadaanModels.get(i).getSatuan_produk();
+
+                    listNamaProduk.add(i, nama);
+                    listJumlahProduk.add(i, jumlah);
+                    listSatuanProduk.add(i, satuan);
                 }
             }
 
@@ -1157,7 +1190,8 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
     public void createPDFFile(String path)
     {
-
+        if(new File(path).exists())
+            new File(path).delete();
         try {
             Document document = new Document();
             //Save
@@ -1173,55 +1207,97 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
             //Font Setting
             BaseColor colorAccent = new BaseColor(0, 153, 204, 255);
-            float fontSize = 20.0f;
-            float valueFontSize = 26.0f;
+            float fontSize = 14.0f;
+            float valueFontSize = 12.0f;
 
             //Custom Font
             BaseFont fontName = BaseFont.createFont("assets/fonts/brandon_medium.otf", "UTF-8", BaseFont.EMBEDDED);
 
             //Create Title of Document
-            Font titleFont = new Font(fontName, 36.0f, Font.NORMAL, BaseColor.BLACK);
-            addNewItem(document, "Order Details", Element.ALIGN_CENTER, titleFont);
+            Font titleFont = new Font(fontName, 18.0f, Font.NORMAL, BaseColor.BLACK);
+            Font subtitleFont = new Font(fontName, 14.0f, Font.NORMAL, BaseColor.BLACK);
+            addNewItem(document, "Kouvee Pet Shop", Element.ALIGN_CENTER, titleFont);
+            addNewItem(document, "Jl. Moses Gatotkaca No. 22 Yogyakarta 55281", Element.ALIGN_CENTER, subtitleFont);
+            addNewItem(document, "Telp. (0274) 357735", Element.ALIGN_CENTER, subtitleFont);
+            addNewItem(document, "http://www.sayanghewan.com", Element.ALIGN_CENTER, subtitleFont);
+
+            addLineSpace(document);
+            addLineSpace(document);
+
+            addLineSeparator(document);
+            addInvinsibleLineSeparator(document);
+
+            Font subtitleFontBold = new Font(fontName, 16.0f, Font.BOLD, BaseColor.BLACK);
+            addNewItem(document, "SURAT PEMESANAN", Element.ALIGN_CENTER, subtitleFontBold);
+
+            addLineSpace(document);
+            addLineSpace(document);
+            addInvinsibleLineSeparator(document);
+            addLineSpace(document);
+            addLineSpace(document);
 
             //Add More
             Font orderNumberFont = new Font(fontName, fontSize, Font.NORMAL, colorAccent);
-            addNewItem(document, "Order No:", Element.ALIGN_LEFT, orderNumberFont);
+            addNewItem(document, "No:", Element.ALIGN_RIGHT, orderNumberFont);
 
             Font orderNumberValueFont = new Font(fontName, valueFontSize, Font.NORMAL, BaseColor.BLACK);
-            addNewItem(document, "#717171", Element.ALIGN_LEFT, orderNumberValueFont);
+            addNewItem(document, kode_pengadaan, Element.ALIGN_RIGHT, orderNumberValueFont);
 
-            addLineSeparator(document);
-
-            addNewItem(document, "Order Date", Element.ALIGN_LEFT, orderNumberFont);
-            addNewItem(document, "23/05/2020", Element.ALIGN_LEFT, orderNumberValueFont);
-
-            addNewItem(document, "Account Name:", Element.ALIGN_LEFT, orderNumberFont);
-            addNewItem(document, "Pak Supplier", Element.ALIGN_LEFT, orderNumberValueFont);
-
-            addLineSeparator(document);
-
-            //Add Product Order Detail\
             addLineSpace(document);
-            addNewItem(document, "Product Detail:", Element.ALIGN_CENTER, titleFont);
-            addLineSeparator(document);
+            addLineSpace(document);
+            addLineSpace(document);
+            addLineSpace(document);
+            addLineSpace(document);
 
-            //item 1
-            addNewItemWithLeftAndRight(document, "Pizza 25", "(0.0%)", titleFont, orderNumberValueFont);
-            addNewItemWithLeftAndRight(document, "12.0*1000", "12000.0", titleFont, orderNumberValueFont);
+            addNewItem(document, "Tanggal", Element.ALIGN_RIGHT, orderNumberFont);
+            addNewItem(document, tanggal_pengadaan, Element.ALIGN_RIGHT, orderNumberValueFont);
 
-            addLineSeparator(document);
+            addLineSpace(document);
+            addLineSpace(document);
+            addLineSpace(document);
+            addLineSpace(document);
+            addLineSpace(document);
 
-            //item 2
-            addNewItemWithLeftAndRight(document, "Pizza 26", "(0.0%)", titleFont, orderNumberValueFont);
-            addNewItemWithLeftAndRight(document, "12.0*1000", "12000.0", titleFont, orderNumberValueFont);
+            addNewItem(document, "Kepada Yth :", Element.ALIGN_LEFT, orderNumberFont);
+            addNewItem(document, id_supplier, Element.ALIGN_LEFT, orderNumberValueFont);
+            addNewItem(document, alamat_supplier, Element.ALIGN_LEFT, orderNumberValueFont);
+            addNewItem(document, telepon_supplier, Element.ALIGN_LEFT, orderNumberValueFont);
 
-            addLineSeparator(document);
+            addLineSpace(document);
+            addInvinsibleLineSeparator(document);
+
+            //Add Product Order Detail
+            addLineSpace(document);
+            addNewItem(document, "Mohon untuk disediakan produk-produk berikut ini :", Element.ALIGN_LEFT, orderNumberFont);
+            addLineSpace(document);
+
+            for(int i=0 ; i<listNamaProduk.size() ; i++)
+            {
+                //Item
+                String nama = listNamaProduk.get(i).toString();
+                String jumlah = listJumlahProduk.get(i).toString();
+                String satuan = listSatuanProduk.get(i).toString();
+
+                addNewItemWithLeftAndRight(document, nama, jumlah + " " + satuan, titleFont, orderNumberValueFont);
+                addLineSeparator(document);
+            }
 
             //Total
             addLineSpace(document);
             addLineSpace(document);
+            addInvinsibleLineSeparator(document);
+            addLineSpace(document);
+            addLineSpace(document);
 
-            addNewItemWithLeftAndRight(document, "Total", "24000.0", titleFont, orderNumberValueFont);
+            Calendar cal = Calendar.getInstance();
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+
+            month = month + 1;
+            String date = day + "/" + month + "/" + year;
+
+            addNewItem(document, "Dicetak Tanggal "+ date, Element.ALIGN_RIGHT, orderNumberValueFont);
 
             document.close();
 
@@ -1261,13 +1337,22 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
     private void addLineSeparator(Document document) throws DocumentException {
         LineSeparator lineSeparator = new LineSeparator();
-        lineSeparator.setLineColor(new BaseColor(0, 0, 0, 68));
+        lineSeparator.setLineColor(new BaseColor(0, 0, 0, 200));
+        addLineSpace(document);
+        document.add(new Chunk(lineSeparator));
+        addLineSpace(document);
+    }
+
+    private void addInvinsibleLineSeparator(Document document) throws DocumentException {
+        LineSeparator lineSeparator = new LineSeparator();
+        lineSeparator.setLineColor(new BaseColor(0, 0, 0, 0));
         addLineSpace(document);
         document.add(new Chunk(lineSeparator));
         addLineSpace(document);
     }
 
     private void addLineSpace(Document document) throws DocumentException {
+        document.add(new Paragraph(""));
         document.add(new Paragraph(""));
     }
 

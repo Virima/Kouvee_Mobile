@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.print.PrintAttributes;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -161,9 +163,48 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
             layout.setVisibility(View.VISIBLE);
 
             pIdTransaksi.setText(kode_transaksi);
-            pIdCustomer.setText(id_customer);
+
+            if(id_customer.equals("Non-Member"))
+            {
+                pIdCustomer.setText(id_customer + "-" + id);
+            }
+            else {
+                pIdCustomer.setText(id_customer);
+            }
+
             pTanggalTransaksi.setText(tanggal_transaksi);
-            pTotalTransaksi.setText(total_transaksi);
+            //pTotalTransaksi.setText(total_transaksi);
+            pTotalTransaksi.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    TransaksiProduk_Interface apiTransaksi = API_client.getApiClient().create(TransaksiProduk_Interface.class);
+                    Call<List<TransaksiProduk_Model>> listCall = apiTransaksi.getTransaksiProduk();
+
+                    listCall.enqueue(new Callback<List<TransaksiProduk_Model>>() {
+                        @Override
+                        public void onResponse(Call<List<TransaksiProduk_Model>> call, Response<List<TransaksiProduk_Model>> response) {
+                            List<TransaksiProduk_Model> transaksiModels = response.body();
+                            for(int i=0; i < transaksiModels.size(); i++ ){
+                                int id_temp = transaksiModels.get(i).getId_transaksi_produk();
+                                if(id_temp==id) {
+                                    pTotalTransaksi.setText(transaksiModels.get(i).getTotal_transaksi_produk());
+                                }
+                            }
+
+                        }
+                        @Override
+                        public void onFailure(Call<List<TransaksiProduk_Model>> call, Throwable t) {
+                            Toast.makeText(Detail_TransaksiProduk.this, "Cek " + t.getMessage().toString(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                @Override
+                public void afterTextChanged(Editable editable) {}
+            });
 
             pTglDibuat.setText(tgl_dibuat);
             pTglDiubah.setText(tgl_diubah);
@@ -206,31 +247,15 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
         if (id == 0) {
             editMode();
             pTanggalTransaksi = (EditText) findViewById(R.id.TanggalTransPrdk);
-            pTanggalTransaksi.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Calendar cal = Calendar.getInstance();
-                    int year = cal.get(Calendar.YEAR);
-                    int month = cal.get(Calendar.MONTH);
-                    int day = cal.get(Calendar.DAY_OF_MONTH);
 
-                    DatePickerDialog dialog = new DatePickerDialog(Detail_TransaksiProduk.this,
-                            android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                            mDateSetListener, year, month, day);
+            Calendar cal = Calendar.getInstance();
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
 
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
-                }
-            });
-
-            mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                    month = month + 1;
-                    String date = year + "/" + month + "/" + day;
-                    pTanggalTransaksi.setText(date);
-                }
-            };
+            month = month + 1;
+            String date = year + "/" + month + "/" + day;
+            pTanggalTransaksi.setText(date);
 
             action.findItem(R.id.menu_edit).setVisible(false);
             action.findItem(R.id.menu_delete).setVisible(false);
@@ -253,33 +278,6 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
 
                 pIdCustomer.setVisibility(View.GONE);
                 spinnerCustomer.setVisibility(View.VISIBLE);
-
-                pTanggalTransaksi = (EditText) findViewById(R.id.TanggalTransPrdk); //date
-                pTanggalTransaksi.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Calendar cal = Calendar.getInstance();
-                        int year = cal.get(Calendar.YEAR);
-                        int month = cal.get(Calendar.MONTH);
-                        int day = cal.get(Calendar.DAY_OF_MONTH);
-
-                        DatePickerDialog dialog = new DatePickerDialog(Detail_TransaksiProduk.this,
-                                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                                mDateSetListener, year, month, day);
-
-                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        dialog.show();
-                    }
-                });
-
-                mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                        month = month + 1;
-                        String date = year + "/" + month + "/" + day;
-                        pTanggalTransaksi.setText(date);
-                    }
-                };
 
                 action.findItem(R.id.menu_edit).setVisible(false);
                 action.findItem(R.id.menu_delete).setVisible(false);
@@ -564,7 +562,7 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
         pUserEdit.setFocusableInTouchMode(false);
 
         alertDisable(pIdCustomer);
-        alertDisable(pTanggalTransaksi);
+        //alertDisable(pTanggalTransaksi);
     }
 
     private void alertDisable(EditText editText) {
@@ -588,7 +586,7 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
             public void onResponse(Call<List<Customer_Model>> call, Response<List<Customer_Model>> response) {
                 List<Customer_Model> customerModels = response.body();
 
-                String editText = pIdCustomer.getText().toString();
+                String editText = id_customer;
                 for(int i=0; i < customerModels.size(); i++ ) {
                     String nama = customerModels.get(i).getNama_customer();
 

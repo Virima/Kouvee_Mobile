@@ -264,9 +264,6 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
                 } else {
                     Toast.makeText(Detail_Layanan_TransaksiLayanan.this, message, Toast.LENGTH_SHORT).show();
                 }
-                Intent back = new Intent(Detail_Layanan_TransaksiLayanan.this,
-                        Activity_TransaksiLayanan.class);
-                startActivity(back);
             }
 
             public void onFailure(Call<TransaksiLayanan_Model> call, Throwable t) {
@@ -314,13 +311,10 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
 
                 if (value.equals("1")) {
                     Toast.makeText(Detail_Layanan_TransaksiLayanan.this, message, Toast.LENGTH_SHORT).show();
+                    finish();
                 } else {
                     Toast.makeText(Detail_Layanan_TransaksiLayanan.this, message, Toast.LENGTH_SHORT).show();
                 }
-
-                Intent back = new Intent(Detail_Layanan_TransaksiLayanan.this,
-                        Activity_TransaksiLayanan.class);
-                startActivity(back);
             }
 
             public void onFailure(Call<TransaksiLayanan_Model> call, Throwable t) {
@@ -359,9 +353,6 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
 
                 if (value.equals("1")) {
                     Toast.makeText(Detail_Layanan_TransaksiLayanan.this, message, Toast.LENGTH_SHORT).show();
-                    Intent back = new Intent(Detail_Layanan_TransaksiLayanan.this,
-                            Activity_TransaksiLayanan.class);
-                    startActivity(back);
                     finish();
                 } else {
                     Toast.makeText(Detail_Layanan_TransaksiLayanan.this, message, Toast.LENGTH_SHORT).show();

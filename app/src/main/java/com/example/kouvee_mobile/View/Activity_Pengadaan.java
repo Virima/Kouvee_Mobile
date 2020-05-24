@@ -71,9 +71,10 @@ public class Activity_Pengadaan extends AppCompatActivity {
                 Intent intent = new Intent(Activity_Pengadaan.this, Detail_Pengadaan.class);
                 //intent.putExtra("id_detail_pengadaan", pengadaanList.get(position).getId());
                 intent.putExtra("id_pengadaan", pengadaanList.get(position).getId_pengadaan());
-                intent.putExtra("id_pengadaan", pengadaanList.get(position).getId_pengadaan());
                 //intent.putExtra("id_produk", pengadaanList.get(position).getId_produk());
                 intent.putExtra("id_supplier", pengadaanList.get(position).getId_supplier());
+                intent.putExtra("telepon_supplier", pengadaanList.get(position).getTelepon_supplier());
+                intent.putExtra("alamat_supplier", pengadaanList.get(position).getAlamat_supplier());
                 intent.putExtra("kode_pengadaan", pengadaanList.get(position).getKode_pengadaan());
                 intent.putExtra("tanggal_pengadaan", pengadaanList.get(position).getTanggal_pengadaan());
                 //intent.putExtra("jumlah_pengadaan", pengadaanList.get(position).getJumlah_pengadaan());

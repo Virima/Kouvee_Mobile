@@ -27,7 +27,6 @@ public class Splash_Atma extends AppCompatActivity {
                 startActivity(login);
             }
         }, 1000);
-
     }
 }
 

@@ -14,7 +14,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -200,7 +202,38 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
             pIdHewan.setText(id_hewan);
             pIdCustomer.setText(id_customer);
             pTanggalTransaksi.setText(tanggal_transaksi);
-            pTotalTransaksi.setText(total_transaksi);
+            //pTotalTransaksi.setText(total_transaksi);
+            pTotalTransaksi.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    TransaksiLayanan_Interface apiTransaksi = API_client.getApiClient().create(TransaksiLayanan_Interface.class);
+                    Call<List<TransaksiLayanan_Model>> listCall = apiTransaksi.getTransaksiLayanan();
+
+                    listCall.enqueue(new Callback<List<TransaksiLayanan_Model>>() {
+                        @Override
+                        public void onResponse(Call<List<TransaksiLayanan_Model>> call, Response<List<TransaksiLayanan_Model>> response) {
+                            List<TransaksiLayanan_Model> transaksiModels = response.body();
+                            for(int i=0; i < transaksiModels.size(); i++ ){
+                                int id_temp = transaksiModels.get(i).getId_transaksi_layanan();
+                                if(id_temp==id) {
+                                    pTotalTransaksi.setText(transaksiModels.get(i).getTotal_transaksi_layanan());
+                                }
+                            }
+
+                        }
+                        @Override
+                        public void onFailure(Call<List<TransaksiLayanan_Model>> call, Throwable t) {
+                            Toast.makeText(Detail_TransaksiLayanan.this, "Cek " + t.getMessage().toString(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                @Override
+                public void afterTextChanged(Editable editable) {}
+            });
 
             pTglDibuat.setText(tgl_dibuat);
             pTglDiubah.setText(tgl_diubah);
@@ -244,32 +277,17 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
         if (id == 0) {
             editMode();
-            pTanggalTransaksi = (EditText) findViewById(R.id.TanggalTransLyn);
-            pTanggalTransaksi.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Calendar cal = Calendar.getInstance();
-                    int year = cal.get(Calendar.YEAR);
-                    int month = cal.get(Calendar.MONTH);
-                    int day = cal.get(Calendar.DAY_OF_MONTH);
 
-                    DatePickerDialog dialog = new DatePickerDialog(Detail_TransaksiLayanan.this,
-                            android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                            mDateSetListener, year, month, day);
+            pTanggalTransaksi = (EditText) findViewById(R.id.TanggalTransLyn); //date
 
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
-                }
-            });
+            Calendar cal = Calendar.getInstance();
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
 
-            mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                    month = month + 1;
-                    String date = year + "/" + month + "/" + day;
-                    pTanggalTransaksi.setText(date);
-                }
-            };
+            month = month + 1;
+            String date = year + "/" + month + "/" + day;
+            pTanggalTransaksi.setText(date);
 
             action.findItem(R.id.menu_edit).setVisible(false);
             action.findItem(R.id.menu_delete).setVisible(false);
@@ -287,42 +305,24 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
                 return true;
 
             case R.id.menu_edit:
-                editMode();
-                setUpdateSpinnerHewan();
+                if(status_transaksi.equals("Menunggu Pembayaran"))
+                {
+                    Toast.makeText(Detail_TransaksiLayanan.this,
+                            "Transaksi yang terverifikasi tidak dapat diubah!",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else if(status_transaksi.equals("Belum Selesai"))
+                {
+                    editMode();
+                    setUpdateSpinnerHewan();
 
-                pIdHewan.setVisibility(View.GONE);
-                spinnerHewan.setVisibility(View.VISIBLE);
+                    pIdHewan.setVisibility(View.GONE);
+                    spinnerHewan.setVisibility(View.VISIBLE);
 
-                pTanggalTransaksi = (EditText) findViewById(R.id.TanggalTransLyn); //date
-                pTanggalTransaksi.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Calendar cal = Calendar.getInstance();
-                        int year = cal.get(Calendar.YEAR);
-                        int month = cal.get(Calendar.MONTH);
-                        int day = cal.get(Calendar.DAY_OF_MONTH);
-
-                        DatePickerDialog dialog = new DatePickerDialog(Detail_TransaksiLayanan.this,
-                                android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                                mDateSetListener, year, month, day);
-
-                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        dialog.show();
-                    }
-                });
-
-                mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                        month = month + 1;
-                        String date = year + "/" + month + "/" + day;
-                        pTanggalTransaksi.setText(date);
-                    }
-                };
-
-                action.findItem(R.id.menu_edit).setVisible(false);
-                action.findItem(R.id.menu_delete).setVisible(false);
-                action.findItem(R.id.menu_save).setVisible(true);
+                    action.findItem(R.id.menu_edit).setVisible(false);
+                    action.findItem(R.id.menu_delete).setVisible(false);
+                    action.findItem(R.id.menu_save).setVisible(true);
+                }
 
                 return true;
 
@@ -368,7 +368,16 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        deleteData("delete", id);
+                        if(status_transaksi.equals("Menunggu Pembayaran"))
+                        {
+                            Toast.makeText(Detail_TransaksiLayanan.this,
+                                    "Transaksi yang terverifikasi tidak dapat dihapus!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        else if(status_transaksi.equals("Belum Selesai"))
+                        {
+                            deleteData("delete", id);
+                        }
                     }
                 });
                 dialog.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
@@ -469,12 +478,10 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
                 if (value.equals("1")) {
                     Toast.makeText(Detail_TransaksiLayanan.this, message, Toast.LENGTH_SHORT).show();
+                    finish();
                 } else {
                     Toast.makeText(Detail_TransaksiLayanan.this, message, Toast.LENGTH_SHORT).show();
                 }
-
-                Intent back = new Intent(Detail_TransaksiLayanan.this, Activity_TransaksiLayanan.class);
-                startActivity(back);
             }
 
             public void onFailure(Call<TransaksiLayanan_Model> call, Throwable t) {
@@ -605,7 +612,7 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
         pUserEdit.setFocusableInTouchMode(false);
 
         alertDisable(pIdHewan);
-        alertDisable(pTanggalTransaksi);
+        //alertDisable(pTanggalTransaksi);
     }
 
     private void alertDisable(EditText editText) {
@@ -768,6 +775,7 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
     //// SMS ////
     protected void sendSMSMessage() {
+        /*
         StringBuilder List = new StringBuilder();
 
         List.append("\n");
@@ -781,9 +789,7 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
             List.append(jumlah + "x");
             List.append("\n");
         }
-
-        phoneNo = "+6281227069255";
-        message = "Transaksi Layanan Anda telah Selesai. ";
+        */
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.SEND_SMS)
@@ -796,6 +802,11 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
                         MY_PERMISSIONS_REQUEST_SEND_SMS);
             }
         }
+
+        phoneNo = "+6281227069255";
+        message = "Transaksi Layanan Anda telah Selesai. Anda dapat menugujungi Kouvee Shop untuk menjemput " +
+                "Hewan kesayangan Anda <3";
+
     }
 
     @Override

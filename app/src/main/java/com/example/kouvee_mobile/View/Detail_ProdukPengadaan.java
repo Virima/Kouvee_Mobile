@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputType;
@@ -87,6 +88,7 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
         pIdProduk = findViewById(R.id.NamaProdukJoinPengadaan);
         pSubtotalPenjualan = findViewById(R.id.SubtotalPenjualan);
         pSubtotalPengadaan = findViewById(R.id.SubtotalPengadaan);
+        pSubtotalPengadaan.setInputType(InputType.TYPE_CLASS_NUMBER);
         pJumlahPengadaan = findViewById(R.id.JumlahPengadaan);
         pJumlahPengadaan.setInputType(InputType.TYPE_CLASS_NUMBER);
         //pTglDibuat = findViewById(R.id.tanggal_tambah_pengadaan_log);
@@ -303,11 +305,14 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
                 if (value.equals("1")) {
                     Toast.makeText(Detail_ProdukPengadaan.this, message, Toast.LENGTH_SHORT).show();
                     finish();
+
                 } else {
                     Toast.makeText(Detail_ProdukPengadaan.this, message, Toast.LENGTH_SHORT).show();
                 }
+                /*
                 Intent back = new Intent(Detail_ProdukPengadaan.this, Activity_Pengadaan.class);
                 startActivity(back);
+                */
             }
 
             public void onFailure(Call<Pengadaan_Model> call, Throwable t) {
@@ -354,12 +359,10 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
 
                 if (value.equals("1")) {
                     Toast.makeText(Detail_ProdukPengadaan.this, message, Toast.LENGTH_SHORT).show();
+                    finish();
                 } else {
                     Toast.makeText(Detail_ProdukPengadaan.this, message, Toast.LENGTH_SHORT).show();
                 }
-
-                Intent back = new Intent(Detail_ProdukPengadaan.this, Activity_Pengadaan.class);
-                startActivity(back);
             }
 
             public void onFailure(Call<Pengadaan_Model> call, Throwable t) {
@@ -402,9 +405,6 @@ public class Detail_ProdukPengadaan extends AppCompatActivity {
                 } else {
                     Toast.makeText(Detail_ProdukPengadaan.this, message, Toast.LENGTH_SHORT).show();
                 }
-
-                Intent back = new Intent(Detail_ProdukPengadaan.this, Activity_Pengadaan.class);
-                startActivity(back);
             }
 
             @Override

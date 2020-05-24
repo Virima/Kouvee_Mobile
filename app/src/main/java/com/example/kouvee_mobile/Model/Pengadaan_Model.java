@@ -9,8 +9,14 @@ public class Pengadaan_Model {
     private int id_detail_pengadaan;
     @SerializedName("id_produk")
     private String id_produk;
+    @SerializedName("satuan_produk")
+    private String satuan_produk;
     @SerializedName("id_supplier")
     private String id_supplier;
+    @SerializedName("telepon_supplier")
+    private String telepon_supplier;
+    @SerializedName("alamat_supplier")
+    private String alamat_supplier;
     @SerializedName("kode_pengadaan")
     private String kode_pengadaan;
     @SerializedName("tanggal_pengadaan")
@@ -58,12 +64,36 @@ public class Pengadaan_Model {
         this.id_produk = id_produk;
     }
 
+    public String getSatuan_produk() {
+        return satuan_produk;
+    }
+
+    public void setSatuan_produk(String satuan_produk) {
+        this.satuan_produk = satuan_produk;
+    }
+
     public String getId_supplier() {
         return id_supplier;
     }
 
     public void setId_supplier(String id_supplier) {
         this.id_supplier = id_supplier;
+    }
+
+    public String getTelepon_supplier() {
+        return telepon_supplier;
+    }
+
+    public void setTelepon_supplier(String telepon_supplier) {
+        this.telepon_supplier = telepon_supplier;
+    }
+
+    public String getAlamat_supplier() {
+        return alamat_supplier;
+    }
+
+    public void setAlamat_supplier(String alamat_supplier) {
+        this.alamat_supplier = alamat_supplier;
     }
 
     public String getKode_pengadaan() {
