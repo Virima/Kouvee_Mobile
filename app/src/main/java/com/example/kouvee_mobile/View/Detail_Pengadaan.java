@@ -12,8 +12,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -70,8 +73,10 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
@@ -84,6 +89,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.uttampanchasara.pdfgenerator.CreatePdf;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -104,6 +110,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
     private EditText pIdPengadaan, pIdProduk, pIdSupplier, pTanggalPengadaan, pJumlahPengadaan, pSubtotalPengadaan,
             pStatusPengadaan, pTotalPengadaan, pTglDibuat, pTglDiubah, pUserLog;
+    private TextView KeteranganTxt;
     private String id_pengadaan, id_produk, id_supplier, kode_pengadaan, tanggal_pengadaan, jumlah_pengadaan,
             subtotal_pengadaan, status_pengadaan, total_pengadaan, tgl_dibuat, tgl_diubah, user_log;
     private String alamat_supplier, telepon_supplier;
@@ -155,6 +162,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
                 {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 PackageManager.PERMISSION_GRANTED);
 
+        KeteranganTxt = findViewById(R.id.KeteranganFragmentTxt);
         pIdPengadaan = findViewById(R.id.KodePengadaan);
         //pIdProduk = findViewById(R.id.NamaProdukJoinPengadaan);
         pIdSupplier = findViewById(R.id.NamaSupplierJoinPengadaan);
@@ -347,7 +355,13 @@ public class Detail_Pengadaan extends AppCompatActivity {
             });
 
             pTglDibuat.setText(tgl_dibuat);
-            pTglDiubah.setText(tgl_diubah);
+
+            if(tgl_diubah==null) {
+                pTglDiubah.setText(" -");
+            } else {
+                pTglDiubah.setText(tgl_diubah);
+            }
+
             pUserLog.setText(user_log);
 
             RequestOptions requestOptions = new RequestOptions();
@@ -376,6 +390,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
             pUserLog.setVisibility(View.GONE);
+            KeteranganTxt.setVisibility(View.GONE);
 
             tambahProdukPengadaanBtn.setVisibility(View.GONE);
             verifikasiBtn.setVisibility(View.GONE);
@@ -1202,8 +1217,10 @@ public class Detail_Pengadaan extends AppCompatActivity {
             //Setting
             document.setPageSize(PageSize.A4);
             document.addCreationDate();
+            document.addTitle("Surat Pengadaan " + kode_pengadaan);
             document.addAuthor("Kouvee Pet Shop");
             document.addCreator(sp_NamaPegawai);
+
 
             //Font Setting
             BaseColor colorAccent = new BaseColor(0, 153, 204, 255);
@@ -1212,6 +1229,20 @@ public class Detail_Pengadaan extends AppCompatActivity {
 
             //Custom Font
             BaseFont fontName = BaseFont.createFont("assets/fonts/brandon_medium.otf", "UTF-8", BaseFont.EMBEDDED);
+
+            //Kouvee Logo
+            //Drawable d = getResources().getDrawable(R.drawable.kouvee_small);
+            //BitmapDrawable bitDw = ((BitmapDrawable) d);
+            //Bitmap bmp = bitDw.getBitmap();
+            //ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            //bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            //Image image = Image.getInstance(stream.toByteArray());
+            //image.setDpi(50, 50);
+
+            //Paragraph p = new Paragraph();
+            //Chunk c = new Chunk(image, 0, -80);
+            //p.add(c);
+            //document.add(p);
 
             //Create Title of Document
             Font titleFont = new Font(fontName, 18.0f, Font.NORMAL, BaseColor.BLACK);
@@ -1295,7 +1326,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
             int day = cal.get(Calendar.DAY_OF_MONTH);
 
             month = month + 1;
-            String date = day + "/" + month + "/" + year;
+            String date = year + "-" + month + "-" + day;
 
             addNewItem(document, "Dicetak Tanggal "+ date, Element.ALIGN_RIGHT, orderNumberValueFont);
 
@@ -1318,7 +1349,7 @@ public class Detail_Pengadaan extends AppCompatActivity {
         PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
         try {
             PrintDocumentAdapter printDocumentAdapter = new PdfDocumentAdapter(Detail_Pengadaan.this,
-                    Common.getAppPath(Detail_Pengadaan.this) + "Test_PDF.pdf");
+                    Common.getAppPath(Detail_Pengadaan.this) + "Test_PDF.pdf", kode_pengadaan);
             printManager.print("Document", printDocumentAdapter, new PrintAttributes.Builder().build());
         } catch (Exception ex) {
             Log.e("Kouvee", "" + ex.getMessage());

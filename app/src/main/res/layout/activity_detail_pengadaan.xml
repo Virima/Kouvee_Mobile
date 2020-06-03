@@ -95,19 +95,19 @@
                             android:inputType="date|textCapWords" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/TotalPengadaan"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-light"
-                        android:textColor="#999999"
-                        android:hint="Total Pengadaan"
-                        android:inputType="date|textCapWords" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/TotalPengadaan"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:textColor="#999999"
+                            android:hint="Total Pengadaan"
+                            android:inputType="date|textCapWords" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
@@ -269,6 +269,7 @@
             </LinearLayout>
 
                 <TextView
+                    android:id="@+id/KeteranganFragmentTxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -289,7 +290,7 @@
                         android:id="@+id/recyclerView"
                         android:background="@drawable/round_border_warna"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent">
+                        android:layout_height="220dp">
                     </androidx.recyclerview.widget.RecyclerView>
 
                     <ProgressBar

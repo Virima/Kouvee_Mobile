@@ -47,6 +47,7 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
     private int id;
 
     public String sp_IdTransaksi = "";
+    public String sp_UkuranHewan = "";
     private int jumlah, harga;
 
     private Spinner spinnerLayanan;
@@ -72,7 +73,6 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
         pJumlahTransaksi.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         listSpinnerLayanan = new ArrayList<>();
-
         spinnerLayanan = findViewById(R.id.spinnerLayananTransaksi);
 
         Intent intent = getIntent();
@@ -81,6 +81,13 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
         id_layanan = intent.getStringExtra("id_layanan");
         jumlah_transaksi = intent.getStringExtra("jumlah_transaksi_layanan");
         subtotal_transaksi = intent.getStringExtra("subtotal_transaksi_layanan");
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp!=null)
+        {
+            sp_IdTransaksi = sp.getString("sp_id_transaksi_layanan", "");
+            sp_UkuranHewan = sp.getString("sp_ukuran_hewan", "");
+        }
 
         setDataFromIntentExtra();
 
@@ -140,12 +147,6 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        if(sp!=null)
-        {
-            sp_IdTransaksi = sp.getString("sp_id_transaksi_layanan", "");
-        }
 
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -531,7 +532,6 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
                             List<Layanan_Model> layananModels = response.body();
 
                             String editText = spinnerLayanan.getSelectedItem().toString();
-                            System.out.println("TES SPINNER" + editText);
 
                             for(int i=0; i < layananModels.size(); i++ ) {
                                 String nama = layananModels.get(i).getNama_layanan();
@@ -540,8 +540,28 @@ public class Detail_Layanan_TransaksiLayanan extends AppCompatActivity {
                                 {
                                     harga = Integer.valueOf(layananModels.get(i).getHarga_layanan());
                                     jumlah = Integer.valueOf(pJumlahTransaksi.getText().toString());
-                                    int subtotal = harga * jumlah;
-                                    pSubtotalTransaksi.setText(String.valueOf(subtotal));
+                                    double subtotal = harga * jumlah;
+
+                                    if(sp_UkuranHewan.equals("Extra Large"))
+                                    {
+                                        subtotal = (subtotal * 1.5);
+                                        pSubtotalTransaksi.setText(String.valueOf(subtotal));
+                                    }
+                                    else if(sp_UkuranHewan.equals("Large")) {
+                                        subtotal = (subtotal * 1.25);
+                                        pSubtotalTransaksi.setText(String.valueOf(subtotal));
+                                    }
+                                    else if(sp_UkuranHewan.equals("Medium")) {
+                                        subtotal = (subtotal * 1);
+                                        pSubtotalTransaksi.setText(String.valueOf(subtotal));
+                                    }
+                                    else if(sp_UkuranHewan.equals("Small")) {
+                                        subtotal = (subtotal * 0.8);
+                                        pSubtotalTransaksi.setText(String.valueOf(subtotal));
+                                    }
+                                    else {
+                                        pSubtotalTransaksi.setText("Ukuran Hewan tidak Valid!");
+                                    }
                                 }
                             }
                         }

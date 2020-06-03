@@ -18,6 +18,8 @@ public class TransaksiLayanan_Model {
     private String id_ukuran;
     @SerializedName("id_customer")
     private String id_customer;
+    @SerializedName("telepon_customer")
+    private String telepon_customer;
 
     @SerializedName("kode_transaksi_layanan")
     private String kode_transaksi_layanan;
@@ -129,6 +131,14 @@ public class TransaksiLayanan_Model {
 
     public String getId_customer() {
         return id_customer;
+    }
+
+    public void setTelepon_customer(String telepon_customer) {
+        this.telepon_customer = telepon_customer;
+    }
+
+    public String getTelepon_customer() {
+        return telepon_customer;
     }
 
     public void setId_ukuran(String id_ukuran) {

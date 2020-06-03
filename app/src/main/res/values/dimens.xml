@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="dialog_margin">20dp</dimen>
+    <dimen name="dialog_margin_vertical_top2">5dp</dimen>
+    <dimen name="dialog_margin_vertical_top">-3dp</dimen>
+    <dimen name="dialog_margin_vertical_bottom">-2dp</dimen>
 </resources>

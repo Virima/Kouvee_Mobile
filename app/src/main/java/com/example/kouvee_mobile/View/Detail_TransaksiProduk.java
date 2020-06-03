@@ -64,6 +64,7 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
 
     private EditText pIdTransaksi, pIdCustomer, pTanggalTransaksi, pTotalTransaksi, pTglDibuat,
             pTglDiubah, pUserCreate, pUserEdit;
+    private TextView KeteranganTxt;
     private String id_customer, kode_transaksi, tanggal_transaksi, total_transaksi, tgl_dibuat,
             tgl_diubah, user_create, user_edit;
     private int id;
@@ -101,6 +102,7 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        KeteranganTxt = findViewById(R.id.KeteranganFragmentTxt);
         pIdTransaksi = findViewById(R.id.KodeTransPrdk);
         pIdCustomer = findViewById(R.id.NamaCustomerJoinTransPrdk);
         pTanggalTransaksi = findViewById(R.id.TanggalTransPrdk);
@@ -173,7 +175,8 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
             }
 
             pTanggalTransaksi.setText(tanggal_transaksi);
-            //pTotalTransaksi.setText(total_transaksi);
+
+            pTotalTransaksi.setText(total_transaksi);
             pTotalTransaksi.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -186,7 +189,8 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
                             List<TransaksiProduk_Model> transaksiModels = response.body();
                             for(int i=0; i < transaksiModels.size(); i++ ){
                                 int id_temp = transaksiModels.get(i).getId_transaksi_produk();
-                                if(id_temp==id) {
+
+                                if(id_temp == id) {
                                     pTotalTransaksi.setText(transaksiModels.get(i).getTotal_transaksi_produk());
                                 }
                             }
@@ -207,9 +211,20 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
             });
 
             pTglDibuat.setText(tgl_dibuat);
-            pTglDiubah.setText(tgl_diubah);
+
+            if(tgl_diubah==null) {
+                pTglDiubah.setText(" -");
+            } else {
+                pTglDiubah.setText(tgl_diubah);
+            }
+
             pUserCreate.setText(user_create);
-            pUserEdit.setText(user_edit);
+
+            if(user_edit==null) {
+                pUserEdit.setText(" -");
+            } else {
+                pUserEdit.setText(user_edit);
+            }
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -225,6 +240,7 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
             FrameLayout layout = (FrameLayout)findViewById(R.id.placeHolderFragmentTransPrdk);
             layout.setVisibility(View.GONE);
 
+            KeteranganTxt.setVisibility(View.GONE);
             pIdTransaksi.setVisibility(View.GONE);
             pIdCustomer.setVisibility(View.GONE);
             pTotalTransaksi.setVisibility(View.GONE);
@@ -616,6 +632,7 @@ public class Detail_TransaksiProduk extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        pTotalTransaksi.setText(total_transaksi);
         //
         Fragment_TransaksiProduk fragment = new Fragment_TransaksiProduk();
         FragmentManager fragmentManager = getSupportFragmentManager();

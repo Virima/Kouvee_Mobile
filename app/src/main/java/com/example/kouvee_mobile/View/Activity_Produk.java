@@ -201,7 +201,7 @@ public class Activity_Produk extends AppCompatActivity {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "NotifProduk")
                 .setSmallIcon(R.drawable.kouvee)
                 .setContentTitle("Terdapat Produk yang Hampir Habis")
-                .setContentText("Update Stok Produk sekarang!")
+                .setContentText("Cek Stok produk disini!")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 // Set the intent that will fire when the user taps the notification
                 .setContentIntent(pendingIntent)

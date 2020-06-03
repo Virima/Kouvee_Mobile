@@ -59,6 +59,7 @@ public interface TransaksiProduk_Interface {
             @Field("key") String key,
             @Field("id_transaksi_produk") String id_transaksi_produk,
             @Field("id_detail_produk") String id_detail_produk,
+            @Field("id_produk") String id_produk,
             @Field("jumlah_transaksi_produk") String jumlah_transaksi_produk,
             @Field("subtotal_transaksi_produk") String subtotal_transaksi_produk,
             @Query("subtotal_before") String subtotal_before

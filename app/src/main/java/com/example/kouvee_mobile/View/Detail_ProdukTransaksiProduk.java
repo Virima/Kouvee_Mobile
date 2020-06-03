@@ -296,7 +296,8 @@ public class Detail_ProdukTransaksiProduk extends AppCompatActivity {
                 apiInterface.editProdukTransaksiProduk(
                         key,
                         sp_IdTransaksi,
-                        String.valueOf(id),     //id_detail
+                        String.valueOf(id),
+                        id_produk,
                         jumlah_transaksi,
                         subtotal_edit,
                         subtotal_transaksi);

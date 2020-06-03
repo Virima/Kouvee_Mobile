@@ -22,11 +22,13 @@ public class PdfDocumentAdapter extends PrintDocumentAdapter {
 
     Context context;
     String path;
+    String name;
 
-    public PdfDocumentAdapter(Context context, String path)
+    public PdfDocumentAdapter(Context context, String path, String name)
     {
         this.context=context;
         this.path=path;
+        this.name=name;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class PdfDocumentAdapter extends PrintDocumentAdapter {
             layoutResultCallback.onLayoutCancelled();
         else
         {
-            PrintDocumentInfo.Builder builder = new PrintDocumentInfo.Builder("file name");
+            PrintDocumentInfo.Builder builder = new PrintDocumentInfo.Builder(name);
             builder.setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
                     .setPageCount(PrintDocumentInfo.PAGE_COUNT_UNKNOWN)
                     .build();

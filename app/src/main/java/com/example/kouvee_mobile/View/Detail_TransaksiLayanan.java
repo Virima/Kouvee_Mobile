@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,13 +23,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -47,7 +51,13 @@ import com.example.kouvee_mobile.Model.Customer_Model;
 import com.example.kouvee_mobile.Model.Hewan_Model;
 import com.example.kouvee_mobile.Model.TransaksiLayanan_Model;
 import com.example.kouvee_mobile.R;
+import com.nexmo.client.NexmoClient;
+import com.nexmo.client.NexmoClientException;
+import com.nexmo.client.sms.SmsSubmissionResponse;
+import com.nexmo.client.sms.SmsSubmissionResponseMessage;
+import com.nexmo.client.sms.messages.TextMessage;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -63,14 +73,16 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
     private EditText pIdTransaksi, pIdHewan, pTanggalTransaksi, pTotalTransaksi, pTglDibuat, pStatusTransaksi,
             pTglDiubah, pIdCustomer, pUserCreate, pUserEdit;
-    private String id_hewan, id_customer, id_ukuran, id_jenis, kode_transaksi, tanggal_transaksi, total_transaksi,
-            status_transaksi, tgl_dibuat, tgl_diubah, user_create, user_edit;
+    private TextView KeteranganTxt;
+    private String id_hewan, id_customer, telepon_customer, id_ukuran, id_jenis, kode_transaksi, tanggal_transaksi,
+            total_transaksi, status_transaksi, tgl_dibuat, tgl_diubah, user_create, user_edit;
     private int id;
 
     private Button tambahLayananBtn, verifikasiBtn;
 
-    public String sp_NamaPegawai="";
-    public String sp_IdTransaksi="";
+    public String sp_NamaPegawai="";    //Load SP nama pegawai yg login di menu login
+    public String sp_IdTransaksi="";    //Save SP id transaksi dibawa ke Detail_Layanan_TransaksiLayanan
+    public String sp_UkuranHewan="";     //Save SP ukuran hewan dibawa ke Detail_Layanan_TransaksiLayanan
 
     private Spinner spinnerHewan;
     private List<String> listSpinnerHewan;
@@ -78,14 +90,13 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
     private Menu action;
 
-    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
-    String phoneNo, message;
-
     private final static String TAG = "Detail_Transaksi";
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
     SharedPreferences sp;
     public static final int mode = Activity.MODE_PRIVATE;
+
+    final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,12 +114,13 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        KeteranganTxt = findViewById(R.id.KeteranganFragmentTxt);
         pIdTransaksi = findViewById(R.id.KodeTransLyn);
         pIdHewan = findViewById(R.id.NamaHewanJoinTransLyn);
         pIdCustomer = findViewById(R.id.NamaCustomerJoinTransLyn);
         pTanggalTransaksi = findViewById(R.id.TanggalTransLyn);
         pTotalTransaksi = findViewById(R.id.TotalTransLyn);
-        //pStatusTransaksi = findViewById(R.id.)
+        pStatusTransaksi = findViewById(R.id.StatusTransLyn);
 
         pTglDibuat = findViewById(R.id.tanggal_tambah_trans_lyn);
         pTglDiubah = findViewById(R.id.tanggal_ubah_trans_lyn);
@@ -127,6 +139,7 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
         id = intent.getIntExtra("id_transaksi_layanan", 0);
         id_hewan = intent.getStringExtra("id_hewan");
         id_customer = intent.getStringExtra("id_customer");
+        telepon_customer = intent.getStringExtra("telepon_customer");
         id_ukuran = intent.getStringExtra("id_ukuran");
         id_jenis = intent.getStringExtra("id_jenis");
         kode_transaksi = intent.getStringExtra("kode_transaksi_layanan");
@@ -140,6 +153,8 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
         sp_IdTransaksi = String.valueOf(id);
         savePreferenceIdTransaksi(sp_IdTransaksi);
+        sp_UkuranHewan = id_ukuran;
+        savePreferenceUkuranHewan(sp_UkuranHewan);
 
         setDataFromIntentExtra();
 
@@ -189,6 +204,12 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
             }
         });
 
+        pIdHewan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popUpDetailHewan();
+            }
+        });
     }
 
     private void setDataFromIntentExtra() {
@@ -202,7 +223,8 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
             pIdHewan.setText(id_hewan);
             pIdCustomer.setText(id_customer);
             pTanggalTransaksi.setText(tanggal_transaksi);
-            //pTotalTransaksi.setText(total_transaksi);
+            pStatusTransaksi.setText(status_transaksi);
+            pTotalTransaksi.setText(total_transaksi);
             pTotalTransaksi.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -214,12 +236,12 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
                         public void onResponse(Call<List<TransaksiLayanan_Model>> call, Response<List<TransaksiLayanan_Model>> response) {
                             List<TransaksiLayanan_Model> transaksiModels = response.body();
                             for(int i=0; i < transaksiModels.size(); i++ ){
+
                                 int id_temp = transaksiModels.get(i).getId_transaksi_layanan();
-                                if(id_temp==id) {
+                                if(id_temp == id) {
                                     pTotalTransaksi.setText(transaksiModels.get(i).getTotal_transaksi_layanan());
                                 }
                             }
-
                         }
                         @Override
                         public void onFailure(Call<List<TransaksiLayanan_Model>> call, Throwable t) {
@@ -230,15 +252,31 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
                 }
 
                 @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
                 @Override
-                public void afterTextChanged(Editable editable) {}
+                public void afterTextChanged(Editable editable) {
+
+                }
             });
 
             pTglDibuat.setText(tgl_dibuat);
-            pTglDiubah.setText(tgl_diubah);
+
+            if(tgl_diubah==null) {
+                pTglDiubah.setText(" -");
+            } else {
+                pTglDiubah.setText(tgl_diubah);
+            }
+
             pUserCreate.setText(user_create);
-            pUserEdit.setText(user_edit);
+
+            if(user_edit==null) {
+                pUserEdit.setText(" -");
+            } else {
+                pUserEdit.setText(user_edit);
+            }
 
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.skipMemoryCache(true);
@@ -254,10 +292,12 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
             FrameLayout layout = (FrameLayout)findViewById(R.id.placeHolderFragmentTransLyn);
             layout.setVisibility(View.GONE);
 
+            KeteranganTxt.setVisibility(View.GONE);
             pIdTransaksi.setVisibility(View.GONE);
             pIdHewan.setVisibility(View.GONE);
             pIdCustomer.setVisibility(View.GONE);
             pTotalTransaksi.setVisibility(View.GONE);
+            pStatusTransaksi.setVisibility(View.GONE);
             pTglDibuat.setVisibility(View.GONE);
             pTglDiubah.setVisibility(View.GONE);
             pUserCreate.setVisibility(View.GONE);
@@ -611,7 +651,7 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
         pUserCreate.setFocusableInTouchMode(false);
         pUserEdit.setFocusableInTouchMode(false);
 
-        alertDisable(pIdHewan);
+        //alertDisable(pIdHewan);
         //alertDisable(pTanggalTransaksi);
     }
 
@@ -661,6 +701,72 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("sp_id_transaksi_layanan", string);
         editor.apply();
+    }
+
+    private void savePreferenceUkuranHewan(String string)
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("sp_ukuran_hewan", string);
+        editor.apply();
+    }
+
+    private void popUpDetailHewan()
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        Context context = Detail_TransaksiLayanan.this;
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        alert.setTitle("Detail Hewan");
+        alert.setIcon(R.drawable.hewan);
+
+        final TextView jenis_tv = new TextView(context);
+        final TextView ukuran_tv = new TextView(context);
+        final EditText jenis = new EditText(context);
+        final EditText ukuran = new EditText(context);
+
+        FrameLayout container = new FrameLayout(Detail_TransaksiLayanan.this);
+        FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams params2 = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        params.topMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin_vertical_top);
+        params.bottomMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin_vertical_bottom);
+
+        params2.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        params2.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        params2.topMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin_vertical_top2);
+        params2.bottomMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin_vertical_bottom);
+
+        jenis_tv.setLayoutParams(params2);
+        jenis.setLayoutParams(params);
+        ukuran_tv.setLayoutParams(params2);
+        ukuran.setLayoutParams(params);
+
+        jenis_tv.setText("Jenis Hewan");
+        ukuran_tv.setText("Ukuran Hewan");
+        jenis.setText(id_jenis);
+        ukuran.setText(id_ukuran);
+
+        jenis.setFocusableInTouchMode(false);
+        ukuran.setFocusableInTouchMode(false);
+
+        layout.addView(jenis_tv);
+        layout.addView(jenis);
+        layout.addView(ukuran_tv);
+        layout.addView(ukuran);
+
+        alert.setView(layout);
+
+        alert.setPositiveButton("Tutup", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {}
+        });
+
+        alert.show();
     }
 
     public void verifikasiTransaksiLayanan()
@@ -748,7 +854,13 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
                     String nama = transaksiModels.get(i).getId_layanan();
                     if(nama.equals("Grooming"))
                     {
-                        sendSMSMessage();
+                        if(checkPermission(Manifest.permission.SEND_SMS))
+                        {
+                            sendSMSMessage();
+                        } else {
+                            ActivityCompat.requestPermissions(Detail_TransaksiLayanan.this,
+                                    new String[] {Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQUEST_CODE);
+                        }
                     }
                 }
             }
@@ -764,6 +876,7 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        pTotalTransaksi.setText(total_transaksi);
         //
         Fragment_TransaksiLayanan fragment = new Fragment_TransaksiLayanan();
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -775,59 +888,27 @@ public class Detail_TransaksiLayanan extends AppCompatActivity {
 
     //// SMS ////
     protected void sendSMSMessage() {
-        /*
-        StringBuilder List = new StringBuilder();
 
-        List.append("\n");
-        for(int i=0 ; i<listNamaLayanan.size() ; i++)
-        {
-            String nama = listNamaLayanan.get(i).toString();
-            String jumlah = listJumlahLayanan.get(i).toString();
+        int unicode = 0x1F618;
+        String emoji = new String(Character.toChars(unicode));
+        String message = "Transaksi Layanan Anda " + "[" + kode_transaksi + "] telah selesai. " +
+                "Silakan datang ke Kouvee Shop " +
+                "untuk menjemput hewan kesayangan Anda " + emoji + " -" + sp_NamaPegawai;
 
-            List.append(nama);
-            List.append(" ");
-            List.append(jumlah + "x");
-            List.append("\n");
+        if(checkPermission(Manifest.permission.SEND_SMS)) {
+            System.out.println("NANIIII "+ telepon_customer);
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(telepon_customer, "Kouvee Pet Shop", message, null, null);
+            Toast.makeText(this, "Sukses Verfikasi dan SMS berhasil terkirim.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "SMS gagal terkirim. Mohon aktifkan Permission dan Coba Lagi.",
+                    Toast.LENGTH_SHORT).show();
         }
-        */
-
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.SEND_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.SEND_SMS)) {
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.SEND_SMS},
-                        MY_PERMISSIONS_REQUEST_SEND_SMS);
-            }
-        }
-
-        phoneNo = "+6281227069255";
-        message = "Transaksi Layanan Anda telah Selesai. Anda dapat menugujungi Kouvee Shop untuk menjemput " +
-                "Hewan kesayangan Anda <3";
-
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
-
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_SEND_SMS: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    SmsManager smsManager = SmsManager.getDefault();
-                    smsManager.sendTextMessage(phoneNo, null, message, null, null);
-                    Toast.makeText(getApplicationContext(), "SMS berhasil terkirim.",
-                            Toast.LENGTH_LONG).show();
-
-                } else {
-                    Toast.makeText(getApplicationContext(),
-                            "SMS gagal terkirim. Mohon coba lagi.", Toast.LENGTH_LONG).show();
-                    return;
-                }
-            }
-        }
+    public boolean checkPermission(String permission) {
+        int check = ContextCompat.checkSelfPermission(this, permission);
+        return (check == PackageManager.PERMISSION_GRANTED);
     }
 }
 

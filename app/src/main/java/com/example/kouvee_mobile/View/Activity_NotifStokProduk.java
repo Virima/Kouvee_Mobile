@@ -70,7 +70,7 @@ public class Activity_NotifStokProduk extends AppCompatActivity {
         listener = new Adapter_NotifStokProduk.RecyclerViewProdukClickListener(){
             @Override
             public void onRowClick(View view, int position) {
-                alertStok(position);
+                //alertStok(position);
             }
         };
     }
@@ -113,6 +113,10 @@ public class Activity_NotifStokProduk extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        else if (id == R.id.menu_tambah_pengadaan)
+        {
+            alertStok();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -137,15 +141,12 @@ public class Activity_NotifStokProduk extends AppCompatActivity {
         });
     }
 
-    public void alertStok(int position)
+    public void alertStok()
     {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        String namaprdk = produkList.get(position).getNama_produk();
-        namaprdk.toUpperCase();
-
-        alert.setTitle(produkList.get(position).getNama_produk());
-        alert.setMessage("Tambah Pengadaan baru untuk Produk "+ namaprdk + "?");
+        //alert.setTitle(produkList.get(position).getNama_produk());
+        alert.setMessage("Tambah Pengadaan Baru di Menu Pengadaan?");
 
         /*
         // Set an EditText view to get user input

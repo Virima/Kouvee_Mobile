@@ -128,6 +128,20 @@
                             android:layout_height="wrap_content">
 
                             <EditText
+                                android:id="@+id/StatusTransLyn"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="sans-serif-light"
+                                android:textColor="#999999"
+                                android:hint="Status Transaksi"
+                                android:inputType="textPersonName|textCapWords" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <EditText
                                 android:id="@+id/tanggal_tambah_trans_lyn"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -220,6 +234,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/KeteranganFragmentTxt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -240,7 +255,7 @@
                             android:id="@+id/recyclerView"
                             android:background="@drawable/round_border_warna"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent">
+                            android:layout_height="220dp">
                         </androidx.recyclerview.widget.RecyclerView>
 
                         <ProgressBar
